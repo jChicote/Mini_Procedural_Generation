@@ -18,12 +18,14 @@ The project undergoes development of both active and offline procedural generati
 ### Built With
 
 This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-* [Laravel](https://laravel.com)
+* [C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
+* [HLSL](https://docs.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl)
+* [Unity](https://unity.com/)
 
 
 <!-- CONTACT -->
 ## Contact
 
-Jaiden Chicote - [@your_twitter](https://twitter.com/ChicoteJaiden)
+Twitter - [@ChicoteJaiden](https://twitter.com/ChicoteJaiden)
+Instagram - [@mr_i_art](https://www.instagram.com/mr_i_art/)
+Itch.io - (https://jaidenchicote.itch.io/)
