@@ -459,9 +459,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshRenderer: {fileID: 1615216228}
   meshFilter: {fileID: 1615216227}
-  meshCollider: {fileID: 0}
-  width: 5
-  height: 5
+  meshCollider: {fileID: 1615216229}
+  width: 0
+  height: 0
+  mapSize: 10
+  edgeLength: 2
 --- !u!33 &1615216227
 MeshFilter:
   m_ObjectHideFlags: 0
