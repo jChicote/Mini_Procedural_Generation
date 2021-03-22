@@ -1,22 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using ProceduralGeneration.NoiseGeneration;
 
 namespace ProceduralGeneration.TerrainGeneration
 {
     public class BaseLandGenerator : MonoBehaviour
     {
         // Insepector accessible fields
-        [SerializeField] private MeshRenderer meshRenderer;
-        [SerializeField] private MeshFilter meshFilter;
-        [SerializeField] private MeshCollider meshCollider;
-        [SerializeField] private NoiseGenerator noiseGenerator;
+        [Header("Mesh Components")]
+        [SerializeField] protected MeshFilter meshFilter;
+        [SerializeField] protected MeshCollider meshCollider;
+        [SerializeField] protected NoiseGenerator noiseGenerator;
 
-        [SerializeField] private float width;
-        [SerializeField] private float height;
+        [Header("Map Details")]
+        [SerializeField] protected float maxHeight;
+        [SerializeField] protected int mapSize;
+        [SerializeField] protected int edgeLength;
 
-        [SerializeField] private int mapSize;
-        [SerializeField] private int edgeLength;
+        [Header("Regenerate Map")]
+        [SerializeField] protected bool regenerate;
+
 
         // Fields
         private Vector3[] vertices;
@@ -26,14 +30,19 @@ namespace ProceduralGeneration.TerrainGeneration
 
         private void Start()
         {
-            meshRenderer = this.GetComponent<MeshRenderer>();
             meshCollider = this.GetComponent<MeshCollider>();
             vertices = new Vector3[4];
             normals = new Vector3[4];
             uv = new Vector2[4];
 
-            //GenerateBasicQuad();
-            GenerateMap();
+            GenerateBasicMap();
+        }
+
+        private void Update()
+        {
+            if (!regenerate) return;
+
+            GenerateBasicMap();
         }
 
         /// <summary>
@@ -85,10 +94,24 @@ namespace ProceduralGeneration.TerrainGeneration
             meshCollider.sharedMesh = mesh;
         }
 
-        public virtual void GenerateMap()
+        public void GenerateBasicMap()
         {
             Mesh mesh = new Mesh();
+            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, edgeLength);
 
+            GenerateMeshData(noiseMap);
+            DetermineMeshTriangles();
+            AssignMeshData(mesh);
+            regenerate = false;
+        }
+
+        /// <summary>
+        /// Generates the mesh data for the terrain.
+        /// </summary>
+        /// <param name="mesh">Mesh object for the data.</param>
+        /// <param name="noiseData">Noise data for the mesh.</param>
+        public virtual void GenerateMeshData(float[] noiseData)
+        {
             vertices = new Vector3[(mapSize + 1) * (mapSize + 1)];
             normals = new Vector3[(mapSize + 1) * (mapSize + 1)];
             uv = new Vector2[(mapSize + 1) * (mapSize + 1)];
@@ -96,16 +119,16 @@ namespace ProceduralGeneration.TerrainGeneration
             {
                 for (int col = 0; col <= mapSize; index++, col++)
                 {
-                    vertices[index] = new Vector3(col * edgeLength, 0, row * edgeLength);
+                    vertices[index] = new Vector3(col * edgeLength, CalculateHeight(noiseData[index]), row * edgeLength);
                     normals[index] = -Vector3.forward;
                     uv[index] = new Vector2(col, row);
                 }
             }
-
-            DetermineMeshTriangles();
-            AssignMesh(mesh);
         }
 
+        /// <summary>
+        /// Prepares array of triangles corresponding to triangle indices within mesh quad.
+        /// </summary>
         public void DetermineMeshTriangles()
         {
             triangles = new int[mapSize * mapSize * 6];
@@ -122,15 +145,25 @@ namespace ProceduralGeneration.TerrainGeneration
             }
         }
 
-        public void AssignMesh(Mesh mesh)
+        /// <summary>
+        /// Assigns data to mesh and prepares mesh for renderers and collider.
+        /// </summary>
+        /// <param name="mesh">Mesh object for data insertion</param>
+        public void AssignMeshData(Mesh mesh)
         {
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.normals = normals;
             mesh.uv = uv;
+            mesh.RecalculateNormals();
 
             meshFilter.mesh = mesh;
             meshCollider.sharedMesh = mesh;
+        }
+
+        public float CalculateHeight(float noiseVal)
+        {
+            return noiseVal * maxHeight;
         }
 
         /*

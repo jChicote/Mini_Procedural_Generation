@@ -8,6 +8,9 @@ namespace ProceduralGeneration.NoiseGeneration
     {
         public float[] noiseMap;
 
+        [Range(0.001f, 0.3f)]
+        [SerializeField] private float scalar;
+
         public float[] CalculateNoise(int mapSize, int edgeLength)
         {
             noiseMap = new float[(mapSize + 1) * (mapSize + 1)];
@@ -16,7 +19,7 @@ namespace ProceduralGeneration.NoiseGeneration
             {
                 for (int col = 0; col <= mapSize; index++, col++)
                 {
-                    noiseMap[index] = Mathf.PerlinNoise(col * edgeLength, row * edgeLength);
+                    noiseMap[index] = Mathf.PerlinNoise(col * scalar, row * scalar);
                 }
             }
 
