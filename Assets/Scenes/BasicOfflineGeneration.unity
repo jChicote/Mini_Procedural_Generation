@@ -461,7 +461,7 @@ MonoBehaviour:
   meshFilter: {fileID: 1615216227}
   meshCollider: {fileID: 1615216229}
   noiseGenerator: {fileID: 1615216230}
-  maxHeight: 20
+  maxHeight: 15
   mapSize: 10
   edgeLength: 1
   regenerate: 0
