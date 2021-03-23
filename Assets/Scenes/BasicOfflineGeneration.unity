@@ -458,13 +458,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b256413dd5077ea4ab71566bb9c24571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshRenderer: {fileID: 1615216228}
   meshFilter: {fileID: 1615216227}
   meshCollider: {fileID: 1615216229}
   noiseGenerator: {fileID: 1615216230}
-  maxHeight: 100
-  mapSize: 50
+  maxHeight: 20
+  mapSize: 10
   edgeLength: 1
+  regenerate: 0
 --- !u!33 &1615216227
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -541,4 +541,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   noiseMap: []
-  scalar: 0.05
+  scalar: 0.108
