@@ -17,16 +17,17 @@ namespace ProceduralGeneration.TerrainGeneration
         [SerializeField] protected float maxHeight;
         [SerializeField] protected int mapSize;
         [SerializeField] protected int edgeLength;
+        [SerializeField] protected int seaLevel;
 
         [Header("Regenerate Map")]
         [SerializeField] protected bool regenerate;
 
-
         // Fields
-        private Vector3[] vertices;
-        private Vector3[] normals;
-        private Vector2[] uv;
-        private int[] triangles;
+        protected Vector3[] vertices;
+        protected Vector3[] normals;
+        protected Vector2[] uv;
+        protected int[] triangles;
+        private float pointHeight;
 
         private void Start()
         {
@@ -163,7 +164,8 @@ namespace ProceduralGeneration.TerrainGeneration
 
         public float CalculateHeight(float noiseVal)
         {
-            return noiseVal * maxHeight;
+            pointHeight = noiseVal * maxHeight;
+            return pointHeight < seaLevel ? seaLevel : pointHeight;
         }
 
         /*
