@@ -8,15 +8,37 @@ namespace ProceduralGeneration.NoiseGeneration
     {
         [SerializeField] private float noiseScale;
         [SerializeField] private int stepDetailCount = 3;
+        [SerializeField] private int seed;
 
         [Range(0.0001f, 1)]
         [SerializeField] private float persistence = 0.5f;
         [Range(0.0001f, 2)]
         [SerializeField] private float lacunarity;
 
-        public float[] CalculateNoise(int mapSize, int edgeLength)
+        private Vector2[] stepOffsets;
+
+        /// <summary>
+        /// Generate seed for map
+        /// </summary>
+        public void GenerateSeed()
         {
-            float[] noiseMap = new float[(mapSize + 1) * (mapSize + 1)];
+            System.Random prng = new System.Random(seed);
+            stepOffsets = new Vector2[stepDetailCount];
+            for (int i = 0; i < stepDetailCount; i++)
+            {
+                stepOffsets[i].x = prng.Next(-100000, 100000);
+                stepOffsets[i].y = prng.Next(-100000, 100000);
+            }
+        }
+
+        /// <summary>
+        /// Calculates the noisemap for the terrain
+        /// </summary>
+        public float[] CalculateNoise(int mapSize)
+        {
+            GenerateSeed();
+
+            float[] noiseMap = new float[(mapSize) * (mapSize)];
             float amplitude = 1;
             float frequency = 1;
             float noiseValue = 0;
@@ -24,14 +46,14 @@ namespace ProceduralGeneration.NoiseGeneration
             float scaleX;
             float scaleY;
 
-            for (int index = 0, row = 0; row <= mapSize; row++)
+            for (int index = 0, row = 0; row < mapSize; row++)
             {
-                for (int col = 0; col <= mapSize; index++, col++)
+                for (int col = 0; col < mapSize; index++, col++)
                 {
                     for (int i = 0; i < stepDetailCount; i++)
                     {
-                        scaleX = (float)col / noiseScale * frequency;
-                        scaleY = (float)row / noiseScale * frequency;
+                        scaleX = (float)col / noiseScale * frequency + stepOffsets[i].x;
+                        scaleY = (float)row / noiseScale * frequency + stepOffsets[i].y;
 
                         noiseValue += (Mathf.PerlinNoise(scaleX, scaleY) * amplitude);
                         frequency *= lacunarity;
@@ -45,9 +67,16 @@ namespace ProceduralGeneration.NoiseGeneration
                 }
             }
 
+            //NormaliseMap(noiseMap, mapSize);
+
             return noiseMap;
         }
 
+        /// <summary>
+        /// Normalises the map values between 0 and 1
+        /// </summary>
+        /// <param name="rawNoise"></param>
+        /// <param name="mapSize"></param>
         public void NormaliseMap(float[] rawNoise, int mapSize)
         {
             for (int index = 0, row = 0; row <= mapSize; row++)

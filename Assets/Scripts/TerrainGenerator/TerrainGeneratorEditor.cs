@@ -17,7 +17,7 @@ namespace ProceduralGeneration.InspectorEditor
 
             if (GUILayout.Button("Generate"))
             {
-                landGenerator.GenerateBasicMap();
+                landGenerator.GenerateMap();
             }
         }
     }

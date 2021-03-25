@@ -16,7 +16,7 @@ namespace ProceduralGeneration.TerrainGeneration
         [Header("Map Details")]
         [SerializeField] protected float maxHeight;
         [SerializeField] protected int mapSize;
-        [SerializeField] protected int edgeLength;
+        [SerializeField] protected float edgeLength;
         [SerializeField] protected int seaLevel;
 
         [Header("Regenerate Map")]
@@ -36,14 +36,14 @@ namespace ProceduralGeneration.TerrainGeneration
             normals = new Vector3[4];
             uv = new Vector2[4];
 
-            GenerateBasicMap();
+            GenerateMap();
         }
 
         private void Update()
         {
             if (!regenerate) return;
 
-            GenerateBasicMap();
+            GenerateMap();
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace ProceduralGeneration.TerrainGeneration
         public void GenerateBasicQuad()
         {
             Mesh mesh = new Mesh();
-            int size = edgeLength * mapSize;
+            int size = (int)edgeLength * mapSize;
 
             vertices = new Vector3[4]
             {
@@ -95,10 +95,10 @@ namespace ProceduralGeneration.TerrainGeneration
             meshCollider.sharedMesh = mesh;
         }
 
-        public void GenerateBasicMap()
+        public virtual void GenerateMap()
         {
             Mesh mesh = new Mesh();
-            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, edgeLength);
+            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
 
             GenerateMeshData(noiseMap);
             DetermineMeshTriangles();
@@ -130,7 +130,7 @@ namespace ProceduralGeneration.TerrainGeneration
         /// <summary>
         /// Prepares array of triangles corresponding to triangle indices within mesh quad.
         /// </summary>
-        public void DetermineMeshTriangles()
+        public virtual void DetermineMeshTriangles()
         {
             triangles = new int[mapSize * mapSize * 6];
 
@@ -156,6 +156,7 @@ namespace ProceduralGeneration.TerrainGeneration
             mesh.triangles = triangles;
             mesh.normals = normals;
             mesh.uv = uv;
+            mesh.RecalculateTangents();
             mesh.RecalculateNormals();
 
             meshFilter.mesh = mesh;
