@@ -132,7 +132,7 @@ namespace ProceduralGeneration.TerrainGeneration
         /// </summary>
         public virtual void DetermineMeshTriangles()
         {
-            triangles = new int[mapSize * mapSize * 6];
+            /*triangles = new int[mapSize * mapSize * 6];
 
             for (int row = 0, vi = 0, ti = 0; row < mapSize; row++, vi++)
             {
@@ -143,14 +143,14 @@ namespace ProceduralGeneration.TerrainGeneration
                     triangles[ti + 4] = triangles[ti + 1] = vi + mapSize + 1;
                     triangles[ti + 5] = vi + mapSize + 2;
                 }
-            }
+            }*/
         }
 
         /// <summary>
         /// Assigns data to mesh and prepares mesh for renderers and collider.
         /// </summary>
         /// <param name="mesh">Mesh object for data insertion</param>
-        public void AssignMeshData(Mesh mesh)
+        public virtual void AssignMeshData(Mesh mesh)
         {
             mesh.vertices = vertices;
             mesh.triangles = triangles;

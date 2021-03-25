@@ -4,7 +4,12 @@ using UnityEngine;
 
 namespace ProceduralGeneration.NoiseGeneration
 {
-    public class NoiseGenerator : MonoBehaviour
+    public interface INoiseGenerator
+    {
+        float[] CalculateNoise(int mapSize);
+    }
+
+    public class NoiseGenerator : MonoBehaviour, INoiseGenerator
     {
         [SerializeField] private float noiseScale;
         [SerializeField] private int stepDetailCount = 3;
@@ -66,9 +71,6 @@ namespace ProceduralGeneration.NoiseGeneration
                     frequency = 1;
                 }
             }
-
-            //NormaliseMap(noiseMap, mapSize);
-
             return noiseMap;
         }
 
