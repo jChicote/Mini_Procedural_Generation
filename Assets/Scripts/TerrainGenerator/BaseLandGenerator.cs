@@ -16,17 +16,18 @@ namespace ProceduralGeneration.TerrainGeneration
         [Header("Map Details")]
         [SerializeField] protected float maxHeight;
         [SerializeField] protected int mapSize;
-        [SerializeField] protected int edgeLength;
+        [SerializeField] protected float edgeLength;
+        [SerializeField] protected int seaLevel;
 
         [Header("Regenerate Map")]
         [SerializeField] protected bool regenerate;
 
-
         // Fields
-        private Vector3[] vertices;
-        private Vector3[] normals;
-        private Vector2[] uv;
-        private int[] triangles;
+        protected Vector3[] vertices;
+        protected Vector3[] normals;
+        protected Vector2[] uv;
+        protected int[] triangles;
+        private float pointHeight;
 
         private void Start()
         {
@@ -35,14 +36,14 @@ namespace ProceduralGeneration.TerrainGeneration
             normals = new Vector3[4];
             uv = new Vector2[4];
 
-            GenerateBasicMap();
+            GenerateMap();
         }
 
         private void Update()
         {
             if (!regenerate) return;
 
-            GenerateBasicMap();
+            GenerateMap();
         }
 
         /// <summary>
@@ -51,7 +52,7 @@ namespace ProceduralGeneration.TerrainGeneration
         public void GenerateBasicQuad()
         {
             Mesh mesh = new Mesh();
-            int size = edgeLength * mapSize;
+            int size = (int)edgeLength * mapSize;
 
             vertices = new Vector3[4]
             {
@@ -94,10 +95,10 @@ namespace ProceduralGeneration.TerrainGeneration
             meshCollider.sharedMesh = mesh;
         }
 
-        public void GenerateBasicMap()
+        public virtual void GenerateMap()
         {
             Mesh mesh = new Mesh();
-            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, edgeLength);
+            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
 
             GenerateMeshData(noiseMap);
             DetermineMeshTriangles();
@@ -129,9 +130,9 @@ namespace ProceduralGeneration.TerrainGeneration
         /// <summary>
         /// Prepares array of triangles corresponding to triangle indices within mesh quad.
         /// </summary>
-        public void DetermineMeshTriangles()
+        public virtual void DetermineMeshTriangles()
         {
-            triangles = new int[mapSize * mapSize * 6];
+            /*triangles = new int[mapSize * mapSize * 6];
 
             for (int row = 0, vi = 0, ti = 0; row < mapSize; row++, vi++)
             {
@@ -142,19 +143,20 @@ namespace ProceduralGeneration.TerrainGeneration
                     triangles[ti + 4] = triangles[ti + 1] = vi + mapSize + 1;
                     triangles[ti + 5] = vi + mapSize + 2;
                 }
-            }
+            }*/
         }
 
         /// <summary>
         /// Assigns data to mesh and prepares mesh for renderers and collider.
         /// </summary>
         /// <param name="mesh">Mesh object for data insertion</param>
-        public void AssignMeshData(Mesh mesh)
+        public virtual void AssignMeshData(Mesh mesh)
         {
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.normals = normals;
             mesh.uv = uv;
+            mesh.RecalculateTangents();
             mesh.RecalculateNormals();
 
             meshFilter.mesh = mesh;
@@ -163,7 +165,8 @@ namespace ProceduralGeneration.TerrainGeneration
 
         public float CalculateHeight(float noiseVal)
         {
-            return noiseVal * maxHeight;
+            pointHeight = noiseVal * maxHeight;
+            return pointHeight < seaLevel ? seaLevel : pointHeight;
         }
 
         /*
