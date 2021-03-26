@@ -6,7 +6,7 @@ namespace ProceduralGeneration.NoiseGeneration
 {
     public interface INoiseGenerator
     {
-        float[] CalculateNoise(int mapSize);
+        float[] CalculateNoise(int mapSize, Vector3 position);
     }
 
     public class NoiseGenerator : MonoBehaviour, INoiseGenerator
@@ -39,7 +39,7 @@ namespace ProceduralGeneration.NoiseGeneration
         /// <summary>
         /// Calculates the noisemap for the terrain
         /// </summary>
-        public float[] CalculateNoise(int mapSize)
+        public float[] CalculateNoise(int mapSize, Vector3 position)
         {
             GenerateSeed();
 
@@ -57,8 +57,8 @@ namespace ProceduralGeneration.NoiseGeneration
                 {
                     for (int i = 0; i < stepDetailCount; i++)
                     {
-                        scaleX = (float)col / noiseScale * frequency + stepOffsets[i].x;
-                        scaleY = (float)row / noiseScale * frequency + stepOffsets[i].y;
+                        scaleX = (float)col / noiseScale * frequency + stepOffsets[i].x + position.x;
+                        scaleY = (float)row / noiseScale * frequency + stepOffsets[i].y + position.z;
 
                         noiseValue += (Mathf.PerlinNoise(scaleX, scaleY) * amplitude);
                         frequency *= lacunarity;

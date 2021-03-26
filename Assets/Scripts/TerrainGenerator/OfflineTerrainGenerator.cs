@@ -29,9 +29,9 @@ namespace ProceduralGeneration.TerrainGeneration
             Mesh mesh = new Mesh();
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
             meshVertSize = (mapSize - 1) / lodIncrementStep + 1;
-            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
+            //float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
 
-            GenerateMeshData(noiseMap);
+            //GenerateMeshData(noiseMap);
             AssignMeshData(mesh);
             regenerate = false;
         }

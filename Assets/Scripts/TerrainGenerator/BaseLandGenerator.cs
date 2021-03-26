@@ -98,9 +98,9 @@ namespace ProceduralGeneration.TerrainGeneration
         public virtual void GenerateMap()
         {
             Mesh mesh = new Mesh();
-            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
+            //float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
 
-            GenerateMeshData(noiseMap);
+            //GenerateMeshData(noiseMap);
             DetermineMeshTriangles();
             AssignMeshData(mesh);
             regenerate = false;

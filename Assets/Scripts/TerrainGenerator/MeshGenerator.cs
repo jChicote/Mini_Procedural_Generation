@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ProceduralGeneration.NoiseGeneration;
+using System;
+using System.Threading;
 
 namespace ProceduralGeneration.MeshGeneration
 {
@@ -22,10 +24,11 @@ namespace ProceduralGeneration.MeshGeneration
         private float minimumHeight = 0;
         private int meshLineSize;
         private int lodIncrementStep;
-        private const int mapSize = 241;
+        public const int mapSize = 241;
 
         public float MaxHeight { set { maxHeight = value; } }
-        public float MinimumHeight {  set { minimumHeight = value; } }
+        public float MinimumHeight { set { minimumHeight = value; } }
+        public INoiseGenerator NoiseGenerator { set { noiseGenerator = value; } }
 
 
         private void Awake()
@@ -40,20 +43,29 @@ namespace ProceduralGeneration.MeshGeneration
         /// <param name="levelOfDetail"></param>
         public void GenerateBaseMesh(int levelOfDetail)
         {
+            mesh = new Mesh();
             meshData = new MeshData();
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
             meshLineSize = (mapSize - 1) / lodIncrementStep + 1;
-            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
+            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, transform.position);
 
             CalculateMesh(noiseMap);
+            AssignMeshData();
+            VisualiseMesh();
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
-        public void RegenerateMeshg()
+        public void RegenerateMesh(int levelOfDetail)
         {
+            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
+            meshLineSize = (mapSize - 1) / lodIncrementStep + 1;
+            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, transform.position);
 
+            CalculateMesh(noiseMap);
+            AssignMeshData();
+            VisualiseMesh();
         }
 
         /// <summary>
@@ -84,7 +96,7 @@ namespace ProceduralGeneration.MeshGeneration
         /// Assigns mesh data items to the mesh object.
         /// </summary>
         /// <param name="mesh"></param>
-        public void AssignMeshData(MeshData meshData)
+        public void AssignMeshData()
         {
             mesh.vertices = meshData.vertices;
             mesh.triangles = meshData.triangles;
@@ -92,6 +104,12 @@ namespace ProceduralGeneration.MeshGeneration
             mesh.uv = meshData.uv;
             mesh.RecalculateTangents();
             mesh.RecalculateNormals();
+        }
+
+        public void VisualiseMesh()
+        {
+            meshFilter.mesh = mesh;
+            meshCollider.sharedMesh = mesh;
         }
 
         public float CalculateHeight(float noiseVal)
