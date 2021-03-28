@@ -26,6 +26,8 @@ namespace ProceduralGeneration.MeshGeneration
         private int lodIncrementStep;
         public const int mapSize = 241;
 
+        private Queue<MeshThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MeshThreadInfo<MeshData>>();
+
         public float MaxHeight { set { maxHeight = value; } }
         public float MinimumHeight { set { minimumHeight = value; } }
         public INoiseGenerator NoiseGenerator { set { noiseGenerator = value; } }
@@ -115,6 +117,49 @@ namespace ProceduralGeneration.MeshGeneration
         public float CalculateHeight(float noiseVal)
         {
             return noiseVal * maxHeight < minimumHeight ? minimumHeight : noiseVal * maxHeight;
+        }
+
+        public void RequestMapData(Action<MeshData> callback)
+        {
+            ThreadStart threadStart = delegate
+            {
+                MeshDataThread(callback);
+            };
+
+            new Thread(threadStart).Start();
+        }
+
+        private void MeshDataThread(Action<MeshData> callback)
+        {
+            MeshData meshData = this.meshData;
+            lock (meshDataThreadInfoQueue)
+            {
+                meshDataThreadInfoQueue.Enqueue(new MeshThreadInfo<MeshData>(callback, meshData));
+            }
+        }
+
+        private void Update()
+        {
+            if (meshDataThreadInfoQueue.Count > 0)
+            {
+                for(int i = 0; i < meshDataThreadInfoQueue.Count; i++)
+                {
+                    MeshThreadInfo<MeshData> threadInfo = meshDataThreadInfoQueue.Dequeue();
+                    threadInfo.callback(threadInfo.parameter);
+                }
+            }
+        }
+
+        struct MeshThreadInfo<T>
+        {
+            public Action<T> callback;
+            public T parameter;
+
+            public MeshThreadInfo (Action<T> callback, T parameter)
+            {
+                this.callback = callback;
+                this.parameter = parameter;
+            }
         }
     }
 }

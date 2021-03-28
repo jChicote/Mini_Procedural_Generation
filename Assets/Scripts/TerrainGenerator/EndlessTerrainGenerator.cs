@@ -84,6 +84,13 @@ namespace ProceduralGeneration.TerrainGeneration
                 meshGenerator.NoiseGenerator = noiseGenerator;
                 meshGenerator.GenerateBaseMesh(0);
                 SetVisible(false);
+
+                meshGenerator.RequestMapData(OnMeshDataRecieved);
+            }
+
+            private void OnMeshDataRecieved(MeshData meshData)
+            {
+                print("Map Data Recieved");
             }
 
             public void UpdateTerrainChunk()
