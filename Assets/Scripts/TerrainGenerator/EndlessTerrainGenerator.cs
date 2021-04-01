@@ -8,7 +8,7 @@ namespace ProceduralGeneration.TerrainGeneration
 {
     public class EndlessTerrainGenerator : MonoBehaviour
     {
-        public const float maxViewDistance = 300;
+        public const float maxViewDistance = 600;
         public Transform viewer;
         public GameObject meshPrefab;
         public NoiseGenerator noiseGenerator;
@@ -71,6 +71,7 @@ namespace ProceduralGeneration.TerrainGeneration
             private GameObject meshObject;
             private Vector2 position;
             Bounds bounds;
+            MeshGenerator meshGenerator;
 
             public TerrainChunk(GameObject meshPrefab, NoiseGenerator noiseGenerator, Vector2 coord, int size)
             {
@@ -79,18 +80,21 @@ namespace ProceduralGeneration.TerrainGeneration
                 Vector3 positionV3 = new Vector3(position.x, 0, position.y);
 
                 meshObject = GameObject.Instantiate(meshPrefab, positionV3, Quaternion.identity);
-                //meshObject.transform.localScale = Vector3.one * size / 10f;
                 MeshGenerator meshGenerator = meshObject.GetComponent<MeshGenerator>();
                 meshGenerator.NoiseGenerator = noiseGenerator;
                 meshGenerator.GenerateBaseMesh(0);
                 SetVisible(false);
 
+                print("1 encountered");
                 meshGenerator.RequestMapData(OnMeshDataRecieved);
             }
 
             private void OnMeshDataRecieved(MeshData meshData)
             {
+                print("3 encountered");
                 print("Map Data Recieved");
+                meshGenerator.AssignMeshData();
+                meshGenerator.VisualiseMesh();
             }
 
             public void UpdateTerrainChunk()

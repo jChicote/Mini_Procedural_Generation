@@ -66,8 +66,6 @@ namespace ProceduralGeneration.MeshGeneration
             float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, transform.position);
 
             CalculateMesh(noiseMap);
-            AssignMeshData();
-            VisualiseMesh();
         }
 
         /// <summary>
@@ -121,6 +119,7 @@ namespace ProceduralGeneration.MeshGeneration
 
         public void RequestMapData(Action<MeshData> callback)
         {
+            print("2 encountered");
             ThreadStart threadStart = delegate
             {
                 MeshDataThread(callback);
@@ -131,6 +130,7 @@ namespace ProceduralGeneration.MeshGeneration
 
         private void MeshDataThread(Action<MeshData> callback)
         {
+            print("4 encountered");
             MeshData meshData = this.meshData;
             lock (meshDataThreadInfoQueue)
             {
@@ -142,8 +142,10 @@ namespace ProceduralGeneration.MeshGeneration
         {
             if (meshDataThreadInfoQueue.Count > 0)
             {
+                print("Encountered THread");
                 for(int i = 0; i < meshDataThreadInfoQueue.Count; i++)
                 {
+                    print("5 encountered");
                     MeshThreadInfo<MeshData> threadInfo = meshDataThreadInfoQueue.Dequeue();
                     threadInfo.callback(threadInfo.parameter);
                 }
