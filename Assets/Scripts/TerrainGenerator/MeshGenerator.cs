@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using ProceduralGeneration.NoiseGeneration;
+using System;
+using System.Threading;
 
 namespace ProceduralGeneration.MeshGeneration
 {
@@ -22,10 +24,13 @@ namespace ProceduralGeneration.MeshGeneration
         private float minimumHeight = 0;
         private int meshLineSize;
         private int lodIncrementStep;
-        private const int mapSize = 241;
+        public const int mapSize = 241;
+
+        private Queue<MeshThreadInfo<MeshData>> meshDataThreadInfoQueue = new Queue<MeshThreadInfo<MeshData>>();
 
         public float MaxHeight { set { maxHeight = value; } }
-        public float MinimumHeight {  set { minimumHeight = value; } }
+        public float MinimumHeight { set { minimumHeight = value; } }
+        public INoiseGenerator NoiseGenerator { set { noiseGenerator = value; } }
 
 
         private void Awake()
@@ -40,20 +45,27 @@ namespace ProceduralGeneration.MeshGeneration
         /// <param name="levelOfDetail"></param>
         public void GenerateBaseMesh(int levelOfDetail)
         {
+            mesh = new Mesh();
             meshData = new MeshData();
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
             meshLineSize = (mapSize - 1) / lodIncrementStep + 1;
-            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize);
+            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, transform.position);
 
             CalculateMesh(noiseMap);
+            AssignMeshData();
+            VisualiseMesh();
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
-        public void RegenerateMeshg()
+        public void RegenerateMesh(int levelOfDetail)
         {
+            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
+            meshLineSize = (mapSize - 1) / lodIncrementStep + 1;
+            float[] noiseMap = noiseGenerator.CalculateNoise(mapSize, transform.position);
 
+            CalculateMesh(noiseMap);
         }
 
         /// <summary>
@@ -84,7 +96,7 @@ namespace ProceduralGeneration.MeshGeneration
         /// Assigns mesh data items to the mesh object.
         /// </summary>
         /// <param name="mesh"></param>
-        public void AssignMeshData(MeshData meshData)
+        public void AssignMeshData()
         {
             mesh.vertices = meshData.vertices;
             mesh.triangles = meshData.triangles;
@@ -94,9 +106,62 @@ namespace ProceduralGeneration.MeshGeneration
             mesh.RecalculateNormals();
         }
 
+        public void VisualiseMesh()
+        {
+            meshFilter.mesh = mesh;
+            meshCollider.sharedMesh = mesh;
+        }
+
         public float CalculateHeight(float noiseVal)
         {
             return noiseVal * maxHeight < minimumHeight ? minimumHeight : noiseVal * maxHeight;
+        }
+
+        public void RequestMapData(Action<MeshData> callback)
+        {
+            print("2 encountered");
+            ThreadStart threadStart = delegate
+            {
+                MeshDataThread(callback);
+            };
+
+            new Thread(threadStart).Start();
+        }
+
+        private void MeshDataThread(Action<MeshData> callback)
+        {
+            print("4 encountered");
+            MeshData meshData = this.meshData;
+            lock (meshDataThreadInfoQueue)
+            {
+                meshDataThreadInfoQueue.Enqueue(new MeshThreadInfo<MeshData>(callback, meshData));
+            }
+        }
+
+        private void Update()
+        {
+            if (meshDataThreadInfoQueue.Count > 0)
+            {
+                print("Encountered THread");
+                for(int i = 0; i < meshDataThreadInfoQueue.Count; i++)
+                {
+                    print("5 encountered");
+                    MeshThreadInfo<MeshData> threadInfo = meshDataThreadInfoQueue.Dequeue();
+                    threadInfo.callback(threadInfo.parameter);
+                }
+            }
+        }
+
+        struct MeshThreadInfo<T>
+        {
+            public Action<T> callback;
+            public T parameter;
+
+            public MeshThreadInfo (Action<T> callback, T parameter)
+            {
+                this.callback = callback;
+                this.parameter = parameter;
+            }
         }
     }
 }

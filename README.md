@@ -8,6 +8,8 @@ Unity procedural generation demonstrating typical noise-based procedural generat
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
+## This project has halted due to issues with multi-threading
+
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
