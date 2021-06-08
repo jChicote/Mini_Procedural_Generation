@@ -1,0 +1,29 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct MeshPoint 
+{
+    float3 vert;
+    float3 normal;
+    float2 uv;
+};
+
+RWStructuredBuffer<MeshPoint> meshPoints;
+RWStructuredBuffer<float> noiseData;
+float resolution;
+
+float maxHeight;
+
+float CalculateHeight(float noiseVal) {
+    return noiseVal * maxHeight;
+}
+
+[numthreads(64, 1, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    // TODO: insert actual code here!
+    MeshPoint meshPoint = meshPoints[id.x];
+    meshPoint.vert.y = CalculateHeight(noiseData[id.x]);
+
+    meshPoints[id.x] = meshPoint;
+}
