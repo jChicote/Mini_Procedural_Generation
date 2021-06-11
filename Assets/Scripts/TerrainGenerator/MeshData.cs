@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace ProceduralGeneration.MeshGeneration
 {
+    [System.Serializable]
     public class MeshData
     {
         public Vector3[] vertices;

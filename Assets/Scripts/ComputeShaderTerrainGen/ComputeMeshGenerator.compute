@@ -1,0 +1,78 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct QuadTrisSet 
+{
+    float3 triangleA;
+    float3 triangleB;
+};
+
+RWStructuredBuffer<float> noiseData;
+RWStructuredBuffer<float3> vertices;
+RWStructuredBuffer<float3> normal;
+RWStructuredBuffer<float2> uv;
+RWStructuredBuffer<QuadTrisSet> triangles;
+
+float resolution;
+float maxHeight;
+float minHeight;
+float meshSize; // Constant
+
+int meshLineSize;
+int incrementStep;
+
+float CalculateHeight(float noiseVal) {
+    float height = noiseVal * maxHeight;
+    return clamp(height, minHeight, maxHeight);
+}
+
+float3 CalculateVertexPosition(int row, int col) {
+    float3 vertPos = float3(0, 0, 0);
+    vertPos.x = col;
+    vertPos.y = CalculateHeight(noiseData[row * meshSize + col]);
+    vertPos.z = row;
+    return vertPos;
+}
+
+int CalculateRow(int index) {
+    float row = floor(index / meshLineSize);
+    return int(row);
+}
+
+int CalculateColumn(int index, int row) {
+    return index - row * meshLineSize;
+}
+
+// Verticies are added in a anti-clockwise direction for each
+// triangle pair in quad. Orientation: (2, 1, 0)
+float3 AddTriangle(int vertA, int vertB, int vertC) {
+    float3 triangleIndexes = float3(0, 0, 0);
+    triangleIndexes.x = vertA;
+    triangleIndexes.y = vertB;
+    triangleIndexes.z = vertC;
+    return triangleIndexes;
+}
+
+[numthreads(64, 1, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    int row = CalculateRow(index);
+    int col = CalculateColumn(index, row);
+
+    int scaledRow = row * incrementStep;
+    int scaledCol = col * incrementStep;
+
+    //if (scaledRow < meshSize || scaledCol < meshSize) return;
+
+    QuadTrisSet tris = triangles[index];
+    vertices[index] = CalculateVertexPosition(scaledRow, scaledCol);
+    normal[index] = float3(0, 0, 1);
+    uv[index] = float2(scaledCol, scaledRow);
+
+    if (scaledCol < meshSize - 1 && scaledRow < meshSize - 1) {
+        tris.triangleA = AddTriangle(index, index + meshLineSize, index + 1);
+        tris.triangleB = AddTriangle(index + 1, index + meshLineSize, index + meshLineSize + 1);
+        triangles[index] = tris;
+    }
+}
