@@ -1,13 +1,6 @@
 // Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-struct MeshPoint 
-{
-    float3 vert;
-    float3 normal;
-    float2 uv;
-};
-
 struct QuadTrisSet 
 {
     float3 triangleA;
@@ -22,25 +15,36 @@ RWStructuredBuffer<QuadTrisSet> triangles;
 
 float resolution;
 float maxHeight;
-float meshSize;
+float minHeight;
+float meshSize; // Constant
 
 int meshLineSize;
+int incrementStep;
 
 float CalculateHeight(float noiseVal) {
-    return noiseVal * maxHeight;
+    float height = noiseVal * maxHeight;
+    return clamp(height, minHeight, maxHeight);
+}
+
+float3 CalculateVertexPosition(int row, int col) {
+    float3 vertPos = float3(0, 0, 0);
+    vertPos.x = col;
+    vertPos.y = CalculateHeight(noiseData[row * meshSize + col]);
+    vertPos.z = row;
+    return vertPos;
 }
 
 int CalculateRow(int index) {
-    float row = floor(index / meshSize);
+    float row = floor(index / meshLineSize);
     return int(row);
 }
 
 int CalculateColumn(int index, int row) {
-    return index - row * meshSize;
+    return index - row * meshLineSize;
 }
 
-// Verticies are added in a clockwise direction for each
-// triangle pair in quad.
+// Verticies are added in a anti-clockwise direction for each
+// triangle pair in quad. Orientation: (2, 1, 0)
 float3 AddTriangle(int vertA, int vertB, int vertC) {
     float3 triangleIndexes = float3(0, 0, 0);
     triangleIndexes.x = vertA;
@@ -56,15 +60,17 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int row = CalculateRow(index);
     int col = CalculateColumn(index, row);
 
+    int scaledRow = row * incrementStep;
+    int scaledCol = col * incrementStep;
+
+    //if (scaledRow < meshSize || scaledCol < meshSize) return;
+
     QuadTrisSet tris = triangles[index];
-    /*MeshPoint meshPoint = meshPoints[index];
-    meshPoint.vert.y = CalculateHeight(noiseData[index]);*/
+    vertices[index] = CalculateVertexPosition(scaledRow, scaledCol);
+    normal[index] = float3(0, 0, 1);
+    uv[index] = float2(scaledCol, scaledRow);
 
-    vertices[index].y = CalculateHeight(noiseData[index]);
-    normal[index] = float3(0, 0, -1);
-    uv[index] = float2(col, row);
-
-    if (col < meshSize - 1 && row < meshSize - 1) {
+    if (scaledCol < meshSize - 1 && scaledRow < meshSize - 1) {
         tris.triangleA = AddTriangle(index, index + meshLineSize, index + 1);
         tris.triangleB = AddTriangle(index + 1, index + meshLineSize, index + meshLineSize + 1);
         triangles[index] = tris;
