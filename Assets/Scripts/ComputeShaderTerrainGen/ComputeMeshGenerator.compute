@@ -34,6 +34,10 @@ float3 CalculateVertexPosition(int row, int col) {
     return vertPos;
 }
 
+float3 CalculateNormals() {
+
+}
+
 int CalculateRow(int index) {
     float row = floor(index / meshLineSize);
     return int(row);

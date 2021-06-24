@@ -37,21 +37,20 @@ namespace ComputeShaderTerrainGeneration
         [SerializeField] protected Mesh mesh;
 
         [Header("Terrain Cahracteristics")]
-        public int resolution;
-        public float maxHeight = 10;
-        public float minHeight = 0;
-        public int vertPerSide;
-        private int lodIncrementStep;
-        public int groundlevel;
-        public int width = 2; // aspect will be 1:1
+        [SerializeField] private float maxHeight = 10;
+        [SerializeField] private float minHeight = 0;
+        [SerializeField] private int vertPerSide;
+        [SerializeField] private int lodIncrementStep;
+        [SerializeField] private int groundlevel;
+        private const int width = 241; // aspect will be 1:1
         [Range(0, 6)]
-        public int levelOfDetail = 0;
+        [SerializeField] private int levelOfDetail = 0;
 
-        public Vector3[] vertices;
+        private Vector3[] vertices;
         private Vector3[] normals;
         private Vector2[] uv;
         private TriangleSet[] quads;
-        public int[] meshTriangles;
+        private int[] meshTriangles;
 
         private int triangleIndex = 0;
         private int arrayBoundSize = 0;
@@ -197,7 +196,7 @@ namespace ComputeShaderTerrainGeneration
         {
             mesh.vertices = vertices;
             mesh.triangles = meshTriangles;
-            mesh.normals = normals;
+            //mesh.normals = normals;
             mesh.uv = uv;
             mesh.RecalculateTangents();
             mesh.RecalculateNormals();
@@ -210,6 +209,10 @@ namespace ComputeShaderTerrainGeneration
             sharedMat.SetFloat("_MaxHeight", maxHeight);
             sharedMat.SetFloat("_MinHeight", minHeight);
         }
+
+        // --------------------------------------------------------------------
+        //                              GIZMOS GUI
+        // --------------------------------------------------------------------
 
         private void OnGUI()
         {

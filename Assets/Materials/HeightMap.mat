@@ -63,11 +63,11 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _LerpPower: 3
+    - _LerpPower: 1.86
     - _LerpTest: 1
-    - _MaxHeight: 40
+    - _MaxHeight: 50
     - _Metallic: 0
-    - _MinHeight: 0
+    - _MinHeight: -20
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
