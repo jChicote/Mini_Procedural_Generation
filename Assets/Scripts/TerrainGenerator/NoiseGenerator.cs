@@ -28,6 +28,7 @@ namespace ProceduralGeneration.NoiseGeneration
         /// </summary>
         public void GenerateSeed()
         {
+            Debug.Log("Generated Noise Seed");
             System.Random prng = new System.Random(seed);
             stepOffsets = new Vector2[stepDetailCount];
             for (int i = 0; i < stepDetailCount; i++)

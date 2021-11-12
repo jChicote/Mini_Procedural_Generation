@@ -31,7 +31,9 @@ namespace ComputeShaderTerrainGeneration
     {
         public ComputeShader computeTerrainGen;
         public NoiseGenerator noiseGenerator;
+        public HeightLerpAssigner lerpAssigner;
 
+        [Header("Mesh Components")]
         [SerializeField] protected MeshFilter meshFilter;
         [SerializeField] protected MeshCollider meshCollider;
         [SerializeField] protected Mesh mesh;
@@ -126,10 +128,12 @@ namespace ComputeShaderTerrainGeneration
             computeTerrainGen.SetBuffer(0, "triangles", meshBuffers.trisBuffer);
             computeTerrainGen.SetBuffer(0, "normal", meshBuffers.normalBuffer);
             computeTerrainGen.SetBuffer(0, "uv", meshBuffers.uvBuffer);
+
             computeTerrainGen.SetFloat("resolution", vertices.Length);
             computeTerrainGen.SetFloat("maxHeight", maxHeight);
             computeTerrainGen.SetFloat("minHeight", minHeight);
             computeTerrainGen.SetFloat("meshSize", width);
+
             computeTerrainGen.SetInt("meshLineSize", vertPerSide);
             computeTerrainGen.SetInt("incrementStep", lodIncrementStep);
         }
@@ -202,14 +206,6 @@ namespace ComputeShaderTerrainGeneration
             mesh.RecalculateNormals();
         }
 
-        private void AssignLerpColors()
-        {
-            MeshRenderer renderer = GetComponent<MeshRenderer>();
-            Material sharedMat = renderer.sharedMaterial;
-            sharedMat.SetFloat("_MaxHeight", maxHeight);
-            sharedMat.SetFloat("_MinHeight", minHeight);
-        }
-
         // --------------------------------------------------------------------
         //                              GIZMOS GUI
         // --------------------------------------------------------------------
@@ -221,7 +217,7 @@ namespace ComputeShaderTerrainGeneration
                 if (GUI.Button(new Rect(0, 0, 100, 50), "Create"))
                 {
                     PopulateMeshAttributes();
-                    AssignLerpColors();
+                    lerpAssigner.AssignLerpColors(maxHeight, minHeight);
                     BuildTerrain();
                     AssignMeshData();
                     RenderTerrain();
@@ -233,7 +229,7 @@ namespace ComputeShaderTerrainGeneration
                 if (GUI.Button(new Rect(120, 0, 100, 50), "Regenerate"))
                 {
                     PopulateMeshAttributes();
-                    AssignLerpColors();
+                    lerpAssigner.AssignLerpColors(maxHeight, minHeight);
                     BuildTerrain();
                     AssignMeshData();
                     RenderTerrain();
