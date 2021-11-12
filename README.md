@@ -21,6 +21,10 @@ The project undergoes development of both active and offline procedural generati
 
 ![Example Photo 2](images/landscape-tile-view.png "Landscape Tile view")
 
+![Example Photo 3](images/heightmap_ground.png "Height Shader View")
+
+![Example Photo 4](images/heightmap_aerial.png "Height Shader Aerial")
+
 ### Built With
 
 This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.

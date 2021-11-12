@@ -7,6 +7,7 @@ struct QuadTrisSet
     float3 triangleB;
 };
 
+// Data Buffers 
 RWStructuredBuffer<float> noiseData;
 RWStructuredBuffer<float3> vertices;
 RWStructuredBuffer<float3> normal;
@@ -32,6 +33,10 @@ float3 CalculateVertexPosition(int row, int col) {
     vertPos.y = CalculateHeight(noiseData[row * meshSize + col]);
     vertPos.z = row;
     return vertPos;
+}
+
+float3 CalculateNormals() {
+
 }
 
 int CalculateRow(int index) {
@@ -62,8 +67,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
     int scaledRow = row * incrementStep;
     int scaledCol = col * incrementStep;
-
-    //if (scaledRow < meshSize || scaledCol < meshSize) return;
 
     QuadTrisSet tris = triangles[index];
     vertices[index] = CalculateVertexPosition(scaledRow, scaledCol);

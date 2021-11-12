@@ -21,12 +21,14 @@ namespace ProceduralGeneration.NoiseGeneration
         [SerializeField] private float lacunarity;
 
         private Vector2[] stepOffsets;
+        private float[] noiseMap;
 
         /// <summary>
         /// Generate seed for map
         /// </summary>
         public void GenerateSeed()
         {
+            Debug.Log("Generated Noise Seed");
             System.Random prng = new System.Random(seed);
             stepOffsets = new Vector2[stepDetailCount];
             for (int i = 0; i < stepDetailCount; i++)
@@ -42,8 +44,7 @@ namespace ProceduralGeneration.NoiseGeneration
         public float[] CalculateNoise(int mapSize, Vector3 position)
         {
             GenerateSeed();
-
-            float[] noiseMap = new float[(mapSize) * (mapSize)];
+            noiseMap = new float[mapSize * mapSize];
             float amplitude = 1;
             float frequency = 1;
             float noiseValue = 0;
@@ -71,8 +72,11 @@ namespace ProceduralGeneration.NoiseGeneration
                     frequency = 1;
                 }
             }
+
             return noiseMap;
         }
+
+       
 
         /// <summary>
         /// Normalises the map values between 0 and 1
@@ -91,4 +95,6 @@ namespace ProceduralGeneration.NoiseGeneration
             }
         }
     }
+
+   
 }

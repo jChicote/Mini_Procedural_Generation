@@ -17,7 +17,8 @@ Shader "Custom/HeightMapShader"
     {
         Tags { "RenderType" = "Opaque" }
         CGPROGRAM
-        #pragma surface surf Lambert
+        #pragma surface surf Lambert fullforwardshadows addshadow
+        #pragma target 3.0
 
         struct Input {
             float2 uv_MainTex;
@@ -33,11 +34,14 @@ Shader "Custom/HeightMapShader"
         float _LerpTest;
         int _LerpPower;
 
+
         void surf(Input IN, inout SurfaceOutput o) {
             o.Albedo = tex2D(_MainTex, IN.uv_MainTex).rgb;
 
             // calculates lerp heat value
-            float lerpVal = IN.worldPos.y / (_MaxHeight - _MinHeight);
+            float adjustedHeightVal = IN.worldPos.y;
+            adjustedHeightVal += (-1 * _MinHeight);
+            float lerpVal = adjustedHeightVal / (_MaxHeight + (-1 *_MinHeight));
             lerpVal = pow(lerpVal, _LerpPower);
             fixed4 lerpColor = lerp(_ColorA, _ColorB, lerpVal);
 
