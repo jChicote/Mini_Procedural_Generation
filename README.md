@@ -23,7 +23,14 @@ The first version of the generator is available in [Itch.io](https://jaidenchico
 
 ![Example Photo 4](images/heightmap_aerial.png "Height Shader Aerial")
 
-### Built With
+### Installation
+
+1. Before cloning project, ensure to have Unity HUB installed for ease of managing project versions. Within the 'install' tab of the Unity HUB window, download the Unity version mentioned above (in Prerequisites). Refer to the Unity Archive to search for previous versions: [Unity Archive](https://unity3d.com/get-unity/download/archive)
+2. Clone the project then select the add button within Unity HUB to browse the path to your cloned repository. This will add the project to list of Unity projects.
+3. Ensure to change the Unity Version through the dropdown, and select the version mentioned above.
+4. Now it's ready and open the project :)
+
+## Built With
 
 This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
 * [C#](https://docs.microsoft.com/en-us/dotnet/csharp/)
