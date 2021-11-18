@@ -6,7 +6,7 @@ using ProceduralGeneration.NoiseGeneration;
 
 namespace ProceduralGeneration.TerrainGeneration
 {
-    public class EndlessTerrainGenerator : MonoBehaviour
+    /*public class EndlessTerrainGenerator : MonoBehaviour
     {
         public const float maxViewDistance = 600;
         public Transform viewer;
@@ -114,5 +114,5 @@ namespace ProceduralGeneration.TerrainGeneration
                 return meshObject.activeSelf;
             }
         }
-    }
+    }*/
 }

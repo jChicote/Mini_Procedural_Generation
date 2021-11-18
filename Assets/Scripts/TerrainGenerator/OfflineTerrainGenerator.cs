@@ -6,7 +6,7 @@ using ProceduralGeneration.MeshGeneration;
 
 namespace ProceduralGeneration.TerrainGeneration
 {
-    public class OfflineTerrainGenerator : BaseLandGenerator
+    /*public class OfflineTerrainGenerator : BaseLandGenerator
     {
         [Range(0, 6)]
         [SerializeField] protected int levelOfDetail;
@@ -78,5 +78,5 @@ namespace ProceduralGeneration.TerrainGeneration
             meshFilter.mesh = mesh;
             meshCollider.sharedMesh = mesh;
         }
-    }
+    }*/
 }

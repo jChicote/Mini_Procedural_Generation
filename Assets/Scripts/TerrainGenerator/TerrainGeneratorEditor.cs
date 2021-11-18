@@ -6,7 +6,7 @@ using ProceduralGeneration.TerrainGeneration;
 
 namespace ProceduralGeneration.InspectorEditor
 {
-    [CustomEditor(typeof(OfflineTerrainGenerator))]
+    /*[CustomEditor(typeof(OfflineTerrainGenerator))]
     public class TerrainGeneratorEditor : Editor
     {
         public override void OnInspectorGUI()
@@ -20,5 +20,5 @@ namespace ProceduralGeneration.InspectorEditor
                 landGenerator.GenerateMap();
             }
         }
-    }
+    }*/
 }
