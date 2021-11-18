@@ -5,7 +5,7 @@ using ProceduralGeneration.NoiseGeneration;
 
 namespace ProceduralGeneration.TerrainGeneration
 {
-    public class BaseLandGenerator : MonoBehaviour
+   /* public class BaseLandGenerator : MonoBehaviour
     {
         // Insepector accessible fields
         [Header("Mesh Components")]
@@ -132,7 +132,7 @@ namespace ProceduralGeneration.TerrainGeneration
         /// </summary>
         public virtual void DetermineMeshTriangles()
         {
-            /*triangles = new int[mapSize * mapSize * 6];
+            triangles = new int[mapSize * mapSize * 6];
 
             for (int row = 0, vi = 0, ti = 0; row < mapSize; row++, vi++)
             {
@@ -150,7 +150,7 @@ namespace ProceduralGeneration.TerrainGeneration
         /// Assigns data to mesh and prepares mesh for renderers and collider.
         /// </summary>
         /// <param name="mesh">Mesh object for data insertion</param>
-        public virtual void AssignMeshData(Mesh mesh)
+        /*public virtual void AssignMeshData(Mesh mesh)
         {
             mesh.vertices = vertices;
             mesh.triangles = triangles;
@@ -167,7 +167,7 @@ namespace ProceduralGeneration.TerrainGeneration
         {
             pointHeight = noiseVal * maxHeight;
             return pointHeight < seaLevel ? seaLevel : pointHeight;
-        }
+        }*/
 
         /*
         private void OnDrawGizmos()
@@ -179,6 +179,6 @@ namespace ProceduralGeneration.TerrainGeneration
             {
                 Gizmos.DrawSphere(vertices[i], 0.1f);
             }
-        } */
+        } 
     }
-}
+}*/
