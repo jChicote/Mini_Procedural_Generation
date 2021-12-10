@@ -1,10 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
+using MiniProceduralGeneration.Generator.Noise;
+using MiniProceduralGeneration.Generator.MeshWork;
 
-namespace ComputeShaderTerrainGeneration
+namespace MiniProceduralGeneration.Generator
 {
+    /*
+     * 
+     */
     public struct MeshPointData
     {
         public Vector3 vert;
@@ -12,12 +14,18 @@ namespace ComputeShaderTerrainGeneration
         public Vector2 uv;
     }
 
-    public struct TriangleSet
+    /*
+     * 
+     */
+    public struct QuadSet
     {
         public Vector3 triangleA;
         public Vector3 triangleB;
     }
 
+    /*
+     * 
+     */
     public struct MeshComputeBuffers
     {
         public ComputeBuffer vertBuffer;
@@ -27,101 +35,120 @@ namespace ComputeShaderTerrainGeneration
         public ComputeBuffer trisBuffer;
     }
 
+    public struct TerrainChunkDimensions
+    {
+        public int vertexPerSide;
+        public int squaredVertexSide;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class TerrainGenerator : MonoBehaviour
     {
-        public ComputeShader computeTerrainGen;
-        public NoiseGenerator noiseGenerator;
-        public HeightLerpAssigner lerpAssigner;
-
-        [Header("Mesh Components")]
-        [SerializeField] protected MeshFilter meshFilter;
-        [SerializeField] protected MeshCollider meshCollider;
-        [SerializeField] protected Mesh mesh;
+        // Fields
+        public ComputeShader computeTerrainGen; // Use interface
+        public INoiseGenerator noiseGenerator; // Use interface
+        public HeightLerpAssigner lerpAssigner; // Use interface
 
         [Header("Terrain Cahracteristics")]
         [SerializeField] private float maxHeight = 10;
         [SerializeField] private float minHeight = 0;
-        [SerializeField] private int vertPerSide;
+
         [SerializeField] private int lodIncrementStep;
         [SerializeField] private int groundlevel;
         private const int width = 241; // aspect will be 1:1
         [Range(0, 6)]
         [SerializeField] private int levelOfDetail = 0;
 
-        private Vector3[] vertices;
-        private Vector3[] normals;
-        private Vector2[] uv;
-        private TriangleSet[] quads;
-        private int[] meshTriangles;
+        public TerrainChunk[] chunks;
+        [SerializeField] public TerrainChunkDimensions chunkDimensions;
 
-        private int triangleIndex = 0;
-        private int arrayBoundSize = 0;
 
+        private void Awake()
+        {
+            noiseGenerator = this.GetComponent<INoiseGenerator>();
+        }
+
+        //
+        //
+        //
         private void PopulateMeshAttributes()
         {
-            // This can only work as long as values remain even
-            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
-            vertPerSide = (width - 1) / lodIncrementStep + 1;
+            chunkDimensions = new TerrainChunkDimensions();
 
-            vertices = new Vector3[vertPerSide * vertPerSide];
-            normals = new Vector3[vertPerSide * vertPerSide];
-            uv = new Vector2[vertPerSide * vertPerSide];
-            quads = new TriangleSet[vertPerSide * vertPerSide];
-            meshTriangles = new int[(vertPerSide - 1) * (vertPerSide - 1) * 6];
-            arrayBoundSize = (vertPerSide - 1) * (vertPerSide - 1) * 6;
+            // determines the increment to step for each side of the chunk
+            // and must be a multiple of 2.
+            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
+            chunkDimensions.vertexPerSide = (width - 1) / lodIncrementStep + 1;
+            chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
+
+            foreach (TerrainChunk chunk in chunks)
+            {
+                ITerrainChunk terrainChunk = chunk.GetComponent<ITerrainChunk>();
+                terrainChunk.InitialiseMeshArrays(chunkDimensions);
+            }
         }
 
         public void BuildTerrain()
         {
-            mesh = new Mesh();
+            //mesh = new Mesh();
 
-            noiseGenerator.GenerateNoiseSeed();
-            float[] noiseData = noiseGenerator.CalculateNoise(width, new Vector3(0,0,0));
+            foreach (TerrainChunk chunk in chunks)
+            {
+                ITerrainMeshAttributeModifier chunkAttributes = chunk.GetComponent<ITerrainMeshAttributeModifier>();
 
-            MeshComputeBuffers meshComputeBuffers = CreateNewMeshBuffers(noiseData);
-            SetComputeShaderBuffers(meshComputeBuffers);
-            computeTerrainGen.Dispatch(0, vertices.Length / 10, 1, 1);
+                noiseGenerator.GenerateNoiseSeed();
+                float[] noiseData = noiseGenerator.SampleNoiseDataAtLocation(width, new Vector3(0, 0, 0));
 
-            RetrieveDataFromComputeShader(meshComputeBuffers);
-            IndexTriangleData();
+                MeshComputeBuffers meshComputeBuffers = CreateNewMeshBuffers(noiseData, chunkAttributes);// Purpiose is too ambigious
+                SetComputeShaderBuffers(meshComputeBuffers, chunkAttributes);
+                computeTerrainGen.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);
 
-            // Manual Garbage collection of Buffers from memory
-            DisposeBuffersIntoGarbageCollection(meshComputeBuffers);
+                RetrieveDataFromComputeShader(meshComputeBuffers, chunkAttributes);
+                chunk.BuildMesh();
+                DisposeBuffersIntoGarbageCollection(meshComputeBuffers);
+            }
         }
 
-        private MeshComputeBuffers CreateNewMeshBuffers(float[] noiseData)
+        //
+        // Simplify method to prevent repeating code statements
+        //
+        private MeshComputeBuffers CreateNewMeshBuffers(float[] noiseData, ITerrainMeshAttributeModifier chunkAttributes)
         {
             MeshComputeBuffers meshBuffers = new MeshComputeBuffers();
 
-            int vertSize = sizeof(float) * 3; // size of the data (4 bytes for each float)
-            ComputeBuffer vertBuffer = new ComputeBuffer(vertices.Length, vertSize);
-            vertBuffer.SetData(vertices);
-            meshBuffers.vertBuffer = vertBuffer;
+            meshBuffers.vertBuffer = ConstructBuffer(sizeof(float) * 3, chunkAttributes.Vertices.Length);
+            meshBuffers.vertBuffer.SetData(chunkAttributes.Vertices);
 
-            int normalSize = sizeof(float) * 3; // size of the data (4 bytes for each float)
-            ComputeBuffer normalBuffer = new ComputeBuffer(vertices.Length, normalSize);
-            normalBuffer.SetData(normals);
-            meshBuffers.normalBuffer = normalBuffer;
+            meshBuffers.normalBuffer = ConstructBuffer(sizeof(float) * 3, chunkAttributes.Vertices.Length);
+            meshBuffers.normalBuffer.SetData(chunkAttributes.Normals);
 
-            int uvSize = sizeof(float) * 2; // size of the data (4 bytes for each float)
-            ComputeBuffer uvBuffer = new ComputeBuffer(vertices.Length, uvSize);
-            uvBuffer.SetData(uv);
-            meshBuffers.uvBuffer = uvBuffer;
+            meshBuffers.uvBuffer = ConstructBuffer(sizeof(float) * 2, chunkAttributes.Vertices.Length);
+            meshBuffers.uvBuffer.SetData(chunkAttributes.UVs);
 
-            int noiseSize = sizeof(float); // size of the data (4 bytes for each float)
-            ComputeBuffer noiseBuffer = new ComputeBuffer(noiseData.Length, noiseSize);
-            noiseBuffer.SetData(noiseData);
-            meshBuffers.noiseBuffer = noiseBuffer;
+            meshBuffers.noiseBuffer = ConstructBuffer(sizeof(float), noiseData.Length);
+            meshBuffers.noiseBuffer.SetData(noiseData);
 
-            int triangleSize = sizeof(float) * 6; // size of the data (4 bytes for each float)
-            ComputeBuffer trisBuffer = new ComputeBuffer(quads.Length, triangleSize);
-            trisBuffer.SetData(quads);
-            meshBuffers.trisBuffer = trisBuffer;
+            meshBuffers.trisBuffer = ConstructBuffer(sizeof(float) * 6, chunkAttributes.Quads.Length);
+            meshBuffers.trisBuffer.SetData(chunkAttributes.Quads);
 
             return meshBuffers;
         }
 
-        private void SetComputeShaderBuffers(MeshComputeBuffers meshBuffers)
+        //
+        //
+        //
+        private ComputeBuffer ConstructBuffer(int byteSize, int arraySize)
+        {
+            ComputeBuffer vertBuffer = new ComputeBuffer(arraySize, byteSize);
+            return vertBuffer;
+        }
+
+        //
+        //
+        //
+        private void SetComputeShaderBuffers(MeshComputeBuffers meshBuffers, ITerrainMeshAttributeModifier chunkAttributes)
         {
             computeTerrainGen.SetBuffer(0, "vertices", meshBuffers.vertBuffer);
             computeTerrainGen.SetBuffer(0, "noiseData", meshBuffers.noiseBuffer);
@@ -129,23 +156,27 @@ namespace ComputeShaderTerrainGeneration
             computeTerrainGen.SetBuffer(0, "normal", meshBuffers.normalBuffer);
             computeTerrainGen.SetBuffer(0, "uv", meshBuffers.uvBuffer);
 
-            computeTerrainGen.SetFloat("resolution", vertices.Length);
+            computeTerrainGen.SetFloat("resolution", chunkAttributes.Vertices.Length);
             computeTerrainGen.SetFloat("maxHeight", maxHeight);
             computeTerrainGen.SetFloat("minHeight", minHeight);
             computeTerrainGen.SetFloat("meshSize", width);
 
-            computeTerrainGen.SetInt("meshLineSize", vertPerSide);
+            computeTerrainGen.SetInt("meshLineSize", chunkDimensions.vertexPerSide);
             computeTerrainGen.SetInt("incrementStep", lodIncrementStep);
         }
 
-        private void RetrieveDataFromComputeShader(MeshComputeBuffers meshBuffers)
+        //
+        //
+        private void RetrieveDataFromComputeShader(MeshComputeBuffers meshBuffers, ITerrainMeshAttributeModifier chunkAttributes)
         {
-            meshBuffers.vertBuffer.GetData(vertices);
-            meshBuffers.normalBuffer.GetData(normals);
-            meshBuffers.uvBuffer.GetData(uv);
-            meshBuffers.trisBuffer.GetData(quads);
+            meshBuffers.vertBuffer.GetData(chunkAttributes.Vertices);
+            meshBuffers.normalBuffer.GetData(chunkAttributes.Normals);
+            meshBuffers.uvBuffer.GetData(chunkAttributes.UVs);
+            meshBuffers.trisBuffer.GetData(chunkAttributes.Quads);
         }
 
+        //
+        //
         private void DisposeBuffersIntoGarbageCollection(MeshComputeBuffers meshBuffers)
         {
             meshBuffers.vertBuffer.Dispose();
@@ -155,86 +186,23 @@ namespace ComputeShaderTerrainGeneration
             meshBuffers.trisBuffer.Dispose();
         }
 
-        private void IndexTriangleData()
-        {
-            triangleIndex = 0;
-
-            for (int i = 0; i < vertPerSide * vertPerSide; i++)
-            {
-                TriangleSet triangleSet = quads[i];
-                IncludeNewTriangles(triangleSet);
-            }
-        }
-
-        private void IncludeNewTriangles(TriangleSet set)
-        {
-            if (!(triangleIndex < arrayBoundSize)) return;
-            if (set.triangleA == Vector3.zero && set.triangleB == Vector3.zero) return;
-            
-            // first triangle
-            AddTriangle(set.triangleA);
-
-            // second triangle
-            AddTriangle(set.triangleB);
-        }
-
-        private void AddTriangle(Vector3 triangle)
-        {
-            meshTriangles[triangleIndex] = (int) triangle.x;
-            meshTriangles[triangleIndex + 1] = (int)triangle.y;
-            meshTriangles[triangleIndex + 2] = (int)triangle.z;
-            triangleIndex += 3;
-        }
-
-        public void RenderTerrain()
-        {
-            meshFilter.mesh = mesh;
-            meshCollider.sharedMesh = mesh;
-        }
-
-        /// <summary>
-        /// Assigns mesh data items to the mesh object.
-        /// </summary>
-        /// <param name="mesh"></param>
-        public void AssignMeshData()
-        {
-            mesh.vertices = vertices;
-            mesh.triangles = meshTriangles;
-            //mesh.normals = normals;
-            mesh.uv = uv;
-            mesh.RecalculateTangents();
-            mesh.RecalculateNormals();
-        }
-
         // --------------------------------------------------------------------
         //                              GIZMOS GUI
         // --------------------------------------------------------------------
 
+
+        // THis needs to be refracted with seperate UI functions
+        // must be controllable seperately from a ui interface
+
+
         private void OnGUI()
         {
-            if (mesh == null)
-            {
                 if (GUI.Button(new Rect(0, 0, 100, 50), "Create"))
                 {
                     PopulateMeshAttributes();
                     lerpAssigner.AssignLerpColors(maxHeight, minHeight);
                     BuildTerrain();
-                    AssignMeshData();
-                    RenderTerrain();
                 }
-            }
-
-            if (mesh != null)
-            {
-                if (GUI.Button(new Rect(120, 0, 100, 50), "Regenerate"))
-                {
-                    PopulateMeshAttributes();
-                    lerpAssigner.AssignLerpColors(maxHeight, minHeight);
-                    BuildTerrain();
-                    AssignMeshData();
-                    RenderTerrain();
-                }
-            }
         }
     }
 }

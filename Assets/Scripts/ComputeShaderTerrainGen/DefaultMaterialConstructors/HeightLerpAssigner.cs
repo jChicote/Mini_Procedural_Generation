@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ComputeShaderTerrainGeneration
+namespace MiniProceduralGeneration.Generator
 {
     public class HeightLerpAssigner : MonoBehaviour
     {

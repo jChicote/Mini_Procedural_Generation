@@ -1,18 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace ComputeShaderTerrainGeneration
+namespace MiniProceduralGeneration.Generator.Noise
 {
     public interface INoiseGenerator
     {
         void GenerateNoiseSeed();
-        float[] CalculateNoise(int mapSize, Vector3 position);
+        float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
     }
 
     public class NoiseGenerator : MonoBehaviour, INoiseGenerator
     {
         [SerializeField] private ComputeShader noiseShader;
+
+         struct NoiseComputeBuffers
+        {
+            public ComputeBuffer noiseBuffer;
+            public ComputeBuffer offsetBuffer;
+        }
 
         [Header("Noise Characteristics")]
         [SerializeField] private float noiseScale;
@@ -25,7 +29,7 @@ namespace ComputeShaderTerrainGeneration
 
         public float[] noiseData;
 
-        public float[] CalculateNoise(int mapSize, Vector3 position)
+        public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position)
         {
             noiseData = new float[mapSize * mapSize];
 
@@ -94,11 +98,5 @@ namespace ComputeShaderTerrainGeneration
             computeBuffers.noiseBuffer.Dispose();
             computeBuffers.offsetBuffer.Dispose();
         }
-    }
-
-    public struct NoiseComputeBuffers
-    {
-        public ComputeBuffer noiseBuffer;
-        public ComputeBuffer offsetBuffer;
     }
 }
