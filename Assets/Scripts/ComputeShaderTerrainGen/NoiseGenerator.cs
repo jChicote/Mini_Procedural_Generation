@@ -4,7 +4,8 @@ namespace MiniProceduralGeneration.Generator.Noise
 {
     public interface INoiseGenerator
     {
-        void GenerateNoiseSeed();
+        bool HasCreatedSeed { get; }
+        void GenerateSeed();
         float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
     }
 
@@ -28,6 +29,9 @@ namespace MiniProceduralGeneration.Generator.Noise
         [SerializeField] private float lacunarity;
 
         public float[] noiseData;
+        private int seed;
+
+        public bool HasCreatedSeed { get => seed != 0;  }
 
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position)
         {
@@ -45,33 +49,34 @@ namespace MiniProceduralGeneration.Generator.Noise
             return noiseData;
         }
 
-        public void GenerateNoiseSeed()
+        public void GenerateSeed() // Might need to refactor
         {
-            int seed = Random.Range(1, 1000000);
+            seed = Random.Range(1, 1000000);
             Debug.Log("Seed Created: " + seed);
 
-            System.Random prng = new System.Random(seed);
+            CreateStepOffsets();
+        }
+
+        private void CreateStepOffsets()
+        {
+            System.Random psuedoRandNumbGenerator = new System.Random(seed);
             stepOffsets = new Vector2[stepDetailCount];
             for (int i = 0; i < stepDetailCount; i++)
             {
-                stepOffsets[i].x = prng.Next(-100000, 100000);
-                stepOffsets[i].y = prng.Next(-100000, 100000);
+                stepOffsets[i].x = psuedoRandNumbGenerator.Next(-100000, 100000);
+                stepOffsets[i].y = psuedoRandNumbGenerator.Next(-100000, 100000);
             }
         }
 
         private NoiseComputeBuffers CreateNoiseComputeBuffers()
         {
             NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
-
-            int noiseSize = sizeof(float);
-            ComputeBuffer noiseBuffer = new ComputeBuffer(noiseData.Length, noiseSize);
-            noiseBuffer.SetData(noiseData);
-            computeBuffers.noiseBuffer = noiseBuffer;
-
-            int offsetSize = sizeof(float) * 2;
-            ComputeBuffer offsetBuffer = new ComputeBuffer(stepOffsets.Length, offsetSize);
-            offsetBuffer.SetData(stepOffsets);
-            computeBuffers.offsetBuffer = offsetBuffer;
+            
+            computeBuffers.noiseBuffer = new ComputeBuffer(noiseData.Length, sizeof(float)); ;
+            computeBuffers.noiseBuffer.SetData(noiseData);
+            
+            computeBuffers.offsetBuffer = new ComputeBuffer(stepOffsets.Length, sizeof(float) * 2); ;
+            computeBuffers.offsetBuffer.SetData(stepOffsets);
 
             return computeBuffers;
         }

@@ -57,7 +57,9 @@ namespace MiniProceduralGeneration.Generator
 
         [SerializeField] private int lodIncrementStep;
         [SerializeField] private int groundlevel;
-        private const int width = 241; // aspect will be 1:1
+
+        // width must contain a base value that follows the "divisibility rules"
+        private const int width = 241; // Provides max base width value to be processed (value divisible by 2 + 1) 
         [Range(0, 6)]
         [SerializeField] private int levelOfDetail = 0;
 
@@ -80,8 +82,12 @@ namespace MiniProceduralGeneration.Generator
             // determines the increment to step for each side of the chunk
             // and must be a multiple of 2.
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
-            chunkDimensions.vertexPerSide = (width - 1) / lodIncrementStep + 1;
+            chunkDimensions.vertexPerSide = (width - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
             chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
+
+            print("LOD: " + lodIncrementStep);
+            print("Vertex Per Side: " + chunkDimensions.vertexPerSide);
+            print("Squard Vertex Size: " + chunkDimensions.squaredVertexSide);
 
             foreach (TerrainChunk chunk in chunks)
             {
@@ -98,7 +104,7 @@ namespace MiniProceduralGeneration.Generator
             {
                 ITerrainMeshAttributeModifier chunkAttributes = chunk.GetComponent<ITerrainMeshAttributeModifier>();
 
-                noiseGenerator.GenerateNoiseSeed();
+                //noiseGenerator.GenerateSeed();
                 float[] noiseData = noiseGenerator.SampleNoiseDataAtLocation(width, new Vector3(0, 0, 0));
 
                 MeshComputeBuffers meshComputeBuffers = CreateNewMeshBuffers(noiseData, chunkAttributes);// Purpiose is too ambigious
@@ -118,32 +124,24 @@ namespace MiniProceduralGeneration.Generator
         {
             MeshComputeBuffers meshBuffers = new MeshComputeBuffers();
 
-            meshBuffers.vertBuffer = ConstructBuffer(sizeof(float) * 3, chunkAttributes.Vertices.Length);
+            meshBuffers.vertBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 3);
             meshBuffers.vertBuffer.SetData(chunkAttributes.Vertices);
 
-            meshBuffers.normalBuffer = ConstructBuffer(sizeof(float) * 3, chunkAttributes.Vertices.Length);
+            meshBuffers.normalBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 3);
             meshBuffers.normalBuffer.SetData(chunkAttributes.Normals);
 
-            meshBuffers.uvBuffer = ConstructBuffer(sizeof(float) * 2, chunkAttributes.Vertices.Length);
+            meshBuffers.uvBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 2);
             meshBuffers.uvBuffer.SetData(chunkAttributes.UVs);
 
-            meshBuffers.noiseBuffer = ConstructBuffer(sizeof(float), noiseData.Length);
+            meshBuffers.noiseBuffer = new ComputeBuffer(noiseData.Length, sizeof(float));
             meshBuffers.noiseBuffer.SetData(noiseData);
 
-            meshBuffers.trisBuffer = ConstructBuffer(sizeof(float) * 6, chunkAttributes.Quads.Length);
+            meshBuffers.trisBuffer = new ComputeBuffer(chunkAttributes.Quads.Length, sizeof(float) * 6);
             meshBuffers.trisBuffer.SetData(chunkAttributes.Quads);
 
             return meshBuffers;
         }
 
-        //
-        //
-        //
-        private ComputeBuffer ConstructBuffer(int byteSize, int arraySize)
-        {
-            ComputeBuffer vertBuffer = new ComputeBuffer(arraySize, byteSize);
-            return vertBuffer;
-        }
 
         //
         //
@@ -199,9 +197,20 @@ namespace MiniProceduralGeneration.Generator
         {
                 if (GUI.Button(new Rect(0, 0, 100, 50), "Create"))
                 {
+                    if (!noiseGenerator.HasCreatedSeed)
+                    {
+                        print("Has Not created seed");
+                        return;
+                    }
+
                     PopulateMeshAttributes();
                     lerpAssigner.AssignLerpColors(maxHeight, minHeight);
                     BuildTerrain();
+                }
+
+                if (GUI.Button(new Rect(150, 0, 200, 50), "Generate Seed"))
+                {
+                noiseGenerator.GenerateSeed();
                 }
         }
     }
