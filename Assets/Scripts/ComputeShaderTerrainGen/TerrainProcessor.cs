@@ -1,7 +1,7 @@
 using UnityEngine;
 using MiniProceduralGeneration.Generator.MeshWork;
 
-namespace MiniProceduralGeneration.Generator.Procesor
+namespace MiniProceduralGeneration.Generator.Processor
 {
     public interface ITerrainProcessor
     {
@@ -14,6 +14,7 @@ namespace MiniProceduralGeneration.Generator.Procesor
     /// </summary>
     public class TerrainProcessor : MonoBehaviour, ITerrainProcessor
     {
+        // Fields
         public ComputeShader computeTerrainGen;
         private ITerrainCharacteristics terrainCharacteristics;
         private MeshComputeBuffers meshComputeBuffers;
@@ -25,10 +26,10 @@ namespace MiniProceduralGeneration.Generator.Procesor
 
         public void ProcessChunkMesh(ITerrainMeshAttributeModifier chunkAttributes, float[] noiseData)
         {
-            meshComputeBuffers = CreateNewMeshBuffers(noiseData, chunkAttributes);// Purpiose is too ambigious
+            meshComputeBuffers = CreateNewMeshBuffers(noiseData, chunkAttributes);
 
             SetComputeShaderBuffers(meshComputeBuffers, chunkAttributes);
-            computeTerrainGen.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);
+            computeTerrainGen.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);  // Runs compute shader
             RetrieveDataFromComputeShader(meshComputeBuffers, chunkAttributes);
         }
 
@@ -109,4 +110,17 @@ namespace MiniProceduralGeneration.Generator.Procesor
             meshComputeBuffers.trisBuffer.Dispose();
         }
     }
+
+    /*
+     * 
+     */
+    public struct MeshComputeBuffers
+    {
+        public ComputeBuffer vertBuffer;
+        public ComputeBuffer normalBuffer;
+        public ComputeBuffer uvBuffer;
+        public ComputeBuffer noiseBuffer;
+        public ComputeBuffer trisBuffer;
+    }
+
 }

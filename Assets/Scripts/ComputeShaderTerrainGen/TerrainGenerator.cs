@@ -1,50 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using MiniProceduralGeneration.Generator.Noise;
 using MiniProceduralGeneration.Generator.MeshWork;
-using MiniProceduralGeneration.Generator.Procesor;
+using MiniProceduralGeneration.Generator.Processor;
 
 namespace MiniProceduralGeneration.Generator
 {
-    /*
-     * 
-     */
-    public struct MeshPointData
-    {
-        public Vector3 vert;
-        public Vector3 normal;
-        public Vector2 uv;
-    }
-
-    /*
-     * 
-     */
-    public struct QuadSet
-    {
-        public Vector3 triangleA;
-        public Vector3 triangleB;
-    }
-
-    /*
-     * 
-     */
-    public struct MeshComputeBuffers
-    {
-        public ComputeBuffer vertBuffer;
-        public ComputeBuffer normalBuffer;
-        public ComputeBuffer uvBuffer;
-        public ComputeBuffer noiseBuffer;
-        public ComputeBuffer trisBuffer;
-    }
-
-    [System.Serializable]
-    public class TerrainChunkDimensions
-    {
-        public int vertexPerSide;
-        public int squaredVertexSide;
-    }
-
     public interface ITerrainCharacteristics
     {
         float MaxHeight { get; }
@@ -57,25 +18,23 @@ namespace MiniProceduralGeneration.Generator
     /// <summary>
     /// 
     /// </summary>
-    public class TerrainGenerator : MonoBehaviour, ITerrainCharacteristics // DOES TWO THINGS
+    public class TerrainGenerator : MonoBehaviour, ITerrainCharacteristics
     {
         // Fields
         public INoiseGenerator noiseGenerator;
         private ITerrainProcessor terrainProcessor;
-        public HeightLerpAssigner lerpAssigner; // Use interface
 
         [Header("Terrain Chracteristics")]
-        [SerializeField] private float maxHeight = 10;
-        [SerializeField] private float minHeight = 0;
-
-        [SerializeField] private int lodIncrementStep;
-        [SerializeField] private int groundlevel;
-
-        // width must contain a base value that follows the "divisibility rules".
-        // provides max base width value to be processed (value divisible by 2 + 1)
-        private const int width = 241;  
+        [SerializeField] 
+        private float maxHeight = 10;
+        [SerializeField] 
+        private float minHeight = 0;
+        [SerializeField] 
+        private int lodIncrementStep;
         [Range(0, 6)]
-        [SerializeField] private int levelOfDetail = 0;
+        [SerializeField] 
+        private int levelOfDetail = 0;
+        private const int mapWidth = 241; // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
 
         public GameObject[] chunkObjects;
         private ITerrainChunk[] terrainChunks;
@@ -84,16 +43,17 @@ namespace MiniProceduralGeneration.Generator
         // Properties
         public float MaxHeight => maxHeight;
         public float MinHeight => minHeight;
-        public int Width => width;
+        public int Width => mapWidth;
         public int LODIncrementStep => lodIncrementStep;
         public int VertexPerSide => chunkDimensions.vertexPerSide;
 
-        private void Awake() // THIS DOES TWO THINGS
+        private void Awake()
         {
             terrainProcessor = this.GetComponent<ITerrainProcessor>();
             noiseGenerator = this.GetComponent<INoiseGenerator>();
             terrainChunks = new ITerrainChunk[chunkObjects.Length];
 
+            // Collects chunk interfaces set through the inspector editor
             for (int i = 0; i < chunkObjects.Length; i++)
             {
                 ITerrainChunk chunk = chunkObjects[i].GetComponent<ITerrainChunk>();
@@ -106,7 +66,7 @@ namespace MiniProceduralGeneration.Generator
             // Below calculates base dimensions to be used for each chunk mesh
             chunkDimensions = new TerrainChunkDimensions();
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2; // provides the step detail value for each side of mesh
-            chunkDimensions.vertexPerSide = (width - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
+            chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
             chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
         }
 
@@ -120,17 +80,15 @@ namespace MiniProceduralGeneration.Generator
 
         public void BuildTerrain()
         {
-            ITerrainMeshAttributeModifier chunkAttributes;
             float[] noiseData;
 
-            foreach (TerrainChunk chunk in terrainChunks)
+            foreach (ITerrainChunk chunk in terrainChunks)
             {
-                chunkAttributes = chunk.GetComponent<ITerrainMeshAttributeModifier>();
-
-                noiseData = noiseGenerator.SampleNoiseDataAtLocation(width, new Vector3(0, 0, 0));
-                terrainProcessor.ProcessChunkMesh(chunkAttributes, noiseData);
+                noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
+                terrainProcessor.ProcessChunkMesh(chunk, noiseData);
                 chunk.BuildMesh();
 
+                // cleans buffers before next use.
                 terrainProcessor.DisposeBuffersIntoGarbageCollection();
             }
         }
@@ -139,11 +97,6 @@ namespace MiniProceduralGeneration.Generator
         // --------------------------------------------------------------------
         //                              GIZMOS GUI
         // --------------------------------------------------------------------
-
-
-        // THis needs to be refracted with seperate UI functions
-        // must be controllable seperately from a ui interface
-
 
         private void OnGUI()
         {
@@ -157,7 +110,6 @@ namespace MiniProceduralGeneration.Generator
 
                 CalculateChunkDimensions();
                 InitialiseTerrainChunks();
-                lerpAssigner.AssignLerpColors(maxHeight, minHeight);
                 BuildTerrain();
             }
 
@@ -166,5 +118,12 @@ namespace MiniProceduralGeneration.Generator
             noiseGenerator.GenerateSeed();
             }
         }
+    }
+
+    [System.Serializable]
+    public class TerrainChunkDimensions
+    {
+        public int vertexPerSide;
+        public int squaredVertexSide;
     }
 }

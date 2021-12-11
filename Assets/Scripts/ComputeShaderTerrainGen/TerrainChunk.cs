@@ -6,7 +6,9 @@ namespace MiniProceduralGeneration.Generator.MeshWork
 {
     public interface ITerrainChunk : ITerrainMeshAttributeModifier
     {
+        Vector3 PositionWorldSpace { get; }
         void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
+        void BuildMesh();
     }
 
     public interface ITerrainMeshAttributeModifier
@@ -39,14 +41,16 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         private int arrayBoundSize = 0;
 
         // Properties
+        public Vector3 PositionWorldSpace => transform.position;
         public Vector3[] Vertices { get => vertices; set => vertices = value; }
         public Vector3[] Normals { get => normals; set => normals = value; }
         public Vector2[] UVs { get => uv; set => uv =  value; }
         public QuadSet[] Quads { get => quads; set => quads = value; }
 
-        //
-        //
-        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="chunkDimensions"></param>
         public void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions)
         {
             this.chunkDimensions = chunkDimensions;
@@ -59,51 +63,52 @@ namespace MiniProceduralGeneration.Generator.MeshWork
             arrayBoundSize = (chunkDimensions.vertexPerSide - 1) * (chunkDimensions.vertexPerSide - 1) * 6;
         }
 
-        //
-        //
-        //
         public void BuildMesh()
         {
             mesh = new Mesh();
 
-            IndexTriangleData();
-            AssignMeshData();
+            ProcessTrianglesInQuadArray();
+            AssignDataToMesh();
             RenderTerrain();
         }
 
-        //
-        //
-        //
-        private void IndexTriangleData() // Renders mesh
+        /// <summary>
+        /// 
+        /// </summary>
+        private void ProcessTrianglesInQuadArray()
         {
-            triangleIndex = 0;
+            triangleIndex = 0; // Tracks current triangle index
 
             for (int i = 0; i < chunkDimensions.squaredVertexSide; i++)
             {
-                QuadSet triangleSet = quads[i];
-                IncludeNewTriangles(triangleSet);
+                if ((triangleIndex < arrayBoundSize))
+                {
+                    QuadSet triangleSet = quads[i];
+                    ProcessQuadTriangles(triangleSet);
+                }
             }
         }
 
-        //
-        //
-        //
-        private void IncludeNewTriangles(QuadSet set) // Renders mesh
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="set"></param>
+        private void ProcessQuadTriangles(QuadSet set)
         {
-            if (!(triangleIndex < arrayBoundSize)) return;
             if (set.triangleA == Vector3.zero && set.triangleB == Vector3.zero) return;
 
             // first triangle
-            AddTriangle(set.triangleA);
+            AddToMeshTriangles(set.triangleA);
 
             // second triangle
-            AddTriangle(set.triangleB);
+            AddToMeshTriangles(set.triangleB);
         }
         
-        //
-        //
-        //
-        private void AddTriangle(Vector3 triangle) // Renders mesh
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="triangle"></param>
+        private void AddToMeshTriangles(Vector3 triangle)
         {
             meshTriangles[triangleIndex] = (int)triangle.x;
             meshTriangles[triangleIndex + 1] = (int)triangle.y;
@@ -115,23 +120,33 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         /// Assigns mesh data items to the mesh object.
         /// </summary>
         /// <param name="mesh"></param>
-        public void AssignMeshData()
+        public void AssignDataToMesh()
         {
             mesh.vertices = vertices;
             mesh.triangles = meshTriangles;
-            //mesh.normals = normals;
+            mesh.normals = normals;
             mesh.uv = uv;
+
             mesh.RecalculateTangents();
             mesh.RecalculateNormals();
         }
 
-        //
-        //
-        //
+        /// <summary>
+        /// 
+        /// </summary>
         public void RenderTerrain() // Renders mesh
         {
             meshFilter.mesh = mesh;
             meshCollider.sharedMesh = mesh;
         }
+    }
+
+    /// <summary>
+    /// Contains set of triangles containing index positions within mesh array.
+    /// </summary>
+    public struct QuadSet
+    {
+        public Vector3 triangleA;
+        public Vector3 triangleB;
     }
 }
