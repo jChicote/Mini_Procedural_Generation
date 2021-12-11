@@ -217,6 +217,7 @@ GameObject:
   - component: {fileID: 252276652}
   - component: {fileID: 252276651}
   - component: {fileID: 252276653}
+  - component: {fileID: 252276658}
   - component: {fileID: 252276657}
   - component: {fileID: 252276656}
   - component: {fileID: 252276655}
@@ -247,8 +248,8 @@ MonoBehaviour:
   lodIncrementStep: 0
   groundlevel: 1
   levelOfDetail: 1
-  chunks:
-  - {fileID: 555729150}
+  chunkObjects:
+  - {fileID: 555729147}
 --- !u!4 &252276652
 Transform:
   m_ObjectHideFlags: 0
@@ -356,6 +357,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52dc198d7bc3ef64994c37336870c37b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &252276658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252276650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cad0baec79eef44b86ec212e448d3d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  computeTerrainGen: {fileID: 7200000, guid: f9f511750c2ddc143bac2cdd31c1a6bc, type: 3}
 --- !u!1 &555729147
 GameObject:
   m_ObjectHideFlags: 0

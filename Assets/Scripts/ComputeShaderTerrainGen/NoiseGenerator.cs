@@ -33,14 +33,20 @@ namespace MiniProceduralGeneration.Generator.Noise
 
         public bool HasCreatedSeed { get => seed != 0;  }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="mapSize"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position)
         {
             noiseData = new float[mapSize * mapSize];
-
             NoiseComputeBuffers computeBuffers = CreateNoiseComputeBuffers();
+            
+            // Produce noise data through compute shader
             SetComputeShaderData(computeBuffers, position, mapSize);
             noiseShader.Dispatch(0, noiseData.Length / 10, 1, 1);
-
             GetDataFromComputeShader(computeBuffers);
 
             // Manual Garbage collection of Buffers from memory
@@ -81,6 +87,12 @@ namespace MiniProceduralGeneration.Generator.Noise
             return computeBuffers;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="computeBuffers"></param>
+        /// <param name="startPosition"></param>
+        /// <param name="mapSize"></param>
         private void SetComputeShaderData(NoiseComputeBuffers computeBuffers, Vector3 startPosition, int mapSize)
         {
             noiseShader.SetBuffer(0, "noise", computeBuffers.noiseBuffer);
@@ -92,6 +104,7 @@ namespace MiniProceduralGeneration.Generator.Noise
             noiseShader.SetInt("mapDimension", mapSize);
             noiseShader.SetInt("stepDetailCount", stepDetailCount);
         }
+
 
         private void GetDataFromComputeShader(NoiseComputeBuffers computeBuffers)
         {
