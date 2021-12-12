@@ -17,6 +17,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         Vector3[] Normals { get; set; }
         Vector2[] UVs { get; set; }
         QuadSet[] Quads { get; set; }
+        int[] Triangles { get; set; }
     }
 
     /// <summary>
@@ -46,6 +47,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         public Vector3[] Normals { get => normals; set => normals = value; }
         public Vector2[] UVs { get => uv; set => uv =  value; }
         public QuadSet[] Quads { get => quads; set => quads = value; }
+        public int[] Triangles { get => meshTriangles; set => meshTriangles = value; }
 
         /// <summary>
         /// 
@@ -67,7 +69,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         {
             mesh = new Mesh();
 
-            ProcessTrianglesInQuadArray();
+            //ProcessTrianglesInQuadArray();
             AssignDataToMesh();
             RenderTerrain();
         }

@@ -57,8 +57,11 @@ namespace MiniProceduralGeneration.Generator.Processor
             meshBuffers.noiseBuffer = new ComputeBuffer(noiseData.Length, sizeof(float));
             meshBuffers.noiseBuffer.SetData(noiseData);
 
-            meshBuffers.trisBuffer = new ComputeBuffer(chunkAttributes.Quads.Length, sizeof(float) * 6);
-            meshBuffers.trisBuffer.SetData(chunkAttributes.Quads);
+            //meshBuffers.trisBuffer = new ComputeBuffer(chunkAttributes.Quads.Length, sizeof(float) * 6);
+            //meshBuffers.trisBuffer.SetData(chunkAttributes.Quads);
+
+            meshBuffers.triangleBuffer = new ComputeBuffer(chunkAttributes.Triangles.Length, sizeof(int));
+            meshBuffers.triangleBuffer.SetData(chunkAttributes.Triangles);
 
             return meshBuffers;
         }
@@ -73,7 +76,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         {
             computeTerrainGen.SetBuffer(0, "vertices", meshBuffers.vertBuffer);
             computeTerrainGen.SetBuffer(0, "noiseData", meshBuffers.noiseBuffer);
-            computeTerrainGen.SetBuffer(0, "triangles", meshBuffers.trisBuffer);
+            computeTerrainGen.SetBuffer(0, "triangles", meshBuffers.triangleBuffer);
             computeTerrainGen.SetBuffer(0, "normal", meshBuffers.normalBuffer);
             computeTerrainGen.SetBuffer(0, "uv", meshBuffers.uvBuffer);
 
@@ -96,7 +99,8 @@ namespace MiniProceduralGeneration.Generator.Processor
             meshBuffers.vertBuffer.GetData(chunkAttributes.Vertices);
             meshBuffers.normalBuffer.GetData(chunkAttributes.Normals);
             meshBuffers.uvBuffer.GetData(chunkAttributes.UVs);
-            meshBuffers.trisBuffer.GetData(chunkAttributes.Quads);
+            //meshBuffers.trisBuffer.GetData(chunkAttributes.Quads);
+            meshBuffers.triangleBuffer.GetData(chunkAttributes.Triangles);
         }
 
         /// <summary>
@@ -109,7 +113,8 @@ namespace MiniProceduralGeneration.Generator.Processor
             meshBuffers.normalBuffer.Release();
             meshBuffers.uvBuffer.Release();
             meshBuffers.noiseBuffer.Release();
-            meshBuffers.trisBuffer.Release();
+            //meshBuffers.trisBuffer.Release();
+            meshBuffers.triangleBuffer.Release();
         }
     }
 
@@ -123,6 +128,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         public ComputeBuffer uvBuffer;
         public ComputeBuffer noiseBuffer;
         public ComputeBuffer trisBuffer;
+        public ComputeBuffer triangleBuffer;
     }
 
 }
