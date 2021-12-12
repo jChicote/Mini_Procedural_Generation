@@ -12,9 +12,9 @@ namespace MiniProceduralGeneration.Generator
 
     public interface INoiseCharacteristics
     {
-        float NoiseScale { get; }
-        float Persistence { get; }
-        float Lacunarity { get; }
+        float NoiseScale { get; set; }
+        float Persistence { get; set; }
+        float Lacunarity { get; set; }
         int StepDetailCount { get; }
         Vector2[] StepOffsets { get; }
     }
@@ -43,10 +43,10 @@ namespace MiniProceduralGeneration.Generator
 
         // Properties
         public bool HasCreatedSeed => seed != 0;
-        public float NoiseScale => noiseScale;
-        public float Persistence => persistence;
-        public float Lacunarity => lacunarity;
-        public int StepDetailCount => stepDetailCount;
+        public float NoiseScale { get => noiseScale; set => noiseScale = value; }
+        public float Persistence { get => persistence; set => persistence = value; }
+        public float Lacunarity { get => lacunarity; set => lacunarity = value; }
+        public int StepDetailCount => stepDetailCount; 
         public Vector2[] StepOffsets => stepOffsets;
 
         private void Awake()

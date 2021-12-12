@@ -9,6 +9,11 @@ namespace ProceduralGeneration.NoiseGeneration
         float[] CalculateNoise(int mapSize, Vector3 position);
     }
 
+    public interface INoiseCharacteristics
+    {
+
+    }
+
     public class NoiseGenerator : MonoBehaviour, INoiseGenerator
     {
         [SerializeField] private float noiseScale;
@@ -21,7 +26,7 @@ namespace ProceduralGeneration.NoiseGeneration
         [SerializeField] private float lacunarity;
 
         private Vector2[] stepOffsets;
-        private float[] noiseMap;
+        //private float[] noiseMap;
 
         /// <summary>
         /// Generate seed for map
@@ -44,7 +49,7 @@ namespace ProceduralGeneration.NoiseGeneration
         public float[] CalculateNoise(int mapSize, Vector3 position)
         {
             GenerateSeed();
-            noiseMap = new float[mapSize * mapSize];
+            float[] noiseMap = new float[mapSize * mapSize];
             float amplitude = 1;
             float frequency = 1;
             float noiseValue = 0;

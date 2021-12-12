@@ -16,6 +16,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         // Fields
         [SerializeField] private ComputeShader noiseShader;
         private INoiseCharacteristics noiseCharacteristics;
+        private NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
 
         private void Awake()
         {
@@ -24,7 +25,7 @@ namespace MiniProceduralGeneration.Generator.Processor
 
         public void ProcessNoiseData(float[] noiseDataArray, int mapSize, Vector3 samplePosition)
         {
-            NoiseComputeBuffers computeBuffers = CreateNoiseComputeBuffers(noiseDataArray);
+            CreateNoiseComputeBuffers(noiseDataArray);
 
             // Produce noise data through compute shader
             SetComputeShaderData(computeBuffers, samplePosition, mapSize);
@@ -37,7 +38,7 @@ namespace MiniProceduralGeneration.Generator.Processor
 
         private NoiseComputeBuffers CreateNoiseComputeBuffers(float[] noiseDataArray)
         {
-            NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
+            //computeBuffers = new NoiseComputeBuffers();
 
             computeBuffers.noiseBuffer = new ComputeBuffer(noiseDataArray.Length, sizeof(float)); 
             computeBuffers.noiseBuffer.SetData(noiseDataArray);
@@ -68,8 +69,8 @@ namespace MiniProceduralGeneration.Generator.Processor
 
         private void DisposeBuffersToGarbageCollection(NoiseComputeBuffers computeBuffers)
         {
-            computeBuffers.noiseBuffer.Dispose();
-            computeBuffers.offsetBuffer.Dispose();
+            computeBuffers.noiseBuffer.Release();
+            computeBuffers.offsetBuffer.Release();
         }
     }
 

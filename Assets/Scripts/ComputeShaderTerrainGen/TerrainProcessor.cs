@@ -17,20 +17,22 @@ namespace MiniProceduralGeneration.Generator.Processor
         // Fields
         public ComputeShader computeTerrainGen;
         private ITerrainCharacteristics terrainCharacteristics;
-        private MeshComputeBuffers meshComputeBuffers;
+        //private MeshComputeBuffers meshComputeBuffers;
+        private MeshComputeBuffers meshBuffers;
 
         private void Awake()
         {
             terrainCharacteristics = this.GetComponent<ITerrainCharacteristics>();
+            meshBuffers = new MeshComputeBuffers();
         }
 
         public void ProcessChunkMesh(ITerrainMeshAttributeModifier chunkAttributes, float[] noiseData)
         {
-            meshComputeBuffers = CreateNewMeshBuffers(noiseData, chunkAttributes);
+            CreateNewMeshBuffers(noiseData, chunkAttributes);
 
-            SetComputeShaderBuffers(meshComputeBuffers, chunkAttributes);
+            SetComputeShaderBuffers(chunkAttributes);
             computeTerrainGen.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);  // Runs compute shader
-            RetrieveDataFromComputeShader(meshComputeBuffers, chunkAttributes);
+            RetrieveDataFromComputeShader(chunkAttributes);
         }
 
         /// <summary>
@@ -41,7 +43,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         /// <returns></returns>
         private MeshComputeBuffers CreateNewMeshBuffers(float[] noiseData, ITerrainMeshAttributeModifier chunkAttributes)
         {
-            MeshComputeBuffers meshBuffers = new MeshComputeBuffers();
+            //MeshComputeBuffers meshBuffers = new MeshComputeBuffers();
 
             meshBuffers.vertBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 3);
             meshBuffers.vertBuffer.SetData(chunkAttributes.Vertices);
@@ -67,7 +69,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         /// </summary>
         /// <param name="meshBuffers"></param>
         /// <param name="chunkAttributes"></param>
-        private void SetComputeShaderBuffers(MeshComputeBuffers meshBuffers, ITerrainMeshAttributeModifier chunkAttributes)
+        private void SetComputeShaderBuffers(ITerrainMeshAttributeModifier chunkAttributes)
         {
             computeTerrainGen.SetBuffer(0, "vertices", meshBuffers.vertBuffer);
             computeTerrainGen.SetBuffer(0, "noiseData", meshBuffers.noiseBuffer);
@@ -89,7 +91,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         /// </summary>
         /// <param name="meshBuffers"></param>
         /// <param name="chunkAttributes"></param>
-        private void RetrieveDataFromComputeShader(MeshComputeBuffers meshBuffers, ITerrainMeshAttributeModifier chunkAttributes)
+        private void RetrieveDataFromComputeShader(ITerrainMeshAttributeModifier chunkAttributes)
         {
             meshBuffers.vertBuffer.GetData(chunkAttributes.Vertices);
             meshBuffers.normalBuffer.GetData(chunkAttributes.Normals);
@@ -103,11 +105,11 @@ namespace MiniProceduralGeneration.Generator.Processor
         /// <param name="meshBuffers"></param>
         public void DisposeBuffersIntoGarbageCollection()
         {
-            meshComputeBuffers.vertBuffer.Dispose();
-            meshComputeBuffers.normalBuffer.Dispose();
-            meshComputeBuffers.uvBuffer.Dispose();
-            meshComputeBuffers.noiseBuffer.Dispose();
-            meshComputeBuffers.trisBuffer.Dispose();
+            meshBuffers.vertBuffer.Release();
+            meshBuffers.normalBuffer.Release();
+            meshBuffers.uvBuffer.Release();
+            meshBuffers.noiseBuffer.Release();
+            meshBuffers.trisBuffer.Release();
         }
     }
 

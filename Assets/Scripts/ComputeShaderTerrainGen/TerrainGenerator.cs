@@ -6,19 +6,28 @@ using MiniProceduralGeneration.Generator.Processor;
 
 namespace MiniProceduralGeneration.Generator
 {
+    public interface ITerrainGenerator
+    {
+        void CalculateChunkDimensions();
+        void InitialiseTerrainChunks();
+        void BuildTerrain();
+
+    }
+
     public interface ITerrainCharacteristics
     {
-        float MaxHeight { get; }
-        float MinHeight { get; }
+        float MaxHeight { get; set; }
+        float MinHeight { get; set; }
         int Width { get; }
         int LODIncrementStep { get; }
         int VertexPerSide { get; }
+        float LevelOfDetail { get; set; }
     }
 
     /// <summary>
     /// 
     /// </summary>
-    public class TerrainGenerator : MonoBehaviour, ITerrainCharacteristics
+    public class TerrainGenerator : MonoBehaviour, ITerrainGenerator, ITerrainCharacteristics
     {
         // Fields
         public INoiseGenerator noiseGenerator;
@@ -41,11 +50,12 @@ namespace MiniProceduralGeneration.Generator
         private TerrainChunkDimensions chunkDimensions;
 
         // Properties
-        public float MaxHeight => maxHeight;
-        public float MinHeight => minHeight;
+        public float MaxHeight { get => maxHeight; set => maxHeight = value; }
+        public float MinHeight { get => minHeight; set => minHeight = value; }
         public int Width => mapWidth;
         public int LODIncrementStep => lodIncrementStep;
         public int VertexPerSide => chunkDimensions.vertexPerSide;
+        public float LevelOfDetail { get => levelOfDetail; set => levelOfDetail = (int)value; }
 
         private void Awake()
         {
@@ -61,7 +71,7 @@ namespace MiniProceduralGeneration.Generator
             }
         }
 
-        private void CalculateChunkDimensions()
+        public void CalculateChunkDimensions()
         {
             // Below calculates base dimensions to be used for each chunk mesh
             chunkDimensions = new TerrainChunkDimensions();
@@ -70,7 +80,7 @@ namespace MiniProceduralGeneration.Generator
             chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
         }
 
-        private void InitialiseTerrainChunks()
+        public void InitialiseTerrainChunks()
         {
             foreach (ITerrainChunk chunk in terrainChunks)
             {
@@ -80,6 +90,8 @@ namespace MiniProceduralGeneration.Generator
 
         public void BuildTerrain()
         {
+
+
             float[] noiseData;
 
             foreach (ITerrainChunk chunk in terrainChunks)
@@ -90,32 +102,6 @@ namespace MiniProceduralGeneration.Generator
 
                 // cleans buffers before next use.
                 terrainProcessor.DisposeBuffersIntoGarbageCollection();
-            }
-        }
-
-
-        // --------------------------------------------------------------------
-        //                              GIZMOS GUI
-        // --------------------------------------------------------------------
-
-        private void OnGUI()
-        {
-            if (GUI.Button(new Rect(0, 0, 100, 50), "Create"))
-            {
-                if (!noiseGenerator.HasCreatedSeed)
-                {
-                    print("Has Not created seed");
-                    return;
-                }
-
-                CalculateChunkDimensions();
-                InitialiseTerrainChunks();
-                BuildTerrain();
-            }
-
-            if (GUI.Button(new Rect(150, 0, 200, 50), "Generate Seed"))
-            {
-            noiseGenerator.GenerateSeed();
             }
         }
     }

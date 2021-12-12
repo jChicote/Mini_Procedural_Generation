@@ -8,6 +8,7 @@ struct QuadTrisSet
 };
 
 // Data Buffers 
+RWStructuredBuffer<int> trangles;
 RWStructuredBuffer<float> noiseData;
 RWStructuredBuffer<float3> vertices;
 RWStructuredBuffer<float3> normal;
@@ -21,6 +22,7 @@ float meshSize; // Constant
 
 int meshLineSize;
 int incrementStep;
+int triangleIndex;
 
 float CalculateHeight(float noiseVal) {
     float height = noiseVal * maxHeight;
@@ -53,6 +55,13 @@ float3 AddTriangle(int vertA, int vertB, int vertC) {
     triangleIndexes.y = vertB;
     triangleIndexes.z = vertC;
     return triangleIndexes;
+}
+
+float3 AddTriangleToArray(int vertA, int vertB, int vertC) {
+    triangles[triangleIndex] = vertA;
+
+
+    triangleIndex += 3;
 }
 
 [numthreads(64, 1, 1)]
