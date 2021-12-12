@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace MiniProceduralGeneration.UserInterfaces
 {
+    /// <summary>
+    /// Class for providing toggle control on Terrain generator panels.
+    /// </summary>
     public class TerrainGeneratorUIControls : MonoBehaviour
     {
         // Fields

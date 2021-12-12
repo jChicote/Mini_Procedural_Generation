@@ -1,5 +1,4 @@
 using UnityEngine;
-using MiniProceduralGeneration.Generator;
 
 namespace MiniProceduralGeneration.Generator.Processor
 {
@@ -36,7 +35,11 @@ namespace MiniProceduralGeneration.Generator.Processor
             DisposeBuffersToGarbageCollection(computeBuffers);
         }
 
-        private NoiseComputeBuffers CreateNoiseComputeBuffers(float[] noiseDataArray)
+        /// <summary>
+        /// Creates noise buffers to prepare structured buffers to specified array sizes
+        /// and strides.
+        /// </summary>
+        private void CreateNoiseComputeBuffers(float[] noiseDataArray)
         {
             //computeBuffers = new NoiseComputeBuffers();
 
@@ -45,32 +48,27 @@ namespace MiniProceduralGeneration.Generator.Processor
 
             computeBuffers.offsetBuffer = new ComputeBuffer(noiseCharacteristics.StepOffsets.Length, sizeof(float) * 2); 
             computeBuffers.offsetBuffer.SetData(noiseCharacteristics.StepOffsets);
-
-            return computeBuffers;
         }
 
         /// <summary>
-        /// 
+        /// Sets the compute shader to recieve variables of input noise data.
         /// </summary>
-        /// <param name="computeBuffers"></param>
-        /// <param name="startPosition"></param>
-        /// <param name="mapSize"></param>
         private void SetComputeShaderData(NoiseComputeBuffers computeBuffers, Vector3 samplePosition, int mapSize)
         {
             noiseShader.SetBuffer(0, "noise", computeBuffers.noiseBuffer);
-            noiseShader.SetBuffer(0, "stepOffsets", computeBuffers.offsetBuffer);
+            noiseShader.SetBuffer(0, "octaveOffsets", computeBuffers.offsetBuffer);
             noiseShader.SetVector("startPosition", samplePosition);
             noiseShader.SetFloat("noiseScale", noiseCharacteristics.NoiseScale);
             noiseShader.SetFloat("persistence", noiseCharacteristics.Persistence);
             noiseShader.SetFloat("lacunarity", noiseCharacteristics.Lacunarity);
             noiseShader.SetInt("mapDimension", mapSize);
-            noiseShader.SetInt("stepDetailCount", noiseCharacteristics.StepDetailCount);
+            noiseShader.SetInt("noiseOctaveCount", (int)noiseCharacteristics.NoiseOctaveCount);
         }
 
         private void DisposeBuffersToGarbageCollection(NoiseComputeBuffers computeBuffers)
         {
-            computeBuffers.noiseBuffer.Release();
-            computeBuffers.offsetBuffer.Release();
+            computeBuffers.noiseBuffer.Dispose();
+            computeBuffers.offsetBuffer.Dispose();
         }
     }
 

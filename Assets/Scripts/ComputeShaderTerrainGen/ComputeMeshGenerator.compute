@@ -1,19 +1,12 @@
-// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-struct QuadTrisSet 
-{
-    float3 triangleA;
-    float3 triangleB;
-};
 
-// Data Buffers 
+// Data Array Buffers 
 RWStructuredBuffer<int> triangles;
 RWStructuredBuffer<float> noiseData;
 RWStructuredBuffer<float3> vertices;
 RWStructuredBuffer<float3> normal;
 RWStructuredBuffer<float2> uv;
-//RWStructuredBuffer<QuadTrisSet> triangles;
 
 float resolution;
 float maxHeight;
@@ -22,7 +15,6 @@ float meshSize; // Constant
 
 int meshLineSize;
 int incrementStep;
-//int triangleIndex = 0;
 
 float CalculateHeight(float noiseVal) {
     float height = noiseVal * maxHeight;
@@ -37,8 +29,7 @@ float3 CalculateVertexPosition(int row, int col) {
     return vertPos;
 }
 
-
-int CalculateRow(int index) {
+int CalculateRow(uint index) {
     float row = floor(index / meshLineSize);
     return int(row);
 }
@@ -46,28 +37,6 @@ int CalculateRow(int index) {
 int CalculateColumn(int index, int row) {
     return index - row * meshLineSize;
 }
-
-float3 CalculateTriangleIndex(int index) {
-    return float3(index * 3, (index * 3) + 1, (index * 3) + 2);
-}
-
-// Verticies are added in a anti-clockwise direction for each
-// triangle pair in quad. Orientation: (2, 1, 0)
-/*float3 AddTriangle(int vertA, int vertB, int vertC) {
-    float3 triangleIndexes = float3(0, 0, 0);
-    triangleIndexes.x = vertA;
-    triangleIndexes.y = vertB;
-    triangleIndexes.z = vertC;
-    return triangleIndexes;
-}
-
-void AddTriangleToArray(int vertA, int vertB, int vertC) {
-    float3 triangleIndex = CalculateTriangleIndex(vertA);
-    triangles[triangleIndex.x] = vertA;
-    triangles[triangleIndex.y] = vertB;
-    triangles[triangleIndex.z] = vertC;
-    //triangleIndex += 3;
-}*/
 
 void AddQuad(int index) {
     int stepIndex = index * 6;
@@ -79,7 +48,9 @@ void AddQuad(int index) {
     triangles[stepIndex + 5] = (index + meshLineSize) + 1;
 }
 
-
+// -------------------------------------------------------
+//                           Main 
+// -------------------------------------------------------
 
 [numthreads(64, 1, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
@@ -91,17 +62,11 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int scaledRow = row * incrementStep;
     int scaledCol = col * incrementStep;
 
-    //QuadTrisSet tris = triangles[index];
     vertices[index] = CalculateVertexPosition(scaledRow, scaledCol);
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 
     if (scaledCol < meshSize - 1 && scaledRow < meshSize - 1) {
-        //tris.triangleA = AddTriangle(index, index + meshLineSize, index + 1);
-        //tris.triangleB = AddTriangle(index + 1, index + meshLineSize, index + meshLineSize + 1);
         AddQuad(index);
-        //AddTriangleToArray(index, index + meshLineSize, index + 1);
-        //AddTriangleToArray(index + 1, index + meshLineSize, (index + meshLineSize) + 1;
-        //triangles[index] = tris;
     }
 }

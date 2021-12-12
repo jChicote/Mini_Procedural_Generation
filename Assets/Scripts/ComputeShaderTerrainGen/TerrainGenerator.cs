@@ -11,7 +11,6 @@ namespace MiniProceduralGeneration.Generator
         void CalculateChunkDimensions();
         void InitialiseTerrainChunks();
         void BuildTerrain();
-
     }
 
     public interface ITerrainCharacteristics
@@ -25,7 +24,7 @@ namespace MiniProceduralGeneration.Generator
     }
 
     /// <summary>
-    /// 
+    /// The primary terrain class that handles and coordinates building the terrain chunks.
     /// </summary>
     public class TerrainGenerator : MonoBehaviour, ITerrainGenerator, ITerrainCharacteristics
     {
@@ -43,7 +42,9 @@ namespace MiniProceduralGeneration.Generator
         [Range(0, 6)]
         [SerializeField] 
         private int levelOfDetail = 0;
-        private const int mapWidth = 241; // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
+        
+        // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
+        private const int mapWidth = 241;
 
         public GameObject[] chunkObjects;
         private ITerrainChunk[] terrainChunks;
@@ -71,27 +72,29 @@ namespace MiniProceduralGeneration.Generator
             }
         }
 
-        public void CalculateChunkDimensions()
-        {
-            // Below calculates base dimensions to be used for each chunk mesh
-            chunkDimensions = new TerrainChunkDimensions();
-            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2; // provides the step detail value for each side of mesh
-            chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
-            chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
-        }
-
         public void InitialiseTerrainChunks()
         {
+            CalculateChunkDimensions();
+
             foreach (ITerrainChunk chunk in terrainChunks)
             {
                 chunk.InitialiseMeshArrays(chunkDimensions);
             }
         }
 
+        /// <summary>
+        /// Calculates base dimensions to be used for each chunk mesh
+        /// </summary>
+        public void CalculateChunkDimensions()
+        {
+            chunkDimensions = new TerrainChunkDimensions();
+            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2; // provides the step detail value for each side of mesh
+            chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
+            chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
+        }
+
         public void BuildTerrain()
         {
-
-
             float[] noiseData;
 
             foreach (ITerrainChunk chunk in terrainChunks)

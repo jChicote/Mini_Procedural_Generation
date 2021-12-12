@@ -5,19 +5,18 @@ namespace MiniProceduralGeneration.Generator.Processor
 {
     public interface ITerrainProcessor
     {
-        void ProcessChunkMesh(ITerrainMeshAttributeModifier chunkAttributes, float[] noiseData);
+        void ProcessChunkMesh(ITerrainChunkAttributeModifier chunkAttributes, float[] noiseData);
         void DisposeBuffersIntoGarbageCollection();
     }
 
     /// <summary>
-    /// Processes terrain data through specified compute shader 
+    /// Processes terrain data through specified compute shader.
     /// </summary>
     public class TerrainProcessor : MonoBehaviour, ITerrainProcessor
     {
         // Fields
         public ComputeShader computeTerrainGen;
         private ITerrainCharacteristics terrainCharacteristics;
-        //private MeshComputeBuffers meshComputeBuffers;
         private MeshComputeBuffers meshBuffers;
 
         private void Awake()
@@ -26,25 +25,23 @@ namespace MiniProceduralGeneration.Generator.Processor
             meshBuffers = new MeshComputeBuffers();
         }
 
-        public void ProcessChunkMesh(ITerrainMeshAttributeModifier chunkAttributes, float[] noiseData)
+        public void ProcessChunkMesh(ITerrainChunkAttributeModifier chunkAttributes, float[] noiseData)
         {
             CreateNewMeshBuffers(noiseData, chunkAttributes);
 
-            SetComputeShaderBuffers(chunkAttributes);
-            computeTerrainGen.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);  // Runs compute shader
+            SetComputeShaderVariables(chunkAttributes);
+            computeTerrainGen.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
             RetrieveDataFromComputeShader(chunkAttributes);
         }
 
         /// <summary>
-        /// 
+        /// Creates mesh buffers to prepare structured buffers to specified array sizes
+        /// and strides.
         /// </summary>
-        /// <param name="noiseData"></param>
-        /// <param name="chunkAttributes"></param>
-        /// <returns></returns>
-        private MeshComputeBuffers CreateNewMeshBuffers(float[] noiseData, ITerrainMeshAttributeModifier chunkAttributes)
+        /// <param name="noiseData">Generated noise</param>
+        /// <param name="chunkAttributes">Interface to terrain attributes of mesh.</param>
+        private void CreateNewMeshBuffers(float[] noiseData, ITerrainChunkAttributeModifier chunkAttributes)
         {
-            //MeshComputeBuffers meshBuffers = new MeshComputeBuffers();
-
             meshBuffers.vertBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 3);
             meshBuffers.vertBuffer.SetData(chunkAttributes.Vertices);
 
@@ -57,22 +54,16 @@ namespace MiniProceduralGeneration.Generator.Processor
             meshBuffers.noiseBuffer = new ComputeBuffer(noiseData.Length, sizeof(float));
             meshBuffers.noiseBuffer.SetData(noiseData);
 
-            //meshBuffers.trisBuffer = new ComputeBuffer(chunkAttributes.Quads.Length, sizeof(float) * 6);
-            //meshBuffers.trisBuffer.SetData(chunkAttributes.Quads);
-
             meshBuffers.triangleBuffer = new ComputeBuffer(chunkAttributes.Triangles.Length, sizeof(int));
             meshBuffers.triangleBuffer.SetData(chunkAttributes.Triangles);
-
-            return meshBuffers;
         }
 
 
         /// <summary>
-        /// 
+        /// Sets the compute shader to recieve variables of input terrain data.
         /// </summary>
-        /// <param name="meshBuffers"></param>
-        /// <param name="chunkAttributes"></param>
-        private void SetComputeShaderBuffers(ITerrainMeshAttributeModifier chunkAttributes)
+        /// <param name="chunkAttributes">Interface to terrain attributes of mesh.</param>
+        private void SetComputeShaderVariables(ITerrainChunkAttributeModifier chunkAttributes)
         {
             computeTerrainGen.SetBuffer(0, "vertices", meshBuffers.vertBuffer);
             computeTerrainGen.SetBuffer(0, "noiseData", meshBuffers.noiseBuffer);
@@ -90,44 +81,33 @@ namespace MiniProceduralGeneration.Generator.Processor
         }
 
         /// <summary>
-        /// 
+        /// Collects mesh data from compute shader to be outputted to terrain chunk variables.
         /// </summary>
-        /// <param name="meshBuffers"></param>
-        /// <param name="chunkAttributes"></param>
-        private void RetrieveDataFromComputeShader(ITerrainMeshAttributeModifier chunkAttributes)
+        /// <param name="chunkAttributes">Interface modifier to targetted terrain chunk instance.</param>
+        private void RetrieveDataFromComputeShader(ITerrainChunkAttributeModifier chunkModifier)
         {
-            meshBuffers.vertBuffer.GetData(chunkAttributes.Vertices);
-            meshBuffers.normalBuffer.GetData(chunkAttributes.Normals);
-            meshBuffers.uvBuffer.GetData(chunkAttributes.UVs);
-            //meshBuffers.trisBuffer.GetData(chunkAttributes.Quads);
-            meshBuffers.triangleBuffer.GetData(chunkAttributes.Triangles);
+            meshBuffers.vertBuffer.GetData(chunkModifier.Vertices);
+            meshBuffers.normalBuffer.GetData(chunkModifier.Normals);
+            meshBuffers.uvBuffer.GetData(chunkModifier.UVs);
+            meshBuffers.triangleBuffer.GetData(chunkModifier.Triangles);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="meshBuffers"></param>
         public void DisposeBuffersIntoGarbageCollection()
         {
-            meshBuffers.vertBuffer.Release();
-            meshBuffers.normalBuffer.Release();
-            meshBuffers.uvBuffer.Release();
-            meshBuffers.noiseBuffer.Release();
-            //meshBuffers.trisBuffer.Release();
-            meshBuffers.triangleBuffer.Release();
+            meshBuffers.vertBuffer.Dispose();
+            meshBuffers.normalBuffer.Dispose();
+            meshBuffers.uvBuffer.Dispose();
+            meshBuffers.noiseBuffer.Dispose();
+            meshBuffers.triangleBuffer.Dispose();
         }
     }
 
-    /*
-     * 
-     */
     public struct MeshComputeBuffers
     {
         public ComputeBuffer vertBuffer;
         public ComputeBuffer normalBuffer;
         public ComputeBuffer uvBuffer;
         public ComputeBuffer noiseBuffer;
-        public ComputeBuffer trisBuffer;
         public ComputeBuffer triangleBuffer;
     }
 

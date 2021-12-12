@@ -1,8 +1,8 @@
-// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
+// Data Array Buffers 
 RWStructuredBuffer<float> noise;
-RWStructuredBuffer<float2> stepOffsets;
+RWStructuredBuffer<float2> octaveOffsets;
 
 float3 startPosition;
 
@@ -17,7 +17,7 @@ float scaleX;
 float scaleY;
 
 int mapDimension;
-int stepDetailCount;
+int noiseOctaveCount;
 
 int CalculateRow(uint index) {
     float row = floor(index / mapDimension);
@@ -31,6 +31,14 @@ int CalculateColumn(uint index, uint row) {
 // -------------------------------------------------------
 //                  Perlin Noise Generation
 // -------------------------------------------------------
+
+// Examples on Perlin Noise Generation at: https://www.programmersought.com/article/44147523506/
+// Examples used are taken from "Compute Shader" section including functions:
+// - hash22
+// - Perlin
+
+// Example on Noise Gradient by user "iq" at: https://www.shadertoy.com/view/XdXGW8
+// Example includes function from lines 38 - 61
 
 float2 Gradient(float2 z) {
     // 2D to 1D  (feel free to replace by some other)
@@ -67,12 +75,7 @@ float PerlinNoise(float2 p) {
     float c = Gradient(pi + float2(0.0, 1.0));
     float d = Gradient(pi + float2(1.0, 1.0));
 
-    //float2 w = pf * pf * pf * (6 * pf * pf - 15 * pf + 10);
     float2 w = pf * pf * (3.0 - 2.0 * pf);
-
-    /*return lerp(a, b, w.x) +
-        (c - a) * w.y * (1.0 - w.x) +
-        (d - b) * w.x * w.y;*/
 
     return lerp(lerp(dot(hash22(pi + float2(0.0, 0.0)), pf - float2(0.0, 0.0)),
                     dot(hash22(pi + float2(1.0, 0.0)), pf - float2(1.0, 0.0)), w.x),
@@ -94,9 +97,11 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     amplitude = 1;
     frequency = 1;
 
-    for (int i = 0; i < stepDetailCount; i++) {
-        scaleX = float(col) / noiseScale * frequency + stepOffsets[i].x + startPosition.x;
-        scaleY = float(row) / noiseScale * frequency + stepOffsets[i].y + startPosition.z;
+    // loops through each octave providing added detail to result
+    for (int i = 0; i < noiseOctaveCount; i++) {
+        //Calculates determined position with added offsets and variations
+        scaleX = float(col) / noiseScale * frequency + octaveOffsets[i].x + startPosition.x;
+        scaleY = float(row) / noiseScale * frequency + octaveOffsets[i].y + startPosition.z;
 
         noiseValue += PerlinNoise(float2(scaleX, scaleY)) * amplitude;
         frequency *= lacunarity;
