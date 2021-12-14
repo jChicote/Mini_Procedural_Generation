@@ -42,9 +42,10 @@ namespace MiniProceduralGeneration.Generator
         [Range(0, 6)]
         [SerializeField] 
         private int levelOfDetail = 0;
-        
+
         // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
-        private const int mapWidth = 241;
+        [SerializeField]
+        private int mapWidth = 241;
 
         public GameObject[] chunkObjects;
         private ITerrainChunk[] terrainChunks;
