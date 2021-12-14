@@ -1,18 +1,12 @@
-// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-struct QuadTrisSet 
-{
-    float3 triangleA;
-    float3 triangleB;
-};
 
-// Data Buffers 
+// Data Array Buffers 
+RWStructuredBuffer<int> triangles;
 RWStructuredBuffer<float> noiseData;
 RWStructuredBuffer<float3> vertices;
 RWStructuredBuffer<float3> normal;
 RWStructuredBuffer<float2> uv;
-RWStructuredBuffer<QuadTrisSet> triangles;
 
 float resolution;
 float maxHeight;
@@ -35,11 +29,7 @@ float3 CalculateVertexPosition(int row, int col) {
     return vertPos;
 }
 
-float3 CalculateNormals() {
-
-}
-
-int CalculateRow(int index) {
+int CalculateRow(uint index) {
     float row = floor(index / meshLineSize);
     return int(row);
 }
@@ -48,15 +38,19 @@ int CalculateColumn(int index, int row) {
     return index - row * meshLineSize;
 }
 
-// Verticies are added in a anti-clockwise direction for each
-// triangle pair in quad. Orientation: (2, 1, 0)
-float3 AddTriangle(int vertA, int vertB, int vertC) {
-    float3 triangleIndexes = float3(0, 0, 0);
-    triangleIndexes.x = vertA;
-    triangleIndexes.y = vertB;
-    triangleIndexes.z = vertC;
-    return triangleIndexes;
+void AddQuad(int index) {
+    int stepIndex = index * 6;
+    triangles[stepIndex] = index;
+    triangles[stepIndex + 1] = index + meshLineSize;
+    triangles[stepIndex + 2] = index + 1;
+    triangles[stepIndex + 3] = index + 1;
+    triangles[stepIndex + 4] = index + meshLineSize;
+    triangles[stepIndex + 5] = (index + meshLineSize) + 1;
 }
+
+// -------------------------------------------------------
+//                           Main 
+// -------------------------------------------------------
 
 [numthreads(64, 1, 1)]
 void CSMain (uint3 id : SV_DispatchThreadID)
@@ -68,14 +62,11 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int scaledRow = row * incrementStep;
     int scaledCol = col * incrementStep;
 
-    QuadTrisSet tris = triangles[index];
     vertices[index] = CalculateVertexPosition(scaledRow, scaledCol);
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 
     if (scaledCol < meshSize - 1 && scaledRow < meshSize - 1) {
-        tris.triangleA = AddTriangle(index, index + meshLineSize, index + 1);
-        tris.triangleB = AddTriangle(index + 1, index + meshLineSize, index + meshLineSize + 1);
-        triangles[index] = tris;
+        AddQuad(index);
     }
 }

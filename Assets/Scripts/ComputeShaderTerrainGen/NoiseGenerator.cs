@@ -1,104 +1,86 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using MiniProceduralGeneration.Generator.Processor;
 
-namespace ComputeShaderTerrainGeneration
+namespace MiniProceduralGeneration.Generator
 {
     public interface INoiseGenerator
     {
-        void GenerateNoiseSeed();
-        float[] CalculateNoise(int mapSize, Vector3 position);
+        bool HasCreatedSeed { get; }
+        void GenerateSeed();
+        float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
     }
 
-    public class NoiseGenerator : MonoBehaviour, INoiseGenerator
+    public interface INoiseCharacteristics
     {
-        [SerializeField] private ComputeShader noiseShader;
+        float NoiseScale { get; set; }
+        float Persistence { get; set; }
+        float Lacunarity { get; set; }
+        float NoiseOctaveCount { get; }
+        Vector2[] StepOffsets { get; }
+    }
+
+    /// <summary>
+    /// A class to generate noise for terrain processing.
+    /// </summary>
+    public class NoiseGenerator : MonoBehaviour, INoiseGenerator, INoiseCharacteristics
+    {
+        // Fields
+        private INoiseProcessor noiseProcessor;
 
         [Header("Noise Characteristics")]
         [SerializeField] private float noiseScale;
-        [SerializeField] private int stepDetailCount = 3;
-        private Vector2[] stepOffsets;
+        [SerializeField] private int noiseOctaveCount = 3;
+
         [Range(0.0001f, 1)]
         [SerializeField] private float persistence = 0.5f;
         [Range(0.0001f, 2)]
         [SerializeField] private float lacunarity;
 
-        public float[] noiseData;
+        private Vector2[] octavePositionOffsets;
+        private float[] noiseData;
+        private int seed;
 
-        public float[] CalculateNoise(int mapSize, Vector3 position)
+        // Properties
+        public bool HasCreatedSeed => seed != 0;
+        public float NoiseScale { get => noiseScale; set => noiseScale = value; }
+        public float Persistence { get => persistence; set => persistence = value; }
+        public float Lacunarity { get => lacunarity; set => lacunarity = value; }
+        public float NoiseOctaveCount { get => noiseOctaveCount; set => noiseOctaveCount = (int)value; }
+        public Vector2[] StepOffsets => octavePositionOffsets;
+
+        private void Awake()
+        {
+            noiseProcessor = this.GetComponent<INoiseProcessor>();
+        }
+
+        public void GenerateSeed()
+        {
+            seed = Random.Range(1, 1000000);
+            print("Seed Created: " + seed);
+
+            CreateStepOffsets();
+        }
+
+        public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
         {
             noiseData = new float[mapSize * mapSize];
-
-            NoiseComputeBuffers computeBuffers = CreateNoiseComputeBuffers();
-            SetComputeShaderData(computeBuffers, position, mapSize);
-            noiseShader.Dispatch(0, noiseData.Length / 10, 1, 1);
-
-            GetDataFromComputeShader(computeBuffers);
-
-            // Manual Garbage collection of Buffers from memory
-            DisposeBuffers(computeBuffers);
+            noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition); 
 
             return noiseData;
         }
 
-        public void GenerateNoiseSeed()
+        /// <summary>
+        /// Creates position offsets against sample position for noise data complexity.
+        /// </summary>
+        private void CreateStepOffsets()
         {
-            int seed = Random.Range(1, 1000000);
-            Debug.Log("Seed Created: " + seed);
-
-            System.Random prng = new System.Random(seed);
-            stepOffsets = new Vector2[stepDetailCount];
-            for (int i = 0; i < stepDetailCount; i++)
+            System.Random psuedoRandNumbGenerator = new System.Random(seed);
+            octavePositionOffsets = new Vector2[noiseOctaveCount];
+            for (int i = 0; i < noiseOctaveCount; i++)
             {
-                stepOffsets[i].x = prng.Next(-100000, 100000);
-                stepOffsets[i].y = prng.Next(-100000, 100000);
+                octavePositionOffsets[i].x = psuedoRandNumbGenerator.Next(-100000, 100000);
+                octavePositionOffsets[i].y = psuedoRandNumbGenerator.Next(-100000, 100000);
             }
         }
-
-        private NoiseComputeBuffers CreateNoiseComputeBuffers()
-        {
-            NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
-
-            int noiseSize = sizeof(float);
-            ComputeBuffer noiseBuffer = new ComputeBuffer(noiseData.Length, noiseSize);
-            noiseBuffer.SetData(noiseData);
-            computeBuffers.noiseBuffer = noiseBuffer;
-
-            int offsetSize = sizeof(float) * 2;
-            ComputeBuffer offsetBuffer = new ComputeBuffer(stepOffsets.Length, offsetSize);
-            offsetBuffer.SetData(stepOffsets);
-            computeBuffers.offsetBuffer = offsetBuffer;
-
-            return computeBuffers;
-        }
-
-        private void SetComputeShaderData(NoiseComputeBuffers computeBuffers, Vector3 startPosition, int mapSize)
-        {
-            noiseShader.SetBuffer(0, "noise", computeBuffers.noiseBuffer);
-            noiseShader.SetBuffer(0, "stepOffsets", computeBuffers.offsetBuffer);
-            noiseShader.SetVector("startPosition", startPosition);
-            noiseShader.SetFloat("noiseScale", noiseScale);
-            noiseShader.SetFloat("persistence", persistence);
-            noiseShader.SetFloat("lacunarity", lacunarity);
-            noiseShader.SetInt("mapDimension", mapSize);
-            noiseShader.SetInt("stepDetailCount", stepDetailCount);
-        }
-
-        private void GetDataFromComputeShader(NoiseComputeBuffers computeBuffers)
-        {
-            computeBuffers.noiseBuffer.GetData(noiseData);
-        }
-
-        private void DisposeBuffers(NoiseComputeBuffers computeBuffers)
-        {
-            computeBuffers.noiseBuffer.Dispose();
-            computeBuffers.offsetBuffer.Dispose();
-        }
-    }
-
-    public struct NoiseComputeBuffers
-    {
-        public ComputeBuffer noiseBuffer;
-        public ComputeBuffer offsetBuffer;
     }
 }
