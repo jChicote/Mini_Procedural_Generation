@@ -17,7 +17,7 @@ namespace MiniProceduralGeneration.Generator
     {
         float MaxHeight { get; set; }
         float MinHeight { get; set; }
-        int Width { get; }
+        int MapSize { get; }
         int LODIncrementStep { get; }
         int VertexPerSide { get; }
         float LevelOfDetail { get; set; }
@@ -54,7 +54,7 @@ namespace MiniProceduralGeneration.Generator
         // Properties
         public float MaxHeight { get => maxHeight; set => maxHeight = value; }
         public float MinHeight { get => minHeight; set => minHeight = value; }
-        public int Width => mapWidth;
+        public int MapSize => mapWidth;
         public int LODIncrementStep => lodIncrementStep;
         public int VertexPerSide => chunkDimensions.vertexPerSide;
         public float LevelOfDetail { get => levelOfDetail; set => levelOfDetail = (int)value; }
@@ -90,7 +90,9 @@ namespace MiniProceduralGeneration.Generator
         {
             chunkDimensions = new TerrainChunkDimensions();
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2; // provides the step detail value for each side of mesh
-            chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
+            //chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
+            chunkDimensions.vertexPerSide = mapWidth / lodIncrementStep;
+
             chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
         }
 

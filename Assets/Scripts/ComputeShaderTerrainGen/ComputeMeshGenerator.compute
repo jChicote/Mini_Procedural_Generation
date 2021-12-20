@@ -35,11 +35,27 @@ int CalculateRow(uint index) {
 }
 
 int CalculateColumn(int index, int row) {
-    return index - row * meshLineSize;
+    return index - (row * meshLineSize);
 }
 
-void AddQuad(int index) {
-    int stepIndex = index * 6;
+// summary:
+//  - Calculates offset to the array accounting for skips in quads 
+//    made after each row is processed (6 from each row).
+//
+// returns:
+//  - Quad offset to mesh.
+int CalculateOffset(int row, int col) {
+    if (row == 0) {
+        return 0;
+    }
+
+    int arrayOffset = (row) * 6;
+    return arrayOffset;
+}
+
+
+void AddQuad(int index, int offset) {
+    int stepIndex = index * 6 - offset;
     triangles[stepIndex] = index;
     triangles[stepIndex + 1] = index + meshLineSize;
     triangles[stepIndex + 2] = index + 1;
@@ -59,14 +75,19 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int row = CalculateRow(index);
     int col = CalculateColumn(index, row);
 
-    int scaledRow = row * incrementStep;
+    int scaledRow = row * (meshSize / meshLineSize);
     int scaledCol = col * incrementStep;
 
     vertices[index] = CalculateVertexPosition(scaledRow, scaledCol);
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 
+    if (col < meshLineSize - 1 && row < meshLineSize  - 1) {
+        AddQuad(index, CalculateOffset(row, col));
+    }
+    /*
+
     if (scaledCol < meshSize - 1 && scaledRow < meshSize - 1) {
         AddQuad(index);
-    }
+    }*/
 }

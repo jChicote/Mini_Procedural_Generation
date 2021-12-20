@@ -50,7 +50,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
             vertices = new Vector3[chunkDimensions.squaredVertexSide];
             normals = new Vector3[chunkDimensions.squaredVertexSide];
             uv = new Vector2[chunkDimensions.squaredVertexSide];
-            meshTriangles = new int[chunkDimensions.squaredVertexSide * 6];
+            meshTriangles = new int[(chunkDimensions.vertexPerSide - 1) * (chunkDimensions.vertexPerSide - 1) * 6];
         }
 
         public void BuildMesh()
