@@ -17,7 +17,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         private INoiseCharacteristics noiseCharacteristics;
         private NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
 
-        private void Awake()
+        public void Awake()
         {
             noiseCharacteristics = this.GetComponent<INoiseCharacteristics>();
         }

@@ -106,6 +106,10 @@ namespace MiniProceduralGeneration.Generator
                 terrainProcessor.ProcessChunkMesh(chunk, noiseData);
                 chunk.BuildMesh();
 
+                print("Noise >> " + noiseData.Length);
+                print("Terrain >> " + chunkDimensions.squaredVertexSide);
+                print("Increment >> " + lodIncrementStep);
+
                 // cleans buffers before next use.
                 terrainProcessor.DisposeBuffersIntoGarbageCollection();
             }

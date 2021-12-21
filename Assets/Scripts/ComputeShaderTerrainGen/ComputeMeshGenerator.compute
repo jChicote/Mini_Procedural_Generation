@@ -21,11 +21,15 @@ float CalculateHeight(float noiseVal) {
     return clamp(height, minHeight, maxHeight);
 }
 
+float CalculateScaledDistanceBetweenVert() {
+    return meshSize / (meshLineSize - 1);
+}
+
 float3 CalculateVertexPosition(int row, int col) {
     float3 vertPos = float3(0, 0, 0);
-    vertPos.x = col;
+    vertPos.x = col * CalculateScaledDistanceBetweenVert();
     vertPos.y = CalculateHeight(noiseData[row * meshSize + col]);
-    vertPos.z = row;
+    vertPos.z = row * CalculateScaledDistanceBetweenVert();
     return vertPos;
 }
 
@@ -78,7 +82,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int scaledRow = row * (meshSize / meshLineSize);
     int scaledCol = col * incrementStep;
 
-    vertices[index] = CalculateVertexPosition(scaledRow, scaledCol);
+    vertices[index] = CalculateVertexPosition(row, col);
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 

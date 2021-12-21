@@ -38,7 +38,7 @@ namespace MiniProceduralGeneration.Generator
         [SerializeField] private float lacunarity;
 
         private Vector2[] octavePositionOffsets;
-        private float[] noiseData;
+        public float[] noiseData;
         private int seed;
 
         // Properties
@@ -50,7 +50,7 @@ namespace MiniProceduralGeneration.Generator
         public float NoiseOctaveCount { get => noiseOctaveCount; set => noiseOctaveCount = (int)value; }
         public Vector2[] StepOffsets => octavePositionOffsets;
 
-        private void Awake()
+        public void Awake()
         {
             noiseProcessor = this.GetComponent<INoiseProcessor>();
         }
@@ -65,7 +65,7 @@ namespace MiniProceduralGeneration.Generator
 
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
         {
-            noiseData = new float[(mapSize * mapSize) + 2];
+            noiseData = new float[mapSize * mapSize];
             noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition); 
 
             return noiseData;
