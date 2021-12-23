@@ -33,7 +33,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         [SerializeField] protected MeshCollider meshCollider;
         [SerializeField] protected Mesh mesh;
 
-        public Vector3[] vertices;
+        private Vector3[] vertices;
         private Vector3[] normals;
         private Vector2[] uv;
         private int[] meshTriangles;

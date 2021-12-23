@@ -40,8 +40,11 @@ namespace MiniProceduralGeneration.Generator
         [SerializeField] 
         private int lodIncrementStep;
         [Range(0, 6)]
+
+        // Lower the LOD the higher the resolution
         [SerializeField] 
         private int levelOfDetail = 0;
+        private int minimumLevelOfDetail;
 
         // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
         [SerializeField]
@@ -75,6 +78,7 @@ namespace MiniProceduralGeneration.Generator
 
         public void InitialiseTerrainChunks()
         {
+            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0);
             CalculateChunkDimensions();
 
             foreach (ITerrainChunk chunk in terrainChunks)
@@ -89,11 +93,39 @@ namespace MiniProceduralGeneration.Generator
         public void CalculateChunkDimensions()
         {
             chunkDimensions = new TerrainChunkDimensions();
+
+            if (levelOfDetail > minimumLevelOfDetail)
+            {
+                levelOfDetail = minimumLevelOfDetail;
+            }
+
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2; // provides the step detail value for each side of mesh
             //chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
-            chunkDimensions.vertexPerSide = mapWidth / lodIncrementStep;
-
+            
+            chunkDimensions.vertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
+            
             chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
+            print((float)chunkDimensions.squaredVertexSide / 2.0f);
+        }
+
+        /// <summary>
+        /// Finds the minimum allowable level of detail value of a given mesh size.
+        /// </summary>
+        /// <param name="currentLevelOfDetail"></param>
+        public int FindMininmumAllowableLevelOfDetail(int currentLevelOfDetail)
+        {
+            int nextLodStep = currentLevelOfDetail == 0 ? 1 : currentLevelOfDetail * 2;
+            int vertexPerSide = Mathf.RoundToInt(mapWidth / nextLodStep);
+            float squaredSize = vertexPerSide * vertexPerSide;
+
+            if (squaredSize % 2f == 0f)
+            {
+                currentLevelOfDetail++;
+                return FindMininmumAllowableLevelOfDetail(currentLevelOfDetail);
+            }
+
+            currentLevelOfDetail--;
+            return currentLevelOfDetail;
         }
 
         public void BuildTerrain()

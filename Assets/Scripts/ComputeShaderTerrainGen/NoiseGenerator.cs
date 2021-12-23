@@ -38,7 +38,7 @@ namespace MiniProceduralGeneration.Generator
         [SerializeField] private float lacunarity;
 
         private Vector2[] octavePositionOffsets;
-        public float[] noiseData;
+        private float[] noiseData;
         private int seed;
 
         // Properties

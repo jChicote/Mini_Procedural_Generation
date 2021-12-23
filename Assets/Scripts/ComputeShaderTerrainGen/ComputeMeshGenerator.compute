@@ -25,10 +25,10 @@ float CalculateScaledDistanceBetweenVert() {
     return meshSize / (meshLineSize - 1);
 }
 
-float3 CalculateVertexPosition(int row, int col) {
+float3 CalculateVertexPosition(int row, int col, int scaledRow, int scaledCol) {
     float3 vertPos = float3(0, 0, 0);
     vertPos.x = col * CalculateScaledDistanceBetweenVert();
-    vertPos.y = CalculateHeight(noiseData[row * meshSize + col]);
+    vertPos.y = CalculateHeight(noiseData[scaledRow * meshSize + scaledCol]);
     vertPos.z = row * CalculateScaledDistanceBetweenVert();
     return vertPos;
 }
@@ -82,7 +82,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int scaledRow = row * (meshSize / meshLineSize);
     int scaledCol = col * incrementStep;
 
-    vertices[index] = CalculateVertexPosition(row, col);
+    vertices[index] = CalculateVertexPosition(row, col, scaledRow, scaledCol);
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 

@@ -10,7 +10,6 @@ namespace MiniProceduralGeneration.Test.EditMode
 {
     public class TestTerrainGenerator
     {
-
         [Test]
         public void CheckMapSizeIsDivisibleByEven()
         {
@@ -36,23 +35,19 @@ namespace MiniProceduralGeneration.Test.EditMode
             generatorInstance.CalculateChunkDimensions();
             float scaledSize = generatorInstance.VertexPerSide * generatorInstance.LODIncrementStep;
 
-            Assert.AreEqual(generatorInstance.MapSize + 1, scaledSize);
+            Assert.AreEqual(generatorInstance.MapSize, scaledSize);
         }
 
         [Test]
-        public void NoiseArrayIsEqualToDefaultMeshArraySize()
+        public void MinimumLODIsEqualToRecursiveLevelOfDetail()
         {
             TerrainGenerator generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
-            Vector3[] vertices = new Vector3[generatorInstance.MapSize * generatorInstance.MapSize];
-            float[] noiseData = new float[generatorInstance.MapSize * generatorInstance.MapSize];
+            int lod = 0;
+            int minimumLevelOfDetail = generatorInstance.FindMininmumAllowableLevelOfDetail(lod);
 
-            Assert.AreEqual(noiseData.Length, vertices.Length);
-        }
+            Debug.Log("Minimum LOD >> " + minimumLevelOfDetail);
 
-        [Test]
-        public void NoiseDimensionsCanScaleWithTerrainSize()
-        {
-
+            Assert.AreEqual(12 , minimumLevelOfDetail);
         }
     }
 }
