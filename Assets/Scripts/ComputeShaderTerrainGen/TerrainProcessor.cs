@@ -74,7 +74,7 @@ namespace MiniProceduralGeneration.Generator.Processor
             computeTerrainGen.SetFloat("resolution", chunkAttributes.Vertices.Length);
             computeTerrainGen.SetFloat("maxHeight", terrainCharacteristics.MaxHeight);
             computeTerrainGen.SetFloat("minHeight", terrainCharacteristics.MinHeight);
-            computeTerrainGen.SetFloat("meshSize", terrainCharacteristics.Width);
+            computeTerrainGen.SetFloat("meshSize", terrainCharacteristics.MapSize);
 
             computeTerrainGen.SetInt("meshLineSize", terrainCharacteristics.VertexPerSide);
             computeTerrainGen.SetInt("incrementStep", terrainCharacteristics.LODIncrementStep);

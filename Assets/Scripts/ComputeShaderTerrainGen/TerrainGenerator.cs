@@ -17,7 +17,7 @@ namespace MiniProceduralGeneration.Generator
     {
         float MaxHeight { get; set; }
         float MinHeight { get; set; }
-        int Width { get; }
+        int MapSize { get; }
         int LODIncrementStep { get; }
         int VertexPerSide { get; }
         float LevelOfDetail { get; set; }
@@ -40,11 +40,15 @@ namespace MiniProceduralGeneration.Generator
         [SerializeField] 
         private int lodIncrementStep;
         [Range(0, 6)]
+
+        // Lower the LOD the higher the resolution
         [SerializeField] 
         private int levelOfDetail = 0;
-        
+        private int minimumLevelOfDetail;
+
         // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
-        private const int mapWidth = 241;
+        [SerializeField]
+        private int mapWidth = 241;
 
         public GameObject[] chunkObjects;
         private ITerrainChunk[] terrainChunks;
@@ -53,7 +57,7 @@ namespace MiniProceduralGeneration.Generator
         // Properties
         public float MaxHeight { get => maxHeight; set => maxHeight = value; }
         public float MinHeight { get => minHeight; set => minHeight = value; }
-        public int Width => mapWidth;
+        public int MapSize => mapWidth;
         public int LODIncrementStep => lodIncrementStep;
         public int VertexPerSide => chunkDimensions.vertexPerSide;
         public float LevelOfDetail { get => levelOfDetail; set => levelOfDetail = (int)value; }
@@ -88,9 +92,44 @@ namespace MiniProceduralGeneration.Generator
         public void CalculateChunkDimensions()
         {
             chunkDimensions = new TerrainChunkDimensions();
-            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2; // provides the step detail value for each side of mesh
-            chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
+            CalculateLevelOfDetail();
+
+            chunkDimensions.vertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
+            
             chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
+        }
+
+        private void CalculateLevelOfDetail()
+        {
+            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0);
+
+            if (levelOfDetail > minimumLevelOfDetail)
+            {
+                levelOfDetail = minimumLevelOfDetail;
+            }
+
+            // provides the step detail value for each side of mesh
+            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
+        }
+
+        /// <summary>
+        /// Finds the minimum allowable level of detail value of a given mesh size.
+        /// </summary>
+        /// <param name="currentLevelOfDetail"></param>
+        public int FindMininmumAllowableLevelOfDetail(int currentLevelOfDetail)
+        {
+            int nextLodStep = currentLevelOfDetail == 0 ? 1 : currentLevelOfDetail * 2;
+            int vertexPerSide = Mathf.RoundToInt(mapWidth / nextLodStep);
+            float squaredSize = vertexPerSide * vertexPerSide;
+
+            if (squaredSize % 2f == 0f)
+            {
+                currentLevelOfDetail++;
+                return FindMininmumAllowableLevelOfDetail(currentLevelOfDetail);
+            }
+
+            currentLevelOfDetail--;
+            return currentLevelOfDetail;
         }
 
         public void BuildTerrain()
@@ -102,6 +141,10 @@ namespace MiniProceduralGeneration.Generator
                 noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
                 terrainProcessor.ProcessChunkMesh(chunk, noiseData);
                 chunk.BuildMesh();
+
+                print("Noise >> " + noiseData.Length);
+                print("Terrain >> " + chunkDimensions.squaredVertexSide);
+                print("Increment >> " + lodIncrementStep);
 
                 // cleans buffers before next use.
                 terrainProcessor.DisposeBuffersIntoGarbageCollection();

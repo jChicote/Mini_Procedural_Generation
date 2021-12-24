@@ -6,6 +6,7 @@ namespace MiniProceduralGeneration.Generator
     public interface INoiseGenerator
     {
         bool HasCreatedSeed { get; }
+        float[] NoiseData { get; }
         void GenerateSeed();
         float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
     }
@@ -42,13 +43,14 @@ namespace MiniProceduralGeneration.Generator
 
         // Properties
         public bool HasCreatedSeed => seed != 0;
+        public float[] NoiseData => noiseData;
         public float NoiseScale { get => noiseScale; set => noiseScale = value; }
         public float Persistence { get => persistence; set => persistence = value; }
         public float Lacunarity { get => lacunarity; set => lacunarity = value; }
         public float NoiseOctaveCount { get => noiseOctaveCount; set => noiseOctaveCount = (int)value; }
         public Vector2[] StepOffsets => octavePositionOffsets;
 
-        private void Awake()
+        public void Awake()
         {
             noiseProcessor = this.GetComponent<INoiseProcessor>();
         }
