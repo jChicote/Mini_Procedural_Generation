@@ -78,7 +78,6 @@ namespace MiniProceduralGeneration.Generator
 
         public void InitialiseTerrainChunks()
         {
-            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0);
             CalculateChunkDimensions();
 
             foreach (ITerrainChunk chunk in terrainChunks)
@@ -93,19 +92,24 @@ namespace MiniProceduralGeneration.Generator
         public void CalculateChunkDimensions()
         {
             chunkDimensions = new TerrainChunkDimensions();
+            CalculateLevelOfDetail();
+
+            chunkDimensions.vertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
+            
+            chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
+        }
+
+        private void CalculateLevelOfDetail()
+        {
+            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0);
 
             if (levelOfDetail > minimumLevelOfDetail)
             {
                 levelOfDetail = minimumLevelOfDetail;
             }
 
-            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2; // provides the step detail value for each side of mesh
-            //chunkDimensions.vertexPerSide = (mapWidth - 1) / lodIncrementStep + 1; // width removes 1 so width is a multiple of 2
-            
-            chunkDimensions.vertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
-            
-            chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
-            print((float)chunkDimensions.squaredVertexSide / 2.0f);
+            // provides the step detail value for each side of mesh
+            lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
         }
 
         /// <summary>

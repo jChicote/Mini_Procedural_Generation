@@ -37,17 +37,5 @@ namespace MiniProceduralGeneration.Test.EditMode
 
             Assert.AreEqual(generatorInstance.MapSize, scaledSize);
         }
-
-        [Test]
-        public void MinimumLODIsEqualToRecursiveLevelOfDetail()
-        {
-            TerrainGenerator generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
-            int lod = 0;
-            int minimumLevelOfDetail = generatorInstance.FindMininmumAllowableLevelOfDetail(lod);
-
-            Debug.Log("Minimum LOD >> " + minimumLevelOfDetail);
-
-            Assert.AreEqual(12 , minimumLevelOfDetail);
-        }
     }
 }
