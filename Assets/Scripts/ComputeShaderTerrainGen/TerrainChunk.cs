@@ -7,6 +7,12 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         Vector3 PositionWorldSpace { get; }
         void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
         void BuildMesh();
+        void OnDestroyChunk();
+    }
+
+    public interface IChunkTracker
+    {
+        
     }
 
     /// <summary>
@@ -83,6 +89,12 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         {
             meshFilter.mesh = mesh;
             meshCollider.sharedMesh = mesh;
+        }
+
+        public void OnDestroyChunk()
+        {
+            print("Chunk is being destroyed");
+            Destroy(gameObject, 1);
         }
     }
 }
