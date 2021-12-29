@@ -93,7 +93,6 @@ namespace MiniProceduralGeneration.Generator
 
             foreach (ITerrainChunk chunk in terrainChunks)
             {
-                print(chunk);
                 chunk.InitialiseMeshArrays(chunkDimensions);
             }
         }
@@ -146,11 +145,12 @@ namespace MiniProceduralGeneration.Generator
 
         public void BuildTerrain()
         {
-            float[] noiseData;
+            float[] noiseData = new float[0];
 
             foreach (ITerrainChunk chunk in terrainChunks)
             {
-                noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
+                ProcessChunk(noiseData, chunk);
+                /*noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
                 terrainProcessor.ProcessChunkMesh(chunk, noiseData);
                 chunk.BuildMesh();
 
@@ -159,8 +159,18 @@ namespace MiniProceduralGeneration.Generator
                 print("Increment >> " + lodIncrementStep);
 
                 // cleans buffers before next use.
-                terrainProcessor.DisposeBuffersIntoGarbageCollection();
+                terrainProcessor.DisposeBuffersIntoGarbageCollection();*/
             }
+        }
+
+        public void ProcessChunk(float[] noiseData, ITerrainChunk chunk)
+        {
+            noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
+            terrainProcessor.ProcessChunkMesh(chunk, noiseData);
+            chunk.BuildMesh();
+
+            // cleans buffers before next use.
+            terrainProcessor.DisposeBuffersIntoGarbageCollection();
         }
     }
 

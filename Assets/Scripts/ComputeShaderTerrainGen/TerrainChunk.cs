@@ -4,7 +4,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
 {
     public interface ITerrainChunk : ITerrainChunkAttributeModifier
     {
-        Vector3 PositionWorldSpace { get; }
+        Vector3 PositionWorldSpace { get; set;  }
         void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
         void BuildMesh();
         void OnDestroyChunk();
@@ -45,7 +45,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         private int[] meshTriangles;
 
         // Properties
-        public Vector3 PositionWorldSpace => transform.position;
+        public Vector3 PositionWorldSpace { get => transform.position; set => transform.position = value; }
         public Vector3[] Vertices { get => vertices; set => vertices = value; }
         public Vector3[] Normals { get => normals; set => normals = value; }
         public Vector2[] UVs { get => uv; set => uv =  value; }
@@ -93,7 +93,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
 
         public void OnDestroyChunk()
         {
-            print("Chunk is being destroyed");
+            //print("Chunk is being destroyed");
             Destroy(gameObject, 1);
         }
     }
