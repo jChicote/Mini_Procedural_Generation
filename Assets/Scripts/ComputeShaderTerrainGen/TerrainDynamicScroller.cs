@@ -21,9 +21,9 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         int leftMostEdgeCol = 0;
         int topMostEdgeCol = 0;
         int bottomMostCol = 0;
-        int centerCol = 0;
 
         ITerrainChunk leftChunk;
+        ITerrainChunk rightChunk;
 
         private void Awake()
         {
@@ -55,26 +55,27 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         /// </summary>
         private void ScrollMap()
         {
-            chunkDimension = chunkDistance * 2 + 1;
-
-            leftChunk = chunkArrayInterface.TerrainChunks[GetIndexFromRowAndCol(chunkDistance, leftMostEdgeCol)];
-            //bool test = true;
-
+            ITerrainCharacteristics characteristics = this.GetComponent<ITerrainCharacteristics>();
+            leftChunk = chunkArrayInterface.TerrainChunks[GetIndexFromRowAndCol(0, leftMostEdgeCol)];
+            rightChunk = chunkArrayInterface.TerrainChunks[GetIndexFromRowAndCol(0, rightmostEdgeCol)];
 
             // Reposition Left
-            if (targetObject.position.x < leftChunk.PositionWorldSpace.x + chunkDistance / 2)
+            if (targetObject.position.x < leftChunk.PositionWorldSpace.x + (chunkDistance / 2) * characteristics.MapSize)
             {
-                print("Player: " + targetObject.position.x + ", Compared: " + leftChunk.PositionWorldSpace.x + ", Index: " + leftMostEdgeCol);
+                print("Has Left");
+                //print("Player: " + targetObject.position.x + ", Compared: " + leftChunk.PositionWorldSpace.x + ", Index: " + leftMostEdgeCol);
                 RepositionColToLeft();
-                //print(leftChunk.PositionWorldSpace.x + ((chunkDistance / 2) * 24)); // FOUND THIS TO BE THE CULPRINT, SHIFTS ALL TILES WHEN ALL CHUNKS EVENTUALLY SHIFTS ALL WHEN IT MEETS CONDITION WHEN EACH TILE IS SHIFTED
-                //test = false;
+                return;
             }
 
-            // MAJOR ISSUES CAUSED BY ORIENTATION OF X AND Y REFERENCING MESHES INCORRECTLY.
-            // THE TOP RIGHT IS THE MOST CORNER POINT FROM 0,0.
-
-            // Repoisition Right
-
+            // Reposition Right
+            if (targetObject.position.x > (rightChunk.PositionWorldSpace.x))// - (chunkDistance / 2) * characteristics.MapSize))
+            {
+                print("Player: " + targetObject.position.x + ", Compared: " + rightChunk.PositionWorldSpace.x + ", Index: " + rightmostEdgeCol);
+                print("Has Breached"); // This gets triggered too much when it breaches beyond the left hand threshold BED TO FIXX !!!!!!!!!!!!!!!!!
+                RepositionColToRight();
+                return;
+            }
         }
 
         private int GetIndexFromRowAndCol(int row, int col)
@@ -86,12 +87,12 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         {
             ITerrainCharacteristics characteristics = this.GetComponent<ITerrainCharacteristics>();
 
-            for (int i = 0; i < chunkDistance * 2 + 1; i++) {
+            for (int i = 0; i < chunkDistance * 2 + 1; i++)
+            {
                 int index = GetIndexFromRowAndCol(i, rightmostEdgeCol);
                 Vector3 newPosition = chunkArrayInterface.TerrainChunks[index].PositionWorldSpace;
                 newPosition.x -= characteristics.MapSize * chunkDimension;
                 chunkArrayInterface.TerrainChunks[index].PositionWorldSpace = newPosition;
-                print(chunkDistance * 2 + 1);
             }
 
             leftMostEdgeCol = rightmostEdgeCol;
@@ -103,9 +104,25 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
             }
         }
 
-        private int RepositionColToRight()
+        private void RepositionColToRight()
         {
-            return 0;
+            ITerrainCharacteristics characteristics = this.GetComponent<ITerrainCharacteristics>();
+
+            for (int i = 0; i < chunkDistance * 2 + 1; i++)
+            {
+                int index = GetIndexFromRowAndCol(i, leftMostEdgeCol);
+                Vector3 newPosition = chunkArrayInterface.TerrainChunks[index].PositionWorldSpace;
+                newPosition.x += characteristics.MapSize * chunkDimension;
+                chunkArrayInterface.TerrainChunks[index].PositionWorldSpace = newPosition;
+            }
+
+            rightmostEdgeCol = leftMostEdgeCol;
+            leftMostEdgeCol++;
+
+            if (leftMostEdgeCol == chunkDimension)
+            {
+                leftMostEdgeCol = 0;
+            }
         }
 
         // ---------------------------------------
@@ -118,7 +135,7 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
             DefineScrollingIndexCases();
 
             ITerrainCharacteristics characteristics = this.GetComponent<ITerrainCharacteristics>();
-            
+
             Vector3 testPosition = targetObject.position;
             Vector3 offsetStartPosition = new Vector3(0, 0, 0);
             offsetStartPosition.x = testPosition.x + chunkDistance * characteristics.MapSize;
@@ -127,7 +144,8 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
             // chunk scroll backtracks
             for (int z = chunkDistance; z > -chunkDistance - 1; z--)
             {
-                for (int x = -chunkDistance; x < chunkDistance + 1; x++) {
+                for (int x = -chunkDistance; x < chunkDistance + 1; x++)
+                {
                     CreateChunk(new Vector3((x * characteristics.MapSize) + targetObject.position.x, 0, (z * characteristics.MapSize) + targetObject.position.z));
                 }
             }
@@ -168,7 +186,8 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         {
             rightmostEdgeCol = chunkDistance * 2;
             leftMostEdgeCol = 0;
-            centerCol = chunkDistance;
+            //centerCol = chunkDistance;
+            chunkDimension = chunkDistance * 2 + 1;
         }
 
         private void DestroyChunk(ITerrainChunk chunk, int index)
@@ -179,12 +198,22 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
 
         private void OnDrawGizmos()
         {
+            ITerrainCharacteristics characteristics = this.GetComponent<ITerrainCharacteristics>();
+
             if (leftChunk != null)
             {
                 Gizmos.color = Color.cyan;
                 Gizmos.DrawSphere(leftChunk.PositionWorldSpace, 3);
+                Gizmos.DrawSphere(new Vector3(rightChunk.PositionWorldSpace.x + 24, rightChunk.PositionWorldSpace.y, rightChunk.PositionWorldSpace.z), 3);
                 Gizmos.color = Color.red;
-                Gizmos.DrawCube(new Vector3(leftChunk.PositionWorldSpace.x + (chunkDistance/2) * 24, 0, 0), Vector3.one * 3);
+                Gizmos.DrawCube(new Vector3(leftChunk.PositionWorldSpace.x + (chunkDistance / 2) * characteristics.MapSize, 0, 0), Vector3.one * 3);
+                Gizmos.DrawCube(new Vector3((rightChunk.PositionWorldSpace.x - (chunkDistance / 2) * characteristics.MapSize) + characteristics.MapSize, 0, 0), Vector3.one * 3);
+            }
+
+            if (leftChunk != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawSphere(rightChunk.PositionWorldSpace, 3);
             }
         }
     }
