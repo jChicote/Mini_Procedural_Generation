@@ -23,10 +23,15 @@ namespace MiniProceduralGeneration.Generator
         float LevelOfDetail { get; set; }
     }
 
+    public interface ITerrainChunkArray
+    {
+        ITerrainChunk[] TerrainChunks { get; set; }
+    }
+
     /// <summary>
     /// The primary terrain class that handles and coordinates building the terrain chunks.
     /// </summary>
-    public class TerrainGenerator : MonoBehaviour, ITerrainGenerator, ITerrainCharacteristics
+    public class TerrainGenerator : MonoBehaviour, ITerrainGenerator, ITerrainCharacteristics, ITerrainChunkArray
     {
         // Fields
         public INoiseGenerator noiseGenerator;
@@ -55,6 +60,7 @@ namespace MiniProceduralGeneration.Generator
         private TerrainChunkDimensions chunkDimensions;
 
         // Properties
+        public ITerrainChunk[] TerrainChunks { get => terrainChunks; set => terrainChunks = value; }
         public float MaxHeight { get => maxHeight; set => maxHeight = value; }
         public float MinHeight { get => minHeight; set => minHeight = value; }
         public int MapSize => mapWidth;
@@ -71,13 +77,18 @@ namespace MiniProceduralGeneration.Generator
             // Collects chunk interfaces set through the inspector editor
             for (int i = 0; i < chunkObjects.Length; i++)
             {
-                ITerrainChunk chunk = chunkObjects[i].GetComponent<ITerrainChunk>();
-                terrainChunks[i] = chunk;
+                if (chunkObjects[i] != null)
+                {
+                    ITerrainChunk chunk = chunkObjects[i].GetComponent<ITerrainChunk>();
+                    terrainChunks[i] = chunk;
+                }
             }
         }
 
         public void InitialiseTerrainChunks()
         {
+            if (terrainChunks.Length == 0) return;
+
             CalculateChunkDimensions();
 
             foreach (ITerrainChunk chunk in terrainChunks)
@@ -134,11 +145,12 @@ namespace MiniProceduralGeneration.Generator
 
         public void BuildTerrain()
         {
-            float[] noiseData;
+            float[] noiseData = new float[0];
 
             foreach (ITerrainChunk chunk in terrainChunks)
             {
-                noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
+                ProcessChunk(noiseData, chunk);
+                /*noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
                 terrainProcessor.ProcessChunkMesh(chunk, noiseData);
                 chunk.BuildMesh();
 
@@ -147,8 +159,18 @@ namespace MiniProceduralGeneration.Generator
                 print("Increment >> " + lodIncrementStep);
 
                 // cleans buffers before next use.
-                terrainProcessor.DisposeBuffersIntoGarbageCollection();
+                terrainProcessor.DisposeBuffersIntoGarbageCollection();*/
             }
+        }
+
+        public void ProcessChunk(float[] noiseData, ITerrainChunk chunk)
+        {
+            noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
+            terrainProcessor.ProcessChunkMesh(chunk, noiseData);
+            chunk.BuildMesh();
+
+            // cleans buffers before next use.
+            terrainProcessor.DisposeBuffersIntoGarbageCollection();
         }
     }
 
