@@ -41,23 +41,24 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         }
 
         /// <summary>
-        /// 
+        /// Checks wether target object exceeds compared limits to trigger chunk shifting.
         /// </summary>
         private void ScrollMap()
         {
-            if (targetObject.position.x < leftChunk.PositionWorldSpace.x + (chunkDistance / 2) * characteristics.MapSize) // Reposition Left
+            float halfDistance = chunkDistance * characteristics.MapSize;
+            if (targetObject.position.x < leftChunk.PositionWorldSpace.x + halfDistance) // Reposition Left
             {
                 RepositionColToLeft();
             }
-            else if (targetObject.position.x > rightChunk.PositionWorldSpace.x)// - (chunkDistance / 2) * characteristics.MapSize)) // Reposition Right
+            else if (targetObject.position.x > rightChunk.PositionWorldSpace.x - halfDistance / 2)// - (chunkDistance / 2) * characteristics.MapSize)) // Reposition Right
             {
                 RepositionColToRight();
             }
-            else if (targetObject.position.z > topChunk.PositionWorldSpace.z) // Reposition Up
+            else if (targetObject.position.z > topChunk.PositionWorldSpace.z - halfDistance / 2) // Reposition Up
             {
                 RepositionRowToTop();
             }
-            else if (targetObject.position.z < bottomChunk.PositionWorldSpace.z) // Reposition Down
+            else if (targetObject.position.z < bottomChunk.PositionWorldSpace.z + halfDistance) // Reposition Down
             {
                 RepositionRowToBottom();
             }
@@ -95,10 +96,8 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         }
 
         /// <summary>
-        /// 
+        /// Iterates through chunks to shift chunks to a specified column in the map.
         /// </summary>
-        /// <param name="targetCol"></param>
-        /// <param name="movementDirection"></param>
         private void ShiftAndEnumerateHorizontalCol(int targetCol, int movementDirection)
         {
             int index;
@@ -144,10 +143,8 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         }
 
         /// <summary>
-        /// 
+        /// Iterates through chuinks to shift chu7nks to a specified row in the map.
         /// </summary>
-        /// <param name="targetRow"></param>
-        /// <param name="movementDirection"></param>
         private void ShiftAndEnumerateVerticalRow(int targetRow, int movementDirection)
         {
             int index;
@@ -168,7 +165,7 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         }
 
         /// <summary>
-        /// 
+        /// Creates a completed terrain map with a collection of seperate chunks
         /// </summary>
         public void CreateChunkMap()
         {
