@@ -20,8 +20,9 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
     /// 
     public class TerrainDynamicScroller : MonoBehaviour
     {
-        // Fields
-        private ITerrainChunkArray chunkArrayInterface;
+
+        #region -------- Fields --------
+        
         public Transform targetObject;
         public GameObject chunkPrefab;
 
@@ -33,12 +34,14 @@ namespace MiniProceduralGeneration.Generator.DynamicFeature
         int topMostEdgeRow = 0;
         int bottomMostEdgeRow = 0;
 
+        ITerrainCharacteristics characteristics;
+        private ITerrainChunkArray chunkArrayInterface;
         ITerrainChunk leftChunk;
         ITerrainChunk rightChunk;
         ITerrainChunk topChunk;
         ITerrainChunk bottomChunk;
 
-        ITerrainCharacteristics characteristics;
+        #endregion
 
         private void Awake()
         {
