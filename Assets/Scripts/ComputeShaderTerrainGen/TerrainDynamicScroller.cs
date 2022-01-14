@@ -3,8 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using MiniProceduralGeneration.Generator.MeshWork;
 
+
 namespace MiniProceduralGeneration.Generator.DynamicFeature
 {
+
+    /// <summary>
+    /// 
+    /// !!!!!!!!!!!!!!!!! IMPORTANT TO CHANGE !!!!!!!!!!!!!!!!!!!!
+    /// 
+    /// Refactoring Chores needed for this class:
+    /// - Changing Terrain Dynamic scroller to be the parent controller of both scrolling and chunk rendering
+    /// - Collapse scrolling motion to single function controlled by integer direction
+    /// - Refactor map chunk renddering with better name
+    /// 
+    /// </summary>
+    /// 
     public class TerrainDynamicScroller : MonoBehaviour
     {
         // Fields
