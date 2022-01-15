@@ -1,8 +1,6 @@
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Generator.Processor;
+using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator
 {
@@ -38,16 +36,16 @@ namespace MiniProceduralGeneration.Generator
         private ITerrainProcessor terrainProcessor;
 
         [Header("Terrain Chracteristics")]
-        [SerializeField] 
+        [SerializeField]
         private float maxHeight = 10;
-        [SerializeField] 
+        [SerializeField]
         private float minHeight = 0;
-        [SerializeField] 
+        [SerializeField]
         private int lodIncrementStep;
         [Range(0, 6)]
 
         // Lower the LOD the higher the resolution
-        [SerializeField] 
+        [SerializeField]
         private int levelOfDetail = 0;
         private int minimumLevelOfDetail;
 
@@ -106,7 +104,7 @@ namespace MiniProceduralGeneration.Generator
             CalculateLevelOfDetail();
 
             chunkDimensions.vertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
-            
+
             chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
         }
 
