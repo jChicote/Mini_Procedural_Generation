@@ -1,3 +1,5 @@
+using MiniProceduralGeneration.Generator.MeshWork;
+
 namespace MiniProceduralGeneration.Generator.Entities
 {
 
@@ -13,7 +15,7 @@ namespace MiniProceduralGeneration.Generator.Entities
 
         public ITerrainCharacteristics Characteristics { get; set; }
 
-        public ITerrainChunkArray ChunkArrayInterface { get; set; }
+        public ITerrainChunk[] TerrainChunks { get; set; }
 
         public int ChunkDistance
         {

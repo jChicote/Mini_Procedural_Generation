@@ -1,5 +1,6 @@
-using UnityEngine;
 using MiniProceduralGeneration.Generator.Processor;
+using MiniProceduralGeneration.Handler;
+using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator
 {
@@ -23,7 +24,7 @@ namespace MiniProceduralGeneration.Generator
     /// <summary>
     /// A class to generate noise for terrain processing.
     /// </summary>
-    public class NoiseGenerator : MonoBehaviour, INoiseGenerator, INoiseCharacteristics
+    public class NoiseGenerator : GameHandler, INoiseGenerator, INoiseCharacteristics
     {
         // Fields
         private INoiseProcessor noiseProcessor;
@@ -66,7 +67,7 @@ namespace MiniProceduralGeneration.Generator
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
         {
             noiseData = new float[mapSize * mapSize];
-            noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition); 
+            noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition);
 
             return noiseData;
         }

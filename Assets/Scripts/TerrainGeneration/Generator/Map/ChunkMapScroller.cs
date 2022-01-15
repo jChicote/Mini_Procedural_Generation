@@ -1,12 +1,13 @@
 using MiniProceduralGeneration.Generator.Creator.Map;
 using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Generator.Utility;
+using MiniProceduralGeneration.Handler;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.Scroller
 {
 
-    public class ChunkMapScroller : MonoBehaviour
+    public class ChunkMapScroller : GameHandler
     {
 
         #region -------- Fields --------
@@ -26,16 +27,25 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
         #region ------ Methods ------
 
-        private void Start()
+        public override object Handle(object request)
+        {
+            print("Handle 2 ran");
+            chunkMap = this.GetComponent<IMapCreator>().ChunkMap;
+            mapBorder = new MapBorder();
+
+            return base.Handle(request);
+        }
+
+        /*private void Start()
         {
             chunkMap = this.GetComponent<IMapCreator>().ChunkMap;
 
             mapBorder = new MapBorder();
-        }
+        }*/
 
         private void Update()
         {
-            if (chunkMap.ChunkArrayInterface.TerrainChunks.Length <= 1) return;
+            if (chunkMap.TerrainChunks.Length <= 1) return;
 
             ScrollMap();
         }
@@ -43,7 +53,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
         public void DefineMapBorders()
         {
             mapBorder.FindMapBoundaryIndexes(chunkMap.ChunkDistance, chunkMap.MapEdgeSize);
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.ChunkArrayInterface, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
         }
 
         /// <summary>
@@ -83,7 +93,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
                 mapBorder.RightmostEdgeCol = chunkMap.ChunkDistance * 2;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.ChunkArrayInterface, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
         }
 
         private void RepositionColToRight()
@@ -98,7 +108,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
                 mapBorder.LeftMostEdgeCol = 0;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.ChunkArrayInterface, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
         }
 
         /// <summary>
@@ -112,9 +122,9 @@ namespace MiniProceduralGeneration.Generator.Scroller
             for (int i = 0; i < chunkMap.ChunkDistance * 2 + 1; i++)
             {
                 index = MapArrayUtility.GetIndexFromRowAndCol(chunkMap.MapEdgeSize, i, targetCol);
-                newPosition = chunkMap.ChunkArrayInterface.TerrainChunks[index].PositionWorldSpace;
+                newPosition = chunkMap.TerrainChunks[index].PositionWorldSpace;
                 newPosition.x += chunkMap.MapEdgeSize * chunkMap.Characteristics.MapSize * movementDirection;
-                chunkMap.ChunkArrayInterface.TerrainChunks[index].PositionWorldSpace = newPosition;
+                chunkMap.TerrainChunks[index].PositionWorldSpace = newPosition;
             }
         }
 
@@ -130,7 +140,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
                 mapBorder.BottomMostEdgeRow = chunkMap.ChunkDistance * 2;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.ChunkArrayInterface, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
         }
 
         private void RepositionRowToBottom()
@@ -145,7 +155,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
                 mapBorder.TopMostEdgeRow = 0;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.ChunkArrayInterface, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
         }
 
         /// <summary>
@@ -159,9 +169,9 @@ namespace MiniProceduralGeneration.Generator.Scroller
             for (int i = 0; i < chunkMap.MapEdgeSize; i++)
             {
                 index = MapArrayUtility.GetIndexFromRowAndCol(chunkMap.MapEdgeSize, targetRow, i);
-                newPosition = chunkMap.ChunkArrayInterface.TerrainChunks[index].PositionWorldSpace;
+                newPosition = chunkMap.TerrainChunks[index].PositionWorldSpace;
                 newPosition.z += chunkMap.Characteristics.MapSize * chunkMap.MapEdgeSize * movementDirection;
-                chunkMap.ChunkArrayInterface.TerrainChunks[index].PositionWorldSpace = newPosition;
+                chunkMap.TerrainChunks[index].PositionWorldSpace = newPosition;
             }
         }
 

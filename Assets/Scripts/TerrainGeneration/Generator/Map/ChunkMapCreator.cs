@@ -1,5 +1,6 @@
 using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Generator.MeshWork;
+using MiniProceduralGeneration.Handler;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.Creator.Map
@@ -13,7 +14,7 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
     /// <summary>
     /// Creates Chunk Map for Terrain Generation.
     /// </summary>
-    public class ChunkMapCreator : MonoBehaviour, IMapCreator
+    public class ChunkMapCreator : GameHandler, IMapCreator
     {
         #region ------ Fields ------
 
@@ -31,13 +32,16 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
 
         #region ------ Methods ------
 
-        private void Awake()
+        public override object Handle(object request)
         {
+            print("Handle 1 ran first");
             chunkMap = new ChunkMap
             {
-                ChunkArrayInterface = this.GetComponent<ITerrainChunkArray>(),
-                Characteristics = this.GetComponent<ITerrainCharacteristics>(),
+                TerrainChunks = new ITerrainChunk[0],
+                Characteristics = this.GetComponent<ITerrainCharacteristics>()
             };
+
+            return base.Handle(request);
         }
 
         /// <summary>
@@ -59,35 +63,35 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
 
         public void CreateChunk(Vector3 newPosition)
         {
-            ITerrainChunk[] tempArray = new ITerrainChunk[chunkMap.ChunkArrayInterface.TerrainChunks.Length + 1];
+            ITerrainChunk[] tempArray = new ITerrainChunk[chunkMap.TerrainChunks.Length + 1];
 
-            for (int i = 0; i < chunkMap.ChunkArrayInterface.TerrainChunks.Length; i++)
+            for (int i = 0; i < chunkMap.TerrainChunks.Length; i++)
             {
-                tempArray[i] = chunkMap.ChunkArrayInterface.TerrainChunks[i];
+                tempArray[i] = chunkMap.TerrainChunks[i];
             }
 
             tempArray[tempArray.Length - 1] = Instantiate(chunkPrefab, newPosition, Quaternion.identity).GetComponent<ITerrainChunk>();
-            chunkMap.ChunkArrayInterface.TerrainChunks = tempArray;
+            chunkMap.TerrainChunks = tempArray;
         }
 
         private void ClearMap()
         {
-            if (chunkMap.ChunkArrayInterface.TerrainChunks.Length == 0) return;
+            if (chunkMap.TerrainChunks.Length == 0) return;
 
-            int index = chunkMap.ChunkArrayInterface.TerrainChunks.Length - 1;
+            int index = chunkMap.TerrainChunks.Length - 1;
 
             while (index >= 0)
             {
-                DestroyChunk(chunkMap.ChunkArrayInterface.TerrainChunks[index], index);
+                DestroyChunk(chunkMap.TerrainChunks[index], index);
                 index--;
             }
 
-            chunkMap.ChunkArrayInterface.TerrainChunks = new ITerrainChunk[0];
+            chunkMap.TerrainChunks = new ITerrainChunk[0];
         }
 
         private void DestroyChunk(ITerrainChunk chunk, int index)
         {
-            chunkMap.ChunkArrayInterface.TerrainChunks[index] = null;
+            chunkMap.TerrainChunks[index] = null;
             chunk.OnDestroyChunk();
         }
 

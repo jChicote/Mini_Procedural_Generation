@@ -28,12 +28,12 @@ namespace MiniProceduralGeneration.Generator.Entities
 
         #region ------ Methods -------
 
-        public void DefineReferenceChunksInCardinalDirections(ITerrainChunkArray chunkArrayInterface, int mapEdgeSize)
+        public void DefineReferenceChunksInCardinalDirections(ITerrainChunk[] chunkArray, int mapEdgeSize)
         {
-            LeftChunk = chunkArrayInterface.TerrainChunks[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, 0, LeftMostEdgeCol)];
-            RightChunk = chunkArrayInterface.TerrainChunks[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, 0, RightmostEdgeCol)];
-            TopChunk = chunkArrayInterface.TerrainChunks[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, TopMostEdgeRow, 0)];
-            BottomChunk = chunkArrayInterface.TerrainChunks[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, BottomMostEdgeRow, 0)];
+            LeftChunk = chunkArray[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, 0, LeftMostEdgeCol)];
+            RightChunk = chunkArray[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, 0, RightmostEdgeCol)];
+            TopChunk = chunkArray[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, TopMostEdgeRow, 0)];
+            BottomChunk = chunkArray[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, BottomMostEdgeRow, 0)];
         }
 
         public void FindMapBoundaryIndexes(int chunkDistance, int mapEdgeSize)

@@ -600,7 +600,7 @@ Transform:
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &140984316
 GameObject:
@@ -940,7 +940,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &189647132
 GameObject:
@@ -1098,8 +1098,7 @@ MonoBehaviour:
   lodIncrementStep: 0
   levelOfDetail: 0
   mapWidth: 24
-  chunkObjects:
-  - {fileID: 555729147}
+  chunkObjects: []
 --- !u!4 &252276652
 Transform:
   m_ObjectHideFlags: 0
@@ -1144,7 +1143,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetObject: {fileID: 135815824}
   chunkPrefab: {fileID: 1486601122822607981, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-  chunkDistance: 2
 --- !u!114 &252276655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1159,7 +1157,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 1486601122822607981, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
   targetObject: {fileID: 135815824}
-  chunkDistance: 4
 --- !u!114 &252276657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2642,9 +2639,35 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 252276655}
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.Creator.Map.ChunkMapCreator,
+          Main
+        m_MethodName: CreateChunkMap
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 252276654}
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.Scroller.ChunkMapScroller,
+          Main
+        m_MethodName: DefineMapBorders
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 252276651}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
+          Main
         m_MethodName: BuildTerrain
         m_Mode: 1
         m_Arguments:
@@ -2657,7 +2680,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 2041720436}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.UserInterfaces.TerrainGeneratorUIControls,
-          Assembly-CSharp
+          Main
         m_MethodName: EnableInteraction
         m_Mode: 1
         m_Arguments:
@@ -2840,11 +2863,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 540781648}
   m_CullTransparentMesh: 1
---- !u!1 &555729147 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1486601122822607981, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-  m_PrefabInstance: {fileID: 1486601123377058966}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &565395194
 GameObject:
   m_ObjectHideFlags: 0
@@ -3503,7 +3521,7 @@ RectTransform:
   m_Children:
   - {fileID: 1768672494}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3756,7 +3774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1048881435
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6457,7 +6475,7 @@ RectTransform:
   - {fileID: 2118571684}
   - {fileID: 526351770}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6882,60 +6900,3 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138556542}
   m_CullTransparentMesh: 1
---- !u!1001 &1486601123377058966
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607977, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1486601122822607981, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
-      propertyPath: m_Name
-      value: TerrainChunk
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}

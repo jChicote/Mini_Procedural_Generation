@@ -1,5 +1,8 @@
+using MiniProceduralGeneration.Generator.Creator.Map;
 using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Generator.Processor;
+using MiniProceduralGeneration.Generator.Scroller;
+using MiniProceduralGeneration.Handler;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator
@@ -29,9 +32,10 @@ namespace MiniProceduralGeneration.Generator
     /// <summary>
     /// The primary terrain class that handles and coordinates building the terrain chunks.
     /// </summary>
-    public class TerrainGenerator : MonoBehaviour, ITerrainGenerator, ITerrainCharacteristics, ITerrainChunkArray
+    public class TerrainGenerator : GameHandler, ITerrainGenerator, ITerrainCharacteristics
     {
-        // Fields
+        #region ------ Fields ------
+
         public INoiseGenerator noiseGenerator;
         private ITerrainProcessor terrainProcessor;
 
@@ -53,12 +57,14 @@ namespace MiniProceduralGeneration.Generator
         [SerializeField]
         private int mapWidth = 241;
 
-        public GameObject[] chunkObjects;
-        private ITerrainChunk[] terrainChunks;
         private TerrainChunkDimensions chunkDimensions;
 
-        // Properties
-        public ITerrainChunk[] TerrainChunks { get => terrainChunks; set => terrainChunks = value; }
+        private IMapCreator mapCreator;
+
+        #endregion Fields
+
+        #region ------ Properties ------
+
         public float MaxHeight { get => maxHeight; set => maxHeight = value; }
         public float MinHeight { get => minHeight; set => minHeight = value; }
         public int MapSize => mapWidth;
@@ -66,30 +72,31 @@ namespace MiniProceduralGeneration.Generator
         public int VertexPerSide => chunkDimensions.vertexPerSide;
         public float LevelOfDetail { get => levelOfDetail; set => levelOfDetail = (int)value; }
 
+        #endregion Properties
+
+        #region ------ Methods ------
+
         private void Awake()
         {
+            mapCreator = this.GetComponent<IMapCreator>();
             terrainProcessor = this.GetComponent<ITerrainProcessor>();
             noiseGenerator = this.GetComponent<INoiseGenerator>();
-            terrainChunks = new ITerrainChunk[chunkObjects.Length];
 
-            // Collects chunk interfaces set through the inspector editor
-            for (int i = 0; i < chunkObjects.Length; i++)
-            {
-                if (chunkObjects[i] != null)
-                {
-                    ITerrainChunk chunk = chunkObjects[i].GetComponent<ITerrainChunk>();
-                    terrainChunks[i] = chunk;
-                }
-            }
+            ChunkMapCreator mapChunkCreator = this.GetComponent<ChunkMapCreator>();
+            ChunkMapScroller mapScroller = this.GetComponent<ChunkMapScroller>();
+
+            mapChunkCreator.SetNext(mapScroller);
+            mapChunkCreator.Handle(true);
         }
 
         public void InitialiseTerrainChunks()
         {
-            if (terrainChunks.Length == 0) return;
+            if (mapCreator.ChunkMap.TerrainChunks.Length == 0) return;
 
             CalculateChunkDimensions();
 
-            foreach (ITerrainChunk chunk in terrainChunks)
+            print(mapCreator.ChunkMap.TerrainChunks.Length);
+            foreach (ITerrainChunk chunk in mapCreator.ChunkMap.TerrainChunks)
             {
                 chunk.InitialiseMeshArrays(chunkDimensions);
             }
@@ -145,19 +152,9 @@ namespace MiniProceduralGeneration.Generator
         {
             float[] noiseData = new float[0];
 
-            foreach (ITerrainChunk chunk in terrainChunks)
+            foreach (ITerrainChunk chunk in mapCreator.ChunkMap.TerrainChunks)
             {
                 ProcessChunk(noiseData, chunk);
-                /*noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
-                terrainProcessor.ProcessChunkMesh(chunk, noiseData);
-                chunk.BuildMesh();
-
-                print("Noise >> " + noiseData.Length);
-                print("Terrain >> " + chunkDimensions.squaredVertexSide);
-                print("Increment >> " + lodIncrementStep);
-
-                // cleans buffers before next use.
-                terrainProcessor.DisposeBuffersIntoGarbageCollection();*/
             }
         }
 
@@ -171,6 +168,8 @@ namespace MiniProceduralGeneration.Generator
             terrainProcessor.DisposeBuffersIntoGarbageCollection();
         }
     }
+
+    #endregion Methods
 
     [System.Serializable]
     public class TerrainChunkDimensions
