@@ -1,4 +1,5 @@
 using MiniProceduralGeneration.Generator.Creator.Map;
+using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Generator.Processor;
 using MiniProceduralGeneration.Generator.Scroller;
@@ -69,7 +70,7 @@ namespace MiniProceduralGeneration.Generator
         public float MinHeight { get => minHeight; set => minHeight = value; }
         public int MapSize => mapWidth;
         public int LODIncrementStep => lodIncrementStep;
-        public int VertexPerSide => chunkDimensions.vertexPerSide;
+        public int VertexPerSide => chunkDimensions.VertexPerSide;
         public float LevelOfDetail { get => levelOfDetail; set => levelOfDetail = (int)value; }
 
         #endregion Properties
@@ -110,9 +111,9 @@ namespace MiniProceduralGeneration.Generator
             chunkDimensions = new TerrainChunkDimensions();
             CalculateLevelOfDetail();
 
-            chunkDimensions.vertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
+            chunkDimensions.VertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
 
-            chunkDimensions.squaredVertexSide = chunkDimensions.vertexPerSide * chunkDimensions.vertexPerSide;
+            chunkDimensions.SquaredVertexSide = chunkDimensions.VertexPerSide * chunkDimensions.VertexPerSide;
         }
 
         private void CalculateLevelOfDetail()
@@ -167,14 +168,7 @@ namespace MiniProceduralGeneration.Generator
             // cleans buffers before next use.
             terrainProcessor.DisposeBuffersIntoGarbageCollection();
         }
-    }
 
-    #endregion Methods
-
-    [System.Serializable]
-    public class TerrainChunkDimensions
-    {
-        public int vertexPerSide;
-        public int squaredVertexSide;
+        #endregion Methods
     }
 }

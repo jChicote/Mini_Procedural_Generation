@@ -1,10 +1,11 @@
+using MiniProceduralGeneration.Generator.Entities;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.MeshWork
 {
     public interface ITerrainChunk : ITerrainChunkAttributeModifier
     {
-        Vector3 PositionWorldSpace { get; set;  }
+        Vector3 PositionWorldSpace { get; set; }
         void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
         void BuildMesh();
         void OnDestroyChunk();
@@ -12,11 +13,11 @@ namespace MiniProceduralGeneration.Generator.MeshWork
 
     public interface IChunkTracker
     {
-        
+
     }
 
     /// <summary>
-    /// Interfaces for accessing terrain chunks properties for modifying 
+    /// Interfaces for accessing terrain chunks properties for modifying
     /// mesh information.
     /// </summary>
     public interface ITerrainChunkAttributeModifier
@@ -28,7 +29,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
     }
 
     /// <summary>
-    /// A terrain chunk attaches to its own gameobject instance rendering 
+    /// A terrain chunk attaches to its own gameobject instance rendering
     /// meshes from the given mesh data.
     /// </summary>
     public class TerrainChunk : MonoBehaviour, ITerrainChunk
@@ -48,15 +49,15 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         public Vector3 PositionWorldSpace { get => transform.position; set => transform.position = value; }
         public Vector3[] Vertices { get => vertices; set => vertices = value; }
         public Vector3[] Normals { get => normals; set => normals = value; }
-        public Vector2[] UVs { get => uv; set => uv =  value; }
+        public Vector2[] UVs { get => uv; set => uv = value; }
         public int[] Triangles { get => meshTriangles; set => meshTriangles = value; }
 
         public void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions)
         {
-            vertices = new Vector3[chunkDimensions.squaredVertexSide];
-            normals = new Vector3[chunkDimensions.squaredVertexSide];
-            uv = new Vector2[chunkDimensions.squaredVertexSide];
-            meshTriangles = new int[(chunkDimensions.vertexPerSide - 1) * (chunkDimensions.vertexPerSide - 1) * 6];
+            vertices = new Vector3[chunkDimensions.SquaredVertexSide];
+            normals = new Vector3[chunkDimensions.SquaredVertexSide];
+            uv = new Vector2[chunkDimensions.SquaredVertexSide];
+            meshTriangles = new int[(chunkDimensions.VertexPerSide - 1) * (chunkDimensions.VertexPerSide - 1) * 6];
         }
 
         public void BuildMesh()

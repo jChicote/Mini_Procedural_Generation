@@ -1098,7 +1098,6 @@ MonoBehaviour:
   lodIncrementStep: 0
   levelOfDetail: 0
   mapWidth: 24
-  chunkObjects: []
 --- !u!4 &252276652
 Transform:
   m_ObjectHideFlags: 0
@@ -2626,10 +2625,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: InitialiseTerrainChunks
+      - m_Target: {fileID: 252276655}
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.Creator.Map.ChunkMapCreator,
+          Main
+        m_MethodName: CreateChunkMap
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2639,10 +2638,10 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 252276655}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.Creator.Map.ChunkMapCreator,
+      - m_Target: {fileID: 252276651}
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
           Main
-        m_MethodName: CreateChunkMap
+        m_MethodName: InitialiseTerrainChunks
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
