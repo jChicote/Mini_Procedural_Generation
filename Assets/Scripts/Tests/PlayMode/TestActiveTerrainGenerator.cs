@@ -20,8 +20,8 @@ namespace MiniProceduralGeneration.Test.Playmode
         [Test]
         public void CheckMapSizeIsDivisibleByEven()
         {
-            TerrainGenerator generatorInstance = GameObject.FindWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
-            bool checkCondition = (generatorInstance.MapSize % 2) == 0;
+            TerrainManager generatorInstance = GameObject.FindWithTag("TerrainGenerator").GetComponent<TerrainManager>();
+            bool checkCondition = (generatorInstance.ChunkWidth % 2) == 0;
 
             Assert.AreEqual(true, checkCondition);
         }
@@ -29,7 +29,7 @@ namespace MiniProceduralGeneration.Test.Playmode
         [Test]
         public void CheckMapSizeIsDivisibleByThree()
         {
-            TerrainGenerator generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
+            TerrainManager generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainManager>();
 
         }
     }

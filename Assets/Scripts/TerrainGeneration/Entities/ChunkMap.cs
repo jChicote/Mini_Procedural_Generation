@@ -13,7 +13,7 @@ namespace MiniProceduralGeneration.Generator.Entities
 
         #region ------ Properties ------
 
-        public ITerrainCharacteristics Characteristics { get; set; }
+        public ITerrainAttributes Characteristics { get; set; }
 
         public ITerrainChunk[] TerrainChunks { get; set; }
 
@@ -23,7 +23,7 @@ namespace MiniProceduralGeneration.Generator.Entities
             set => chunkDistance = value;
         }
 
-        public int MapSize => Characteristics.MapSize; // Redundant
+        public int MapSize => Characteristics.ChunkWidth; // Redundant
 
         public int MapEdgeSize => chunkDistance * 2 + 1;
 

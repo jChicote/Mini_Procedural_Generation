@@ -3,64 +3,54 @@ using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Generator.Processor;
 using MiniProceduralGeneration.Generator.Scroller;
+using MiniProceduralGeneration.Generator.Utility;
 using MiniProceduralGeneration.Handler;
-using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator
 {
     public interface ITerrainGenerator
     {
-        void CalculateChunkDimensions();
+        //void CalculateChunkDimensions();
         void InitialiseTerrainChunks();
         void BuildTerrain();
     }
 
-    public interface ITerrainCharacteristics
+    public interface ITerrainAttributes
     {
         float MaxHeight { get; set; }
         float MinHeight { get; set; }
-        int MapSize { get; }
-        int LODIncrementStep { get; }
+        int ChunkWidth { get; }
+        int LODIncrementStep { get; set; }
         int VertexPerSide { get; }
         float LevelOfDetail { get; set; }
     }
 
-    public interface ITerrainChunkArray
+    public interface ITerrainChunks
     {
-        ITerrainChunk[] TerrainChunks { get; set; }
+        ITerrainChunk[] ChunkArray { get; set; }
     }
 
     /// <summary>
     /// The primary terrain class that handles and coordinates building the terrain chunks.
     /// </summary>
-    public class TerrainGenerator : GameHandler, ITerrainGenerator, ITerrainCharacteristics
+    public class TerrainManager : GameHandler, ITerrainGenerator, ITerrainAttributes, ITerrainChunks
     {
         #region ------ Fields ------
 
         public INoiseGenerator noiseGenerator;
         private ITerrainProcessor terrainProcessor;
 
-        [Header("Terrain Chracteristics")]
-        [SerializeField]
         private float maxHeight = 10;
-        [SerializeField]
         private float minHeight = 0;
-        [SerializeField]
         private int lodIncrementStep;
-        [Range(0, 6)]
-
-        // Lower the LOD the higher the resolution
-        [SerializeField]
         private int levelOfDetail = 0;
         private int minimumLevelOfDetail;
-
-        // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
-        [SerializeField]
-        private int mapWidth = 241;
+        private int chunkWidth = 241;
 
         private TerrainChunkDimensions chunkDimensions;
 
-        private IMapCreator mapCreator;
+        private IMapGridCreator mapCreator;
+        private IChunkDimensionsUtility dimensionsUtility;
 
         #endregion Fields
 
@@ -68,10 +58,17 @@ namespace MiniProceduralGeneration.Generator
 
         public float MaxHeight { get => maxHeight; set => maxHeight = value; }
         public float MinHeight { get => minHeight; set => minHeight = value; }
-        public int MapSize => mapWidth;
-        public int LODIncrementStep => lodIncrementStep;
+        public int ChunkWidth => chunkWidth;
+
+        public int LODIncrementStep
+        {
+            get => lodIncrementStep;
+            set => lodIncrementStep = value;
+        }
+
         public int VertexPerSide => chunkDimensions.VertexPerSide;
         public float LevelOfDetail { get => levelOfDetail; set => levelOfDetail = (int)value; }
+        public ITerrainChunk[] ChunkArray { get; set; }
 
         #endregion Properties
 
@@ -79,25 +76,29 @@ namespace MiniProceduralGeneration.Generator
 
         private void Awake()
         {
-            mapCreator = this.GetComponent<IMapCreator>();
+            mapCreator = this.GetComponent<IMapGridCreator>();
             terrainProcessor = this.GetComponent<ITerrainProcessor>();
             noiseGenerator = this.GetComponent<INoiseGenerator>();
+
+            ChunkArray = new ITerrainChunk[0];
 
             ChunkMapCreator mapChunkCreator = this.GetComponent<ChunkMapCreator>();
             ChunkMapScroller mapScroller = this.GetComponent<ChunkMapScroller>();
 
             mapChunkCreator.SetNext(mapScroller);
             mapChunkCreator.Handle(true);
+
+            dimensionsUtility = new ChunkDimensionsUtility(this);
         }
 
         public void InitialiseTerrainChunks()
         {
-            if (mapCreator.ChunkMap.TerrainChunks.Length == 0) return;
+            if (ChunkArray.Length == 0) return;
 
-            CalculateChunkDimensions();
+            chunkDimensions = dimensionsUtility.CalculateChunkDimensions();
 
-            print(mapCreator.ChunkMap.TerrainChunks.Length);
-            foreach (ITerrainChunk chunk in mapCreator.ChunkMap.TerrainChunks)
+            print(ChunkArray.Length);
+            foreach (ITerrainChunk chunk in ChunkArray)
             {
                 chunk.InitialiseMeshArrays(chunkDimensions);
             }
@@ -106,13 +107,12 @@ namespace MiniProceduralGeneration.Generator
         /// <summary>
         /// Calculates base dimensions to be used for each chunk mesh
         /// </summary>
-        public void CalculateChunkDimensions()
+        /*public void CalculateChunkDimensions()
         {
             chunkDimensions = new TerrainChunkDimensions();
             CalculateLevelOfDetail();
 
-            chunkDimensions.VertexPerSide = Mathf.RoundToInt(mapWidth / lodIncrementStep);
-
+            chunkDimensions.VertexPerSide = Mathf.RoundToInt(chunkWidth / lodIncrementStep);
             chunkDimensions.SquaredVertexSide = chunkDimensions.VertexPerSide * chunkDimensions.VertexPerSide;
         }
 
@@ -127,16 +127,16 @@ namespace MiniProceduralGeneration.Generator
 
             // provides the step detail value for each side of mesh
             lodIncrementStep = levelOfDetail == 0 ? 1 : levelOfDetail * 2;
-        }
+        }*/
 
-        /// <summary>
+        /*/// <summary>
         /// Finds the minimum allowable level of detail value of a given mesh size.
         /// </summary>
         /// <param name="currentLevelOfDetail"></param>
         public int FindMininmumAllowableLevelOfDetail(int currentLevelOfDetail)
         {
             int nextLodStep = currentLevelOfDetail == 0 ? 1 : currentLevelOfDetail * 2;
-            int vertexPerSide = Mathf.RoundToInt(mapWidth / nextLodStep);
+            int vertexPerSide = Mathf.RoundToInt(chunkWidth / nextLodStep);
             float squaredSize = vertexPerSide * vertexPerSide;
 
             if (squaredSize % 2f == 0f)
@@ -147,13 +147,13 @@ namespace MiniProceduralGeneration.Generator
 
             currentLevelOfDetail--;
             return currentLevelOfDetail;
-        }
+        }*/
 
         public void BuildTerrain()
         {
             float[] noiseData = new float[0];
 
-            foreach (ITerrainChunk chunk in mapCreator.ChunkMap.TerrainChunks)
+            foreach (ITerrainChunk chunk in ChunkArray)
             {
                 ProcessChunk(noiseData, chunk);
             }
@@ -161,7 +161,7 @@ namespace MiniProceduralGeneration.Generator
 
         public void ProcessChunk(float[] noiseData, ITerrainChunk chunk)
         {
-            noiseData = noiseGenerator.SampleNoiseDataAtLocation(mapWidth, chunk.PositionWorldSpace);
+            noiseData = noiseGenerator.SampleNoiseDataAtLocation(chunkWidth, chunk.PositionWorldSpace);
             terrainProcessor.ProcessChunkMesh(chunk, noiseData);
             chunk.BuildMesh();
 

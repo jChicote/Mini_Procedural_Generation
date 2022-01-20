@@ -9,7 +9,7 @@ namespace MiniProceduralGeneration.Utility.Visualisation
     public class NoiseVisualiser : MonoBehaviour
     {
         public NoiseGenerator noiseGenerator;
-        public TerrainGenerator terrainGenerator;
+        public TerrainManager terrainGenerator;
         private Image resultImage;
         private int imageWidth;
         private int imageHeight;
@@ -24,7 +24,7 @@ namespace MiniProceduralGeneration.Utility.Visualisation
         public void CreateVisualisation()
         {
             Texture2D texture = GenerateImage();
-            Sprite visualisation = Sprite.Create(texture, new Rect(0, 0, terrainGenerator.MapSize, terrainGenerator.MapSize), new Vector2(0.5f, 0.5f), 100f);
+            Sprite visualisation = Sprite.Create(texture, new Rect(0, 0, terrainGenerator.ChunkWidth, terrainGenerator.ChunkWidth), new Vector2(0.5f, 0.5f), 100f);
 
             resultImage.sprite = visualisation;
         }
@@ -40,11 +40,11 @@ namespace MiniProceduralGeneration.Utility.Visualisation
         {
             Texture2D texture = new Texture2D(imageWidth, imageHeight);
             GetImageDimensions();
-            texture.Resize(terrainGenerator.MapSize, terrainGenerator.MapSize);
+            texture.Resize(terrainGenerator.ChunkWidth, terrainGenerator.ChunkWidth);
 
-            for (int index = 0, row = 0; row < terrainGenerator.MapSize; row++)
+            for (int index = 0, row = 0; row < terrainGenerator.ChunkWidth; row++)
             {
-                for (int col = 0; col < terrainGenerator.MapSize; col++, index++)
+                for (int col = 0; col < terrainGenerator.ChunkWidth; col++, index++)
                 {
                     Color pixel = new Color(noiseGenerator.NoiseData[index], noiseGenerator.NoiseData[index], noiseGenerator.NoiseData[index]);
                     texture.SetPixel(col, row, pixel);

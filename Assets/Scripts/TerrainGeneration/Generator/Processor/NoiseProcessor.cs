@@ -7,9 +7,6 @@ namespace MiniProceduralGeneration.Generator.Processor
         void ProcessNoiseData(float[] noiseDataArray, int mapSize, Vector3 samplePosition);
     }
 
-    /// <summary>
-    /// 
-    /// </summary>
     public class NoiseProcessor : MonoBehaviour, INoiseProcessor
     {
         // Fields
@@ -43,10 +40,10 @@ namespace MiniProceduralGeneration.Generator.Processor
         {
             //computeBuffers = new NoiseComputeBuffers();
 
-            computeBuffers.noiseBuffer = new ComputeBuffer(noiseDataArray.Length, sizeof(float)); 
+            computeBuffers.noiseBuffer = new ComputeBuffer(noiseDataArray.Length, sizeof(float));
             computeBuffers.noiseBuffer.SetData(noiseDataArray);
 
-            computeBuffers.offsetBuffer = new ComputeBuffer(noiseCharacteristics.StepOffsets.Length, sizeof(float) * 2); 
+            computeBuffers.offsetBuffer = new ComputeBuffer(noiseCharacteristics.StepOffsets.Length, sizeof(float) * 2);
             computeBuffers.offsetBuffer.SetData(noiseCharacteristics.StepOffsets);
         }
 

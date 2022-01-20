@@ -1,5 +1,5 @@
-using UnityEngine;
 using MiniProceduralGeneration.Generator.MeshWork;
+using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.Processor
 {
@@ -16,12 +16,12 @@ namespace MiniProceduralGeneration.Generator.Processor
     {
         // Fields
         public ComputeShader computeTerrainGen;
-        private ITerrainCharacteristics terrainCharacteristics;
+        private ITerrainAttributes terrainCharacteristics;
         private MeshComputeBuffers meshBuffers;
 
         private void Awake()
         {
-            terrainCharacteristics = this.GetComponent<ITerrainCharacteristics>();
+            terrainCharacteristics = this.GetComponent<ITerrainAttributes>();
             meshBuffers = new MeshComputeBuffers();
         }
 
@@ -74,7 +74,7 @@ namespace MiniProceduralGeneration.Generator.Processor
             computeTerrainGen.SetFloat("resolution", chunkAttributes.Vertices.Length);
             computeTerrainGen.SetFloat("maxHeight", terrainCharacteristics.MaxHeight);
             computeTerrainGen.SetFloat("minHeight", terrainCharacteristics.MinHeight);
-            computeTerrainGen.SetFloat("meshSize", terrainCharacteristics.MapSize);
+            computeTerrainGen.SetFloat("meshSize", terrainCharacteristics.ChunkWidth);
 
             computeTerrainGen.SetInt("meshLineSize", terrainCharacteristics.VertexPerSide);
             computeTerrainGen.SetInt("incrementStep", terrainCharacteristics.LODIncrementStep);

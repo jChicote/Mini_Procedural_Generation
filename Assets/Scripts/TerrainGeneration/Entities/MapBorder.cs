@@ -1,5 +1,6 @@
 using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Generator.Utility;
+using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.Entities
 {
@@ -30,6 +31,9 @@ namespace MiniProceduralGeneration.Generator.Entities
 
         public void DefineReferenceChunksInCardinalDirections(ITerrainChunk[] chunkArray, int mapEdgeSize)
         {
+            Debug.Log(mapEdgeSize);
+            Debug.Log(chunkArray);
+
             LeftChunk = chunkArray[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, 0, LeftMostEdgeCol)];
             RightChunk = chunkArray[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, 0, RightmostEdgeCol)];
             TopChunk = chunkArray[MapArrayUtility.GetIndexFromRowAndCol(mapEdgeSize, TopMostEdgeRow, 0)];

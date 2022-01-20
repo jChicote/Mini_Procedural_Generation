@@ -14,8 +14,12 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
         public Transform targetObject;
         public GameObject chunkPrefab;
-        public ChunkMap chunkMap;
         public MapBorder mapBorder;
+        private int mapGridEdgeSize = 0;
+
+        private ITerrainChunks terrainChunks;
+        private ITerrainAttributes terrainAttributes;
+        private IMapGridCreator mapGridCreator;
 
         #endregion
 
@@ -29,31 +33,29 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
         public override object Handle(object request)
         {
-            print("Handle 2 ran");
-            chunkMap = this.GetComponent<IMapCreator>().ChunkMap;
+            terrainChunks = this.GetComponent<ITerrainChunks>();
+            terrainAttributes = this.GetComponent<ITerrainAttributes>();
+            mapGridCreator = this.GetComponent<IMapGridCreator>();
             mapBorder = new MapBorder();
+
+            DefineMapBorders();
 
             return base.Handle(request);
         }
 
-        /*private void Start()
-        {
-            chunkMap = this.GetComponent<IMapCreator>().ChunkMap;
-
-            mapBorder = new MapBorder();
-        }*/
-
         private void Update()
         {
-            if (chunkMap.TerrainChunks.Length <= 1) return;
+            if (terrainChunks.ChunkArray.Length <= 1) return;
 
             ScrollMap();
         }
 
         public void DefineMapBorders()
         {
-            mapBorder.FindMapBoundaryIndexes(chunkMap.ChunkDistance, chunkMap.MapEdgeSize);
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
+            mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
+
+            mapBorder.FindMapBoundaryIndexes(mapGridCreator.ChunkDistance, mapGridEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         /// <summary>
@@ -61,7 +63,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
         /// </summary>
         private void ScrollMap()
         {
-            float halfDistance = chunkMap.ChunkDistance * chunkMap.Characteristics.MapSize;
+            float halfDistance = mapGridCreator.ChunkDistance * terrainAttributes.ChunkWidth;
             if (targetObject.position.x < mapBorder.LeftChunk.PositionWorldSpace.x + halfDistance) // Reposition Left
             {
                 RepositionColToLeft();
@@ -90,10 +92,10 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
             if (mapBorder.RightmostEdgeCol < 0)
             {
-                mapBorder.RightmostEdgeCol = chunkMap.ChunkDistance * 2;
+                mapBorder.RightmostEdgeCol = mapGridCreator.ChunkDistance * 2;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         private void RepositionColToRight()
@@ -103,12 +105,12 @@ namespace MiniProceduralGeneration.Generator.Scroller
             mapBorder.RightmostEdgeCol = mapBorder.LeftMostEdgeCol;
             mapBorder.LeftMostEdgeCol++;
 
-            if (mapBorder.LeftMostEdgeCol == chunkMap.MapEdgeSize)
+            if (mapBorder.LeftMostEdgeCol == mapGridEdgeSize)
             {
                 mapBorder.LeftMostEdgeCol = 0;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         /// <summary>
@@ -119,12 +121,12 @@ namespace MiniProceduralGeneration.Generator.Scroller
             int index;
             Vector3 newPosition;
 
-            for (int i = 0; i < chunkMap.ChunkDistance * 2 + 1; i++)
+            for (int i = 0; i < mapGridCreator.ChunkDistance * 2 + 1; i++)
             {
-                index = MapArrayUtility.GetIndexFromRowAndCol(chunkMap.MapEdgeSize, i, targetCol);
-                newPosition = chunkMap.TerrainChunks[index].PositionWorldSpace;
-                newPosition.x += chunkMap.MapEdgeSize * chunkMap.Characteristics.MapSize * movementDirection;
-                chunkMap.TerrainChunks[index].PositionWorldSpace = newPosition;
+                index = MapArrayUtility.GetIndexFromRowAndCol(mapGridEdgeSize, i, targetCol);
+                newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
+                newPosition.x += mapGridEdgeSize * terrainAttributes.ChunkWidth * movementDirection;
+                terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
             }
         }
 
@@ -137,10 +139,10 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
             if (mapBorder.BottomMostEdgeRow < 0)
             {
-                mapBorder.BottomMostEdgeRow = chunkMap.ChunkDistance * 2;
+                mapBorder.BottomMostEdgeRow = mapGridCreator.ChunkDistance * 2;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         private void RepositionRowToBottom()
@@ -150,12 +152,12 @@ namespace MiniProceduralGeneration.Generator.Scroller
             mapBorder.BottomMostEdgeRow = mapBorder.TopMostEdgeRow;
             mapBorder.TopMostEdgeRow++;
 
-            if (mapBorder.TopMostEdgeRow == chunkMap.MapEdgeSize)
+            if (mapBorder.TopMostEdgeRow == mapGridEdgeSize)
             {
                 mapBorder.TopMostEdgeRow = 0;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(chunkMap.TerrainChunks, chunkMap.MapEdgeSize);
+            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         /// <summary>
@@ -166,12 +168,12 @@ namespace MiniProceduralGeneration.Generator.Scroller
             int index;
             Vector3 newPosition;
 
-            for (int i = 0; i < chunkMap.MapEdgeSize; i++)
+            for (int i = 0; i < mapGridEdgeSize; i++)
             {
-                index = MapArrayUtility.GetIndexFromRowAndCol(chunkMap.MapEdgeSize, targetRow, i);
-                newPosition = chunkMap.TerrainChunks[index].PositionWorldSpace;
-                newPosition.z += chunkMap.Characteristics.MapSize * chunkMap.MapEdgeSize * movementDirection;
-                chunkMap.TerrainChunks[index].PositionWorldSpace = newPosition;
+                index = MapArrayUtility.GetIndexFromRowAndCol(mapGridEdgeSize, targetRow, i);
+                newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
+                newPosition.z += terrainAttributes.ChunkWidth * mapGridEdgeSize * movementDirection;
+                terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
             }
         }
 
