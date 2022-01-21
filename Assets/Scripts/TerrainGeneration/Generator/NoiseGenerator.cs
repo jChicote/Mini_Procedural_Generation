@@ -12,19 +12,19 @@ namespace MiniProceduralGeneration.Generator
         float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
     }
 
-    public interface INoiseCharacteristics
+    public interface INoiseAttributes
     {
         float NoiseScale { get; set; }
         float Persistence { get; set; }
         float Lacunarity { get; set; }
-        float NoiseOctaveCount { get; }
+        float NoiseOctaveCount { get; set; }
         Vector2[] StepOffsets { get; }
     }
 
     /// <summary>
     /// A class to generate noise for terrain processing.
     /// </summary>
-    public class NoiseGenerator : GameHandler, INoiseGenerator, INoiseCharacteristics
+    public class NoiseGenerator : GameHandler, INoiseGenerator, INoiseAttributes
     {
         // Fields
         private INoiseProcessor noiseProcessor;

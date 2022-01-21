@@ -36,7 +36,7 @@ namespace MiniProceduralGeneration.ScriptableObjects
         public int minimumLevelOfDetail;
 
         // width must contain a base value that follows the "divisibility rules" (add 1 for noise processing).
-        public int mapWidth;
+        public int chunkWidth;
 
     }
 
@@ -46,7 +46,7 @@ namespace MiniProceduralGeneration.ScriptableObjects
 
         public float noiseScale;
         public int noiseOctaveCount;
-        public float persistencee;
+        public float persistence;
         public float lacunarity;
 
     }

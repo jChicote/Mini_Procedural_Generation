@@ -11,12 +11,12 @@ namespace MiniProceduralGeneration.Generator.Processor
     {
         // Fields
         [SerializeField] private ComputeShader noiseShader;
-        private INoiseCharacteristics noiseCharacteristics;
+        private INoiseAttributes noiseCharacteristics;
         private NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
 
         public void Awake()
         {
-            noiseCharacteristics = this.GetComponent<INoiseCharacteristics>();
+            noiseCharacteristics = this.GetComponent<INoiseAttributes>();
         }
 
         public void ProcessNoiseData(float[] noiseDataArray, int mapSize, Vector3 samplePosition)

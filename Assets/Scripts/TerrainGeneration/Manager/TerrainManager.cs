@@ -19,7 +19,7 @@ namespace MiniProceduralGeneration.Generator
     {
         float MaxHeight { get; set; }
         float MinHeight { get; set; }
-        int ChunkWidth { get; }
+        int ChunkWidth { get; set; }
         int LODIncrementStep { get; set; }
         int VertexPerSide { get; }
         float LevelOfDetail { get; set; }
@@ -58,7 +58,7 @@ namespace MiniProceduralGeneration.Generator
 
         public float MaxHeight { get => maxHeight; set => maxHeight = value; }
         public float MinHeight { get => minHeight; set => minHeight = value; }
-        public int ChunkWidth => chunkWidth;
+        public int ChunkWidth { get => chunkWidth; set => chunkWidth = value; }
 
         public int LODIncrementStep
         {
