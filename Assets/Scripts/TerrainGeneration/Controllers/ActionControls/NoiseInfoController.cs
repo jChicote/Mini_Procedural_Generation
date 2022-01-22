@@ -16,7 +16,7 @@ namespace MiniProceduralGeneration.Controllers.ActionControls
         #region - - - - Fields - - - -
 
         [SerializeField]
-        private TerrainGenerationSettings settings;
+        private readonly TerrainGenerationSettings settings;
 
         #endregion
 

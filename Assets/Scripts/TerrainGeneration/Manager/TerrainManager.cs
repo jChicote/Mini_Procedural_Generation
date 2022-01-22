@@ -1,9 +1,9 @@
 using MiniProceduralGeneration.Controllers.ActionControls;
 using MiniProceduralGeneration.Generator.Creator.Map;
 using MiniProceduralGeneration.Generator.Entities;
+using MiniProceduralGeneration.Generator.MapGrid;
 using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Generator.Processor;
-using MiniProceduralGeneration.Generator.Scroller;
 using MiniProceduralGeneration.Generator.Utility;
 using MiniProceduralGeneration.Handler;
 
@@ -43,15 +43,6 @@ namespace MiniProceduralGeneration.Generator
         private IMapGridCreator mapCreator;
         private IChunkDimensionsUtility dimensionsUtility;
         private ITerrainInfoController controller;
-
-        //private float maxHeight = 10;
-        //private float minHeight = 0;
-        //private int lodIncrementStep;
-        //private int levelOfDetail = 0;
-        //private int minimumLevelOfDetail;
-        //private int chunkWidth = 241;
-
-        //private ITerrainChunk[] chunkArray;
 
         private TerrainChunkDimensions chunkDimensions;
 
@@ -119,6 +110,9 @@ namespace MiniProceduralGeneration.Generator
 
         public void ProcessChunk(float[] noiseData, ITerrainChunk chunk)
         {
+            if (noiseData is null)
+                _ = new float[0];
+
             noiseData = noiseGenerator.SampleNoiseDataAtLocation(ChunkWidth, chunk.PositionWorldSpace);
             terrainProcessor.ProcessChunkMesh(chunk, noiseData);
             chunk.BuildMesh();

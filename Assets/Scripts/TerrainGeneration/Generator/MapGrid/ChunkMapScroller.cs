@@ -1,10 +1,9 @@
 using MiniProceduralGeneration.Generator.Creator.Map;
-using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Generator.Utility;
 using MiniProceduralGeneration.Handler;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.Scroller
+namespace MiniProceduralGeneration.Generator.MapGrid
 {
 
     public interface ICalculateMapBorder
@@ -19,7 +18,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
         public Transform targetObject;
         public GameObject chunkPrefab;
-        public MapBorder mapBorder;
+        public MapGridBorderFinder mapBorder;
         private int mapGridEdgeSize = 0;
 
         private ITerrainChunks terrainChunks;
@@ -30,7 +29,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
         #region ------ Properties ------
 
-        public MapBorder MapBorder => mapBorder;
+        public MapGridBorderFinder MapBorder => mapBorder;
 
         #endregion Properties
 
@@ -41,7 +40,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
             terrainChunks = this.GetComponent<ITerrainChunks>();
             terrainAttributes = this.GetComponent<ITerrainAttributes>();
             mapGridCreator = this.GetComponent<IMapGridCreator>();
-            mapBorder = new MapBorder();
+            mapBorder = new MapGridBorderFinder();
 
             DefineMapBorders();
 
@@ -57,8 +56,7 @@ namespace MiniProceduralGeneration.Generator.Scroller
 
         public void DefineMapBorders()
         {
-            mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
-
+            CalculateMapGridSize();
             mapBorder.FindMapBoundaryIndexes(mapGridCreator.ChunkDistance, mapGridEdgeSize);
             mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
@@ -181,6 +179,8 @@ namespace MiniProceduralGeneration.Generator.Scroller
                 terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
             }
         }
+
+        public void CalculateMapGridSize() => mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
 
         #endregion Methods
     }

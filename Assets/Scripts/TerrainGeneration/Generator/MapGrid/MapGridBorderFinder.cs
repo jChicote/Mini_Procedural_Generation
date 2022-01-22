@@ -1,11 +1,20 @@
 using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Generator.Utility;
 
-namespace MiniProceduralGeneration.Generator.Entities
+namespace MiniProceduralGeneration.Generator.MapGrid
 {
 
-    public class MapBorder
+    public interface IMapGridBorderFinder
     {
+
+        void DefineReferenceChunksInCardinalDirections(ITerrainChunk[] chunkArray, int mapEdgeSize);
+        void FindMapBoundaryIndexes(int chunkDistance, int mapEdgeSize);
+
+    }
+
+    public class MapGridBorderFinder : IMapGridBorderFinder
+    {
+
         #region ------ Properties ------
 
         public ITerrainChunk LeftChunk { get; set; }
@@ -47,5 +56,7 @@ namespace MiniProceduralGeneration.Generator.Entities
         }
 
         #endregion Methods
+
     }
+
 }
