@@ -86,7 +86,6 @@ namespace MiniProceduralGeneration.Generator
             ChunkArray = new ITerrainChunk[0];
             dimensionsUtility = new ChunkDimensionsUtility(this);
 
-
             ChunkMapCreator mapChunkCreator = this.GetComponent<ChunkMapCreator>();
             ChunkMapScroller mapScroller = this.GetComponent<ChunkMapScroller>();
 

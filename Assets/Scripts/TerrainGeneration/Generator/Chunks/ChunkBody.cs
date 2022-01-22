@@ -27,7 +27,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
     /// A terrain chunk attaches to its own gameobject instance rendering
     /// meshes from the given mesh data.
     /// </summary>
-    public class TerrainChunk : MonoBehaviour, ITerrainChunk
+    public class ChunkBody : MonoBehaviour, ITerrainChunk
     {
         // Fields
         [Header("Mesh Components")]

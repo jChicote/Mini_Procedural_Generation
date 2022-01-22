@@ -8,6 +8,7 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
 
     public interface IMapGridCreator
     {
+
         public int ChunkDistance { get; set; }
 
         void CreateChunkMap(ITerrainChunks terrainChunks);
@@ -23,11 +24,11 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
 
         #region ------ Fields ------
 
-        public GameObject chunkPrefab;
-        public Transform targetObject;
+        public GameObject chunkPrefab; // Remove
+        public Transform targetObject; // Remove
 
         [SerializeField]
-        private int chunkDistance = 2;
+        private int chunkDistance = 2; // Change
 
         private ITerrainAttributes terrainAttributes;
         private ICalculateMapBorder calculateBorder;
@@ -76,9 +77,7 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
             ITerrainChunk[] tempArray = new ITerrainChunk[chunkArray.Length + 1];
 
             for (int i = 0; i < chunkArray.Length; i++)
-            {
                 tempArray[i] = chunkArray[i];
-            }
 
             tempArray[tempArray.Length - 1] = CreateChunk(newPosition);
             return tempArray;
@@ -92,7 +91,6 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
             if (chunkArray.Length == 0) return;
 
             int index = chunkArray.Length - 1;
-
             while (index >= 0)
             {
                 DestroyChunk(chunkArray[index]);
