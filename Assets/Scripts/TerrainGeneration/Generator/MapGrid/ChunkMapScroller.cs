@@ -7,7 +7,12 @@ using UnityEngine;
 namespace MiniProceduralGeneration.Generator.Scroller
 {
 
-    public class ChunkMapScroller : GameHandler
+    public interface ICalculateMapBorder
+    {
+        void DefineMapBorders();
+    }
+
+    public class ChunkMapScroller : GameHandler, ICalculateMapBorder
     {
 
         #region -------- Fields --------

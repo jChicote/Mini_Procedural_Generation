@@ -1,4 +1,5 @@
 using MiniProceduralGeneration.Generator.MeshWork;
+using MiniProceduralGeneration.Generator.Scroller;
 using MiniProceduralGeneration.Handler;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
         private int chunkDistance = 2;
 
         private ITerrainAttributes terrainAttributes;
+        private ICalculateMapBorder calculateBorder;
 
         #endregion Fields
 
@@ -43,6 +45,7 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
         public override object Handle(object request)
         {
             terrainAttributes = this.GetComponent<ITerrainAttributes>();
+            calculateBorder = this.GetComponent<ICalculateMapBorder>();
 
             return base.Handle(request);
         }
@@ -64,6 +67,8 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
                                                     (z * terrainAttributes.ChunkWidth) + targetObject.position.z));
                 }
             }
+
+            calculateBorder.DefineMapBorders();
         }
 
         private ITerrainChunk[] AddToChunkArray(ITerrainChunk[] chunkArray, Vector3 newPosition)

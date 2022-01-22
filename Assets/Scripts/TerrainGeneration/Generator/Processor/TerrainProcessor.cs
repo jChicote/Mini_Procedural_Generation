@@ -5,7 +5,7 @@ namespace MiniProceduralGeneration.Generator.Processor
 {
     public interface ITerrainProcessor
     {
-        void ProcessChunkMesh(ITerrainChunkAttributeModifier chunkAttributes, float[] noiseData);
+        void ProcessChunkMesh(IChunkMeshAttributes chunkAttributes, float[] noiseData);
         void DisposeBuffersIntoGarbageCollection();
     }
 
@@ -25,7 +25,7 @@ namespace MiniProceduralGeneration.Generator.Processor
             meshBuffers = new MeshComputeBuffers();
         }
 
-        public void ProcessChunkMesh(ITerrainChunkAttributeModifier chunkAttributes, float[] noiseData)
+        public void ProcessChunkMesh(IChunkMeshAttributes chunkAttributes, float[] noiseData)
         {
             CreateNewMeshBuffers(noiseData, chunkAttributes);
 
@@ -40,7 +40,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         /// </summary>
         /// <param name="noiseData">Generated noise</param>
         /// <param name="chunkAttributes">Interface to terrain attributes of mesh.</param>
-        private void CreateNewMeshBuffers(float[] noiseData, ITerrainChunkAttributeModifier chunkAttributes)
+        private void CreateNewMeshBuffers(float[] noiseData, IChunkMeshAttributes chunkAttributes)
         {
             meshBuffers.vertBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 3);
             meshBuffers.vertBuffer.SetData(chunkAttributes.Vertices);
@@ -63,7 +63,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         /// Sets the compute shader to recieve variables of input terrain data.
         /// </summary>
         /// <param name="chunkAttributes">Interface to terrain attributes of mesh.</param>
-        private void SetComputeShaderVariables(ITerrainChunkAttributeModifier chunkAttributes)
+        private void SetComputeShaderVariables(IChunkMeshAttributes chunkAttributes)
         {
             computeTerrainGen.SetBuffer(0, "vertices", meshBuffers.vertBuffer);
             computeTerrainGen.SetBuffer(0, "noiseData", meshBuffers.noiseBuffer);
@@ -84,7 +84,7 @@ namespace MiniProceduralGeneration.Generator.Processor
         /// Collects mesh data from compute shader to be outputted to terrain chunk variables.
         /// </summary>
         /// <param name="chunkAttributes">Interface modifier to targetted terrain chunk instance.</param>
-        private void RetrieveDataFromComputeShader(ITerrainChunkAttributeModifier chunkModifier)
+        private void RetrieveDataFromComputeShader(IChunkMeshAttributes chunkModifier)
         {
             meshBuffers.vertBuffer.GetData(chunkModifier.Vertices);
             meshBuffers.normalBuffer.GetData(chunkModifier.Normals);

@@ -2610,58 +2610,6 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 252276651}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: CalculateChunkDimensions
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 252276655}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.Creator.Map.ChunkMapCreator,
-          Main
-        m_MethodName: CreateChunkMap
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Main
-        m_MethodName: InitialiseTerrainChunks
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 252276654}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.Scroller.ChunkMapScroller,
-          Main
-        m_MethodName: DefineMapBorders
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
           Main
         m_MethodName: BuildTerrain
         m_Mode: 1
@@ -6231,6 +6179,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1882280088}
+  - component: {fileID: 1882280090}
+  - component: {fileID: 1882280089}
   m_Layer: 0
   m_Name: GameManagers
   m_TagString: Untagged
@@ -6252,6 +6202,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1882280089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1882280087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5f125ae952b87044845422ca5cec439, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: 63003b65e9a1e594ea8abba7af72be2c, type: 2}
+--- !u!114 &1882280090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1882280087}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a2a67ed705013f4d880438d209cad81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings: {fileID: 11400000, guid: 63003b65e9a1e594ea8abba7af72be2c, type: 2}
 --- !u!1 &1898461757
 GameObject:
   m_ObjectHideFlags: 0

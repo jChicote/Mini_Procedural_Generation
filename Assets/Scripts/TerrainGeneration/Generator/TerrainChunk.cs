@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.MeshWork
 {
-    public interface ITerrainChunk : ITerrainChunkAttributeModifier
+    public interface ITerrainChunk : IChunkMeshAttributes
     {
         Vector3 PositionWorldSpace { get; set; }
         void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
@@ -11,16 +11,11 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         void OnDestroyChunk();
     }
 
-    public interface IChunkTracker
-    {
-
-    }
-
     /// <summary>
     /// Interfaces for accessing terrain chunks properties for modifying
     /// mesh information.
     /// </summary>
-    public interface ITerrainChunkAttributeModifier
+    public interface IChunkMeshAttributes
     {
         Vector3[] Vertices { get; set; }
         Vector3[] Normals { get; set; }
