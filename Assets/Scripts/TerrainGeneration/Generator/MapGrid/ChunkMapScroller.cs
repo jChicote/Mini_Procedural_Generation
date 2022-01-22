@@ -18,20 +18,14 @@ namespace MiniProceduralGeneration.Generator.MapGrid
 
         public Transform targetObject;
         public GameObject chunkPrefab;
-        public MapGridBorderFinder mapBorder;
         private int mapGridEdgeSize = 0;
 
         private ITerrainChunks terrainChunks;
         private ITerrainAttributes terrainAttributes;
         private IMapGridCreator mapGridCreator;
+        private IMapGridBorderFinder mapBorderFinder;
 
         #endregion
-
-        #region ------ Properties ------
-
-        public MapGridBorderFinder MapBorder => mapBorder;
-
-        #endregion Properties
 
         #region ------ Methods ------
 
@@ -40,7 +34,7 @@ namespace MiniProceduralGeneration.Generator.MapGrid
             terrainChunks = this.GetComponent<ITerrainChunks>();
             terrainAttributes = this.GetComponent<ITerrainAttributes>();
             mapGridCreator = this.GetComponent<IMapGridCreator>();
-            mapBorder = new MapGridBorderFinder();
+            mapBorderFinder = new MapGridBorderFinder();
 
             DefineMapBorders();
 
@@ -57,8 +51,8 @@ namespace MiniProceduralGeneration.Generator.MapGrid
         public void DefineMapBorders()
         {
             CalculateMapGridSize();
-            mapBorder.FindMapBoundaryIndexes(mapGridCreator.ChunkDistance, mapGridEdgeSize);
-            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
+            mapBorderFinder.FindMapBoundaryIndexes(mapGridCreator.ChunkDistance, mapGridEdgeSize);
+            mapBorderFinder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         /// <summary>
@@ -67,19 +61,19 @@ namespace MiniProceduralGeneration.Generator.MapGrid
         private void ScrollMap()
         {
             float halfDistance = mapGridCreator.ChunkDistance * terrainAttributes.ChunkWidth;
-            if (targetObject.position.x < mapBorder.LeftChunk.PositionWorldSpace.x + halfDistance) // Reposition Left
+            if (targetObject.position.x < mapBorderFinder.LeftChunk.PositionWorldSpace.x + halfDistance) // Reposition Left
             {
                 RepositionColToLeft();
             }
-            else if (targetObject.position.x > mapBorder.RightChunk.PositionWorldSpace.x - halfDistance / 2)// - (chunkDistance / 2) * characteristics.MapSize)) // Reposition Right
+            else if (targetObject.position.x > mapBorderFinder.RightChunk.PositionWorldSpace.x - halfDistance / 2)// - (chunkDistance / 2) * characteristics.MapSize)) // Reposition Right
             {
                 RepositionColToRight();
             }
-            else if (targetObject.position.z > mapBorder.TopChunk.PositionWorldSpace.z - halfDistance / 2) // Reposition Up
+            else if (targetObject.position.z > mapBorderFinder.TopChunk.PositionWorldSpace.z - halfDistance / 2) // Reposition Up
             {
                 RepositionRowToTop();
             }
-            else if (targetObject.position.z < mapBorder.BottomChunk.PositionWorldSpace.z + halfDistance) // Reposition Down
+            else if (targetObject.position.z < mapBorderFinder.BottomChunk.PositionWorldSpace.z + halfDistance) // Reposition Down
             {
                 RepositionRowToBottom();
             }
@@ -88,32 +82,32 @@ namespace MiniProceduralGeneration.Generator.MapGrid
 
         private void RepositionColToLeft()
         {
-            ShiftAndEnumerateHorizontalCol(mapBorder.RightmostEdgeCol, -1);
+            ShiftAndEnumerateHorizontalCol(mapBorderFinder.RightmostEdgeCol, -1);
 
-            mapBorder.LeftMostEdgeCol = mapBorder.RightmostEdgeCol;
-            mapBorder.RightmostEdgeCol--;
+            mapBorderFinder.LeftMostEdgeCol = mapBorderFinder.RightmostEdgeCol;
+            mapBorderFinder.RightmostEdgeCol--;
 
-            if (mapBorder.RightmostEdgeCol < 0)
+            if (mapBorderFinder.RightmostEdgeCol < 0)
             {
-                mapBorder.RightmostEdgeCol = mapGridCreator.ChunkDistance * 2;
+                mapBorderFinder.RightmostEdgeCol = mapGridCreator.ChunkDistance * 2;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
+            mapBorderFinder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         private void RepositionColToRight()
         {
-            ShiftAndEnumerateHorizontalCol(mapBorder.LeftMostEdgeCol, 1);
+            ShiftAndEnumerateHorizontalCol(mapBorderFinder.LeftMostEdgeCol, 1);
 
-            mapBorder.RightmostEdgeCol = mapBorder.LeftMostEdgeCol;
-            mapBorder.LeftMostEdgeCol++;
+            mapBorderFinder.RightmostEdgeCol = mapBorderFinder.LeftMostEdgeCol;
+            mapBorderFinder.LeftMostEdgeCol++;
 
-            if (mapBorder.LeftMostEdgeCol == mapGridEdgeSize)
+            if (mapBorderFinder.LeftMostEdgeCol == mapGridEdgeSize)
             {
-                mapBorder.LeftMostEdgeCol = 0;
+                mapBorderFinder.LeftMostEdgeCol = 0;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
+            mapBorderFinder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         /// <summary>
@@ -135,32 +129,32 @@ namespace MiniProceduralGeneration.Generator.MapGrid
 
         private void RepositionRowToTop()
         {
-            ShiftAndEnumerateVerticalRow(mapBorder.BottomMostEdgeRow, 1);
+            ShiftAndEnumerateVerticalRow(mapBorderFinder.BottomMostEdgeRow, 1);
 
-            mapBorder.TopMostEdgeRow = mapBorder.BottomMostEdgeRow;
-            mapBorder.BottomMostEdgeRow--;
+            mapBorderFinder.TopMostEdgeRow = mapBorderFinder.BottomMostEdgeRow;
+            mapBorderFinder.BottomMostEdgeRow--;
 
-            if (mapBorder.BottomMostEdgeRow < 0)
+            if (mapBorderFinder.BottomMostEdgeRow < 0)
             {
-                mapBorder.BottomMostEdgeRow = mapGridCreator.ChunkDistance * 2;
+                mapBorderFinder.BottomMostEdgeRow = mapGridCreator.ChunkDistance * 2;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
+            mapBorderFinder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         private void RepositionRowToBottom()
         {
-            ShiftAndEnumerateVerticalRow(mapBorder.TopMostEdgeRow, -1);
+            ShiftAndEnumerateVerticalRow(mapBorderFinder.TopMostEdgeRow, -1);
 
-            mapBorder.BottomMostEdgeRow = mapBorder.TopMostEdgeRow;
-            mapBorder.TopMostEdgeRow++;
+            mapBorderFinder.BottomMostEdgeRow = mapBorderFinder.TopMostEdgeRow;
+            mapBorderFinder.TopMostEdgeRow++;
 
-            if (mapBorder.TopMostEdgeRow == mapGridEdgeSize)
+            if (mapBorderFinder.TopMostEdgeRow == mapGridEdgeSize)
             {
-                mapBorder.TopMostEdgeRow = 0;
+                mapBorderFinder.TopMostEdgeRow = 0;
             }
 
-            mapBorder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
+            mapBorderFinder.DefineReferenceChunksInCardinalDirections(terrainChunks.ChunkArray, mapGridEdgeSize);
         }
 
         /// <summary>
