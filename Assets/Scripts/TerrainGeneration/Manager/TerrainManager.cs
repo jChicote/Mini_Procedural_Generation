@@ -9,9 +9,8 @@ using MiniProceduralGeneration.Handler;
 
 namespace MiniProceduralGeneration.Generator
 {
-    public interface ITerrainGenerator
+    public interface ITerrainManager
     {
-        //void CalculateChunkDimensions();
         void InitialiseTerrainChunks();
         void BuildTerrain();
     }
@@ -26,7 +25,7 @@ namespace MiniProceduralGeneration.Generator
         int LevelOfDetail { get; set; }
     }
 
-    public interface ITerrainChunks
+    public interface ITerrainChunkCollection
     {
         ITerrainChunk[] ChunkArray { get; set; }
     }
@@ -34,21 +33,20 @@ namespace MiniProceduralGeneration.Generator
     /// <summary>
     /// The primary terrain class that handles and coordinates building the terrain chunks.
     /// </summary>
-    public class TerrainManager : GameHandler, ITerrainGenerator, ITerrainAttributes, ITerrainChunks
+    public class TerrainManager : GameHandler, ITerrainManager, ITerrainAttributes, ITerrainChunkCollection
     {
         #region ------ Fields ------
 
-        public INoiseGenerator noiseGenerator;
-        private ITerrainProcessor terrainProcessor;
         private IMapGridCreator mapCreator;
         private IChunkDimensionsUtility dimensionsUtility;
         private ITerrainInfoController controller;
 
         private TerrainChunkDimensions chunkDimensions;
+        private TerrainRunnerAction terrainAction;
 
         #endregion Fields
 
-        #region ------ Properties ------
+        #region - - - - - - Properties - - - - - -
 
         public float MaxHeight { get; set; }
         public float MinHeight { get; set; }
@@ -62,7 +60,7 @@ namespace MiniProceduralGeneration.Generator
 
         #endregion Properties
 
-        #region ------ Methods ------
+        #region - - - - - - Methods - - - - - -
 
         private void Awake()
         {
@@ -71,30 +69,26 @@ namespace MiniProceduralGeneration.Generator
             controller.GetTerrainAttributes(this);
 
             mapCreator = this.GetComponent<IMapGridCreator>();
-            terrainProcessor = this.GetComponent<ITerrainProcessor>();
-            noiseGenerator = this.GetComponent<INoiseGenerator>();
+            ITerrainProcessor terrainProcessor = this.GetComponent<ITerrainProcessor>();
+            INoiseGenerator noiseGenerator = this.GetComponent<INoiseGenerator>();
 
             ChunkArray = new ITerrainChunk[0];
             dimensionsUtility = new ChunkDimensionsUtility(this);
+            terrainAction = new TerrainRunnerAction(this, terrainProcessor, noiseGenerator);
 
             ChunkMapCreator mapChunkCreator = this.GetComponent<ChunkMapCreator>();
             ChunkMapScroller mapScroller = this.GetComponent<ChunkMapScroller>();
 
             mapChunkCreator.SetNext(mapScroller);
-            mapChunkCreator.Handle(true);
+            mapChunkCreator.AwakeHandle(true);
         }
 
         public void BuildTerrain()
         {
-            float[] noiseData = new float[0];
-
             mapCreator.CreateChunkMap(this);
             InitialiseTerrainChunks();
 
-            foreach (ITerrainChunk chunk in ChunkArray)
-            {
-                ProcessChunk(noiseData, chunk);
-            }
+            terrainAction.IterateThroughChunkArraySelection(ChunkArray);
         }
 
         public void InitialiseTerrainChunks()
@@ -108,19 +102,7 @@ namespace MiniProceduralGeneration.Generator
             }
         }
 
-        public void ProcessChunk(float[] noiseData, ITerrainChunk chunk)
-        {
-            if (noiseData is null)
-                _ = new float[0];
-
-            noiseData = noiseGenerator.SampleNoiseDataAtLocation(ChunkWidth, chunk.PositionWorldSpace);
-            terrainProcessor.ProcessChunkMesh(chunk, noiseData);
-            chunk.BuildMesh();
-
-            // cleans buffers before next use.
-            terrainProcessor.DisposeBuffersIntoGarbageCollection();
-        }
-
         #endregion Methods
+
     }
 }

@@ -1,14 +1,21 @@
+using MiniProceduralGeneration.Controllers.ActionControls;
 using MiniProceduralGeneration.Generator.Processor;
+using MiniProceduralGeneration.Generator.Seed;
 using MiniProceduralGeneration.Handler;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator
 {
-    public interface INoiseGenerator
+
+    public interface INoiseOffsetsInvoker
+    {
+        void CreateStepOffsets();
+    }
+
+    public interface INoiseGenerator : INoiseOffsetsInvoker
     {
         bool HasCreatedSeed { get; }
         float[] NoiseData { get; }
-        void GenerateSeed();
         float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
     }
 
@@ -17,7 +24,7 @@ namespace MiniProceduralGeneration.Generator
         float NoiseScale { get; set; }
         float Persistence { get; set; }
         float Lacunarity { get; set; }
-        float NoiseOctaveCount { get; set; }
+        int NoiseOctaveCount { get; set; }
         Vector2[] StepOffsets { get; }
     }
 
@@ -26,43 +33,48 @@ namespace MiniProceduralGeneration.Generator
     /// </summary>
     public class NoiseGenerator : GameHandler, INoiseGenerator, INoiseAttributes
     {
-        // Fields
+        #region - - - - Fields - - - -
+
         private INoiseProcessor noiseProcessor;
-
-        [Header("Noise Characteristics")]
-        [SerializeField] private float noiseScale;
-        [SerializeField] private int noiseOctaveCount = 3;
-
-        [Range(0.0001f, 1)]
-        [SerializeField] private float persistence = 0.5f;
-        [Range(0.0001f, 2)]
-        [SerializeField] private float lacunarity;
+        private INoiseInfoController infoController;
+        private ISeedGenerator seedGenerator;
 
         private Vector2[] octavePositionOffsets;
         private float[] noiseData;
-        private int seed;
+        //private int seed;
 
-        // Properties
-        public bool HasCreatedSeed => seed != 0;
+        #endregion Fields
+
+        #region - - - - Properties - - - -
+
+        public bool HasCreatedSeed => seedGenerator.Seed != 0;
         public float[] NoiseData => noiseData;
-        public float NoiseScale { get => noiseScale; set => noiseScale = value; }
-        public float Persistence { get => persistence; set => persistence = value; }
-        public float Lacunarity { get => lacunarity; set => lacunarity = value; }
-        public float NoiseOctaveCount { get => noiseOctaveCount; set => noiseOctaveCount = (int)value; }
+        public float NoiseScale { get; set; }
+        public float Persistence { get; set; }
+        public float Lacunarity { get; set; }
+        public int NoiseOctaveCount { get; set; }
         public Vector2[] StepOffsets => octavePositionOffsets;
+
+        #endregion Properties
+
+        #region - - - - Methods - - - -
 
         public void Awake()
         {
             noiseProcessor = this.GetComponent<INoiseProcessor>();
+            seedGenerator = this.GetComponent<ISeedGenerator>();
+
+            infoController = FindObjectOfType<NoiseInfoController>(); // Can be Better
+            infoController.GetNoiseAttributes(this);
         }
 
-        public void GenerateSeed()
-        {
-            seed = Random.Range(1, 1000000);
-            print("Seed Created: " + seed);
+        //public void GenerateSeed()
+        //{
+        //    seed = Random.Range(1, 1000000);
+        //    print("Seed Created: " + seed);
 
-            CreateStepOffsets();
-        }
+        //    CreateStepOffsets();
+        //}
 
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
         {
@@ -75,15 +87,17 @@ namespace MiniProceduralGeneration.Generator
         /// <summary>
         /// Creates position offsets against sample position for noise data complexity.
         /// </summary>
-        private void CreateStepOffsets()
+        public void CreateStepOffsets()
         {
-            System.Random psuedoRandNumbGenerator = new System.Random(seed);
-            octavePositionOffsets = new Vector2[noiseOctaveCount];
-            for (int i = 0; i < noiseOctaveCount; i++)
+            System.Random psuedoRandNumbGenerator = new System.Random(seedGenerator.Seed);
+            octavePositionOffsets = new Vector2[NoiseOctaveCount];
+            for (int i = 0; i < NoiseOctaveCount; i++)
             {
                 octavePositionOffsets[i].x = psuedoRandNumbGenerator.Next(-100000, 100000);
                 octavePositionOffsets[i].y = psuedoRandNumbGenerator.Next(-100000, 100000);
             }
         }
+
+        #endregion Methods
     }
 }

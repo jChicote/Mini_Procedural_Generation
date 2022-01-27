@@ -31,7 +31,7 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
 
         #region - - - - Methods - - - -
 
-        public override object Handle(object request)
+        public override object AwakeHandle(object request)
         {
             terrainAttributes = this.GetComponent<ITerrainAttributes>();
             calculateBorder = this.GetComponent<ICalculateMapBorder>();
@@ -39,13 +39,13 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
             IMapGridInfoController infoController = FindObjectOfType<MapGridInfoController>().GetComponent<IMapGridInfoController>(); // Can be better ... make a generic interface getter
             infoController.GetMapGridAttributes(this);
 
-            return base.Handle(request);
+            return base.AwakeHandle(request);
         }
 
         /// <summary>
         /// Creates a completed terrain map with a collection of seperate chunks
         /// </summary>
-        public void CreateChunkMap(ITerrainChunks terrainChunks)
+        public void CreateChunkMap(ITerrainChunkCollection terrainChunks)
         {
             ClearMap(terrainChunks.ChunkArray);
 

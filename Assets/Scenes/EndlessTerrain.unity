@@ -1070,8 +1070,9 @@ GameObject:
   - component: {fileID: 252276652}
   - component: {fileID: 252276651}
   - component: {fileID: 252276653}
-  - component: {fileID: 252276658}
+  - component: {fileID: 252276656}
   - component: {fileID: 252276657}
+  - component: {fileID: 252276658}
   - component: {fileID: 252276654}
   - component: {fileID: 252276655}
   m_Layer: 0
@@ -1119,10 +1120,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adf0c0c68451b6c4e8784e741d3b53f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseScale: 80
-  noiseOctaveCount: 3
-  persistence: 0.784
-  lacunarity: 1.167
 --- !u!114 &252276654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1151,6 +1148,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chunkPrefab: {fileID: 1486601122822607981, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
   targetObject: {fileID: 135815824}
+--- !u!114 &252276656
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252276650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ddb54be2e0d744459ede049760fce71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &252276657
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2594,9 +2603,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
-          Assembly-CSharp
+      - m_Target: {fileID: 252276656}
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.Seed.SeedGenerator,
+          Main
         m_MethodName: GenerateSeed
         m_Mode: 1
         m_Arguments:
@@ -2607,8 +2616,21 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 252276653}
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
+          Main
+        m_MethodName: CreateStepOffsets
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
           Main
         m_MethodName: BuildTerrain
         m_Mode: 1

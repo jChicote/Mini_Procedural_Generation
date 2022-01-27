@@ -13,11 +13,11 @@ namespace MiniProceduralGeneration.Handler
 
         #region ------ Methods ------
 
-        public virtual object Handle(object request)
+        public virtual object AwakeHandle(object request)
         {
             if (this.nextGameJobHandler != null)
             {
-                return this.nextGameJobHandler.Handle(request);
+                return this.nextGameJobHandler.AwakeHandle(request);
             }
 
             return null;

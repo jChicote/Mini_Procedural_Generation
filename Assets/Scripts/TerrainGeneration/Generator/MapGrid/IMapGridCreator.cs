@@ -10,7 +10,7 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
     public interface IMapGridTileActions
     {
 
-        void CreateChunkMap(ITerrainChunks terrainChunks);
+        void CreateChunkMap(ITerrainChunkCollection terrainChunks);
         void ClearMap(ITerrainChunk[] chunkArray);
 
     }

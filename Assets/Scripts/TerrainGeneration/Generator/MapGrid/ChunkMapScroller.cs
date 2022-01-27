@@ -20,7 +20,7 @@ namespace MiniProceduralGeneration.Generator.MapGrid
         public GameObject chunkPrefab;
         private int mapGridEdgeSize = 0;
 
-        private ITerrainChunks terrainChunks;
+        private ITerrainChunkCollection terrainChunks;
         private ITerrainAttributes terrainAttributes;
         private IMapGridCreator mapGridCreator;
         private IMapGridBorderFinder mapBorderFinder;
@@ -29,16 +29,16 @@ namespace MiniProceduralGeneration.Generator.MapGrid
 
         #region ------ Methods ------
 
-        public override object Handle(object request)
+        public override object AwakeHandle(object request)
         {
-            terrainChunks = this.GetComponent<ITerrainChunks>();
+            terrainChunks = this.GetComponent<ITerrainChunkCollection>();
             terrainAttributes = this.GetComponent<ITerrainAttributes>();
             mapGridCreator = this.GetComponent<IMapGridCreator>();
             mapBorderFinder = new MapGridBorderFinder();
 
             DefineMapBorders();
 
-            return base.Handle(request);
+            return base.AwakeHandle(request);
         }
 
         private void Update()

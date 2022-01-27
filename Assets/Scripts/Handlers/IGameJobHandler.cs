@@ -2,7 +2,7 @@ namespace MiniProceduralGeneration.Handler
 {
     public interface IGameJobHandler
     {
-        object Handle(object request);
+        object AwakeHandle(object request);
         IGameJobHandler SetNext(IGameJobHandler nextHandler);
     }
 }
