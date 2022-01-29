@@ -59,6 +59,7 @@ namespace MiniProceduralGeneration.Generator.Processor
             noiseShader.SetFloat("persistence", noiseCharacteristics.Persistence);
             noiseShader.SetFloat("lacunarity", noiseCharacteristics.Lacunarity);
             noiseShader.SetInt("mapDimension", mapSize);
+            print(mapSize);
             noiseShader.SetInt("noiseOctaveCount", (int)noiseCharacteristics.NoiseOctaveCount);
         }
 

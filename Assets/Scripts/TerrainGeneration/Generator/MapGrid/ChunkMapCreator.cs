@@ -55,9 +55,9 @@ namespace MiniProceduralGeneration.Generator.Creator.Map
                 for (int x = -ChunkDistance; x < ChunkDistance + 1; x++)
                 {
                     terrainChunks.ChunkArray = AddToChunkArray(terrainChunks.ChunkArray,
-                                                new Vector3((x * terrainAttributes.ChunkWidth) + targetObject.position.x,
+                                                new Vector3((x * (terrainAttributes.ChunkWidth - 1)) + targetObject.position.x,
                                                     0,
-                                                    (z * terrainAttributes.ChunkWidth) + targetObject.position.z));
+                                                    (z * (terrainAttributes.ChunkWidth - 1)) + targetObject.position.z));
                 }
             }
 

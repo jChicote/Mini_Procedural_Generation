@@ -13,15 +13,15 @@ MonoBehaviour:
   m_Name: TerrainGenerationSetting
   m_EditorClassIdentifier: 
   terrainAttributes:
-    maxHeight: 3
-    minHeight: -20
+    maxHeight: 15
+    minHeight: -15
     lodIncrementStep: 0
     levelOfDetail: 0
     minimumLevelOfDetail: 0
     chunkWidth: 24
   noiseAttributes:
-    noiseScale: 80
-    noiseOctaveCount: 3
+    noiseScale: 1
+    noiseOctaveCount: 1
     persistence: 0.784
     lacunarity: 1.167
   mapGridAttributes:

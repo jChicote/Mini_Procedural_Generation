@@ -5,6 +5,7 @@ namespace MiniProceduralGeneration.Generator.Seed
 
     public interface ISeedGenerator
     {
+        bool HasCreatedSeed { get; }
         int Seed { get; set; }
         void GenerateSeed();
     }
@@ -13,6 +14,7 @@ namespace MiniProceduralGeneration.Generator.Seed
     {
         #region - - - - Properties - - - -
 
+        public bool HasCreatedSeed => Seed != 0;
         public int Seed { get; set; }
 
         #endregion Properties

@@ -1,6 +1,6 @@
 #pragma kernel CSMain
 
-// Data Array Buffers 
+// Data Array Buffers
 RWStructuredBuffer<float> noise;
 RWStructuredBuffer<float2> octaveOffsets;
 
@@ -13,8 +13,6 @@ float lacunarity;
 float amplitude;
 float frequency;
 float noiseValue;
-float scaleX;
-float scaleY;
 
 int mapDimension;
 int noiseOctaveCount;
@@ -84,7 +82,7 @@ float PerlinNoise(float2 p) {
 }
 
 // -------------------------------------------------------
-//                           Main 
+//                           Main
 // -------------------------------------------------------
 
 [numthreads(64,1,1)]
@@ -93,17 +91,27 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     uint index = id.x;
     uint row = CalculateRow(index);
     uint col = CalculateColumn(index, row);
+
     noiseValue = 0;
     amplitude = 1;
     frequency = 1;
 
+    float scaleX;
+    float scaleY;
+
     // loops through each octave providing added detail to result
     for (int i = 0; i < noiseOctaveCount; i++) {
         //Calculates determined position with added offsets and variations
-        scaleX = float(col) / noiseScale * frequency + octaveOffsets[i].x + startPosition.x;
-        scaleY = float(row) / noiseScale * frequency + octaveOffsets[i].y + startPosition.z;
 
-        noiseValue += PerlinNoise(float2(scaleX, scaleY)) * amplitude;
+        /*scaleX = (float(col) * noiseScale) * frequency + octaveOffsets[ii].x + (startPosition.x);
+        scaleY = (float(row) * noiseScale) * frequency + octaveOffsets[i].y + (startPosition.z);*/
+        /*scaleX = (float(col) * frequency + octaveOffsets[i].x + startPosition.x;
+        scaleY = (float(row) * frequency + octaveOffsets[i].y + startPosition.z;*/
+
+        scaleX = (float(col) + startPosition.x) / 14;
+        scaleY = (float(row) + startPosition.z) / 14;
+
+        noiseValue += PerlinNoise(float2(scaleX, scaleY)) + amplitude;
         frequency *= lacunarity;
         amplitude *= persistence;
     }

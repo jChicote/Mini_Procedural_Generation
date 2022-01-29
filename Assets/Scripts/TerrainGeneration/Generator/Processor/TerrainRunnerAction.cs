@@ -1,23 +1,30 @@
 using MiniProceduralGeneration.Generator.MeshWork;
+using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.Processor
 {
 
-    public class TerrainRunnerAction
+    public interface ITerrainRunnerAction
+    {
+        void IterateThroughChunkArraySelection(ITerrainChunk[] chunks);
+        void ProcessChunk(ITerrainChunk chunk);
+    }
+
+    public class TerrainRunnerAction : MonoBehaviour, ITerrainRunnerAction
     {
 
         #region - - - - Fields - - - -
 
-        private readonly float[] noiseData;
-        private readonly INoiseGenerator noiseGenerator;
-        private readonly ITerrainAttributes attributes;
-        private readonly ITerrainProcessor terrainProcessor;
+        private float[] noiseData;
+        private INoiseGenerator noiseGenerator;
+        private ITerrainAttributes attributes;
+        private ITerrainProcessor terrainProcessor;
 
         #endregion Fields
 
         #region - - - - Constructors - - - -
 
-        public TerrainRunnerAction(ITerrainAttributes attributes, ITerrainProcessor terrainProcessor, INoiseGenerator noiseGenerator)
+        public void StartTerrainRunnerAction(ITerrainAttributes attributes, ITerrainProcessor terrainProcessor, INoiseGenerator noiseGenerator)
         {
             this.attributes = attributes;
             this.terrainProcessor = terrainProcessor;
@@ -32,16 +39,16 @@ namespace MiniProceduralGeneration.Generator.Processor
         {
             foreach (ITerrainChunk chunk in chunks)
             {
-                ProcessChunk(noiseData, chunk);
+                ProcessChunk(chunk);
             }
         }
 
-        private void ProcessChunk(float[] noiseData, ITerrainChunk chunk)
+        public void ProcessChunk(ITerrainChunk chunk)
         {
             if (noiseData is null)
                 _ = new float[0];
 
-            noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ChunkWidth, chunk.PositionWorldSpace);
+            this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ChunkWidth, chunk.PositionWorldSpace);
             terrainProcessor.ProcessChunkMesh(chunk, noiseData);
             chunk.BuildMesh();
 

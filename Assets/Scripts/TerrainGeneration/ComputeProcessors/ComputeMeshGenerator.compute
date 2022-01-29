@@ -1,7 +1,7 @@
 #pragma kernel CSMain
 
 
-// Data Array Buffers 
+// Data Array Buffers
 RWStructuredBuffer<int> triangles;
 RWStructuredBuffer<float> noiseData;
 RWStructuredBuffer<float3> vertices;
@@ -22,7 +22,8 @@ float CalculateHeight(float noiseVal) {
 }
 
 float CalculateScaledDistanceBetweenVert() {
-    return meshSize / (meshLineSize - 1);
+    //return meshSize / (meshLineSize - 1);
+    return meshSize / (meshLineSize);
 }
 
 float3 CalculateVertexPosition(int row, int col, int scaledRow, int scaledCol) {
@@ -43,7 +44,7 @@ int CalculateColumn(int index, int row) {
 }
 
 // summary:
-//  - Calculates offset to the array accounting for skips in quads 
+//  - Calculates offset to the array accounting for skips in quads
 //    made after each row is processed (6 from each row).
 //
 // returns:
@@ -69,7 +70,7 @@ void AddQuad(int index, int offset) {
 }
 
 // -------------------------------------------------------
-//                           Main 
+//                           Main
 // -------------------------------------------------------
 
 [numthreads(64, 1, 1)]
@@ -79,14 +80,15 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int row = CalculateRow(index);
     int col = CalculateColumn(index, row);
 
-    int scaledRow = row * (meshSize / meshLineSize);
+    //int scaledRow = row * (meshSize / meshLineSize);
+    int scaledRow = row * incrementStep;
     int scaledCol = col * incrementStep;
 
     vertices[index] = CalculateVertexPosition(row, col, scaledRow, scaledCol);
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 
-    if (col < meshLineSize - 1 && row < meshLineSize  - 1) {
+    if (col < meshLineSize - 1 && row < meshLineSize - 1) {
         AddQuad(index, CalculateOffset(row, col));
     }
     /*

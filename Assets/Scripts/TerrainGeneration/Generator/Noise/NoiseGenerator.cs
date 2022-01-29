@@ -14,7 +14,6 @@ namespace MiniProceduralGeneration.Generator
 
     public interface INoiseGenerator : INoiseOffsetsInvoker
     {
-        bool HasCreatedSeed { get; }
         float[] NoiseData { get; }
         float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
     }
@@ -41,13 +40,11 @@ namespace MiniProceduralGeneration.Generator
 
         private Vector2[] octavePositionOffsets;
         private float[] noiseData;
-        //private int seed;
 
         #endregion Fields
 
         #region - - - - Properties - - - -
 
-        public bool HasCreatedSeed => seedGenerator.Seed != 0;
         public float[] NoiseData => noiseData;
         public float NoiseScale { get; set; }
         public float Persistence { get; set; }
@@ -68,18 +65,21 @@ namespace MiniProceduralGeneration.Generator
             infoController.GetNoiseAttributes(this);
         }
 
-        //public void GenerateSeed()
-        //{
-        //    seed = Random.Range(1, 1000000);
-        //    print("Seed Created: " + seed);
-
-        //    CreateStepOffsets();
-        //}
-
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
         {
+            float halfWidth = mapSize / 2;
+            Vector3 centeredSamplePosition = new Vector3
+            {
+                x = samplePosition.x + halfWidth,
+                y = samplePosition.y,
+                z = samplePosition.z + halfWidth
+            };
+
             noiseData = new float[mapSize * mapSize];
             noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition);
+
+            print("A >> " + (22 + -48));
+            print("B >> " + (0 + -24));
 
             return noiseData;
         }

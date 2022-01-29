@@ -596,7 +596,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 135815817}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.780231, y: 14.726019, z: 27.105227}
+  m_LocalPosition: {x: 0, y: 14.726019, z: 27.105227}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1075,6 +1075,7 @@ GameObject:
   - component: {fileID: 252276658}
   - component: {fileID: 252276654}
   - component: {fileID: 252276655}
+  - component: {fileID: 252276659}
   m_Layer: 0
   m_Name: Terrain Generator
   m_TagString: TerrainGenerator
@@ -1186,6 +1187,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   computeTerrainGen: {fileID: 7200000, guid: f9f511750c2ddc143bac2cdd31c1a6bc, type: 3}
+--- !u!114 &252276659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252276650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db5f7dd7a7e70004a8f53f53767c900e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &253573612
 GameObject:
   m_ObjectHideFlags: 0

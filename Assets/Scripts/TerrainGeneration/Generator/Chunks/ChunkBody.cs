@@ -35,10 +35,10 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         [SerializeField] protected MeshCollider meshCollider;
         [SerializeField] protected Mesh mesh;
 
-        private Vector3[] vertices;
+        public Vector3[] vertices;
         private Vector3[] normals;
         private Vector2[] uv;
-        private int[] meshTriangles;
+        public int[] meshTriangles;
 
         // Properties
         public Vector3 PositionWorldSpace { get => transform.position; set => transform.position = value; }
@@ -69,6 +69,9 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         /// <param name="mesh"></param>
         public void AssignDataToMesh()
         {
+            print("Tris length: " + meshTriangles.Length);
+            print("Vert length: " + vertices.Length);
+
             mesh.vertices = vertices;
             mesh.triangles = meshTriangles;
             mesh.normals = normals;
@@ -91,6 +94,14 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         {
             //print("Chunk is being destroyed");
             Destroy(gameObject, 1);
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(PositionWorldSpace, 2);
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(Vertices[Vertices.Length - 1], 2);
         }
     }
 }
