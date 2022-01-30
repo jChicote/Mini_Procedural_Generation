@@ -108,8 +108,13 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         /*scaleX = (float(col) * frequency + octaveOffsets[i].x + startPosition.x;
         scaleY = (float(row) * frequency + octaveOffsets[i].y + startPosition.z;*/
 
-        scaleX = (float(col) + startPosition.x) / 14;
-        scaleY = (float(row) + startPosition.z) / 14;
+        /*scalex = ((float(col) + startposition.x) / noisescale) * frequency + octaveoffsets[i].x;
+        scaley = ((float(row) + startposition.z) / noisescale) * frequency + octaveoffsets[i].y;*/
+        scaleX = ((float(col)  + startPosition.x) / noiseScale) * frequency;
+        scaleY = ((float(row) + startPosition.z) / noiseScale) * frequency;
+
+        /*scaleX = (float(col) / noiseScale) * frequency + octaveOffsets[i].x + startPosition.x;
+        scaleY = (float(row) / noiseScale) * frequency + octaveOffsets[i].y + startPosition.z;*/
 
         noiseValue += PerlinNoise(float2(scaleX, scaleY)) + amplitude;
         frequency *= lacunarity;
