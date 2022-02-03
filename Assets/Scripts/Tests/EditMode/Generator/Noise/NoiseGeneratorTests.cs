@@ -1,5 +1,8 @@
 using MiniProceduralGeneration.Generator;
+using MiniProceduralGeneration.Generator.Seed;
 using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
 
 namespace MiniProceduralGeneration.Tests.EditMode.Generator.Noise
 {
@@ -8,32 +11,47 @@ namespace MiniProceduralGeneration.Tests.EditMode.Generator.Noise
     {
         #region - - - - Fields - - - -
 
+        public GameObject noiseGameObject;
+        public readonly NoiseGenerator noiseGenerator;
+        public readonly SeedGenerator seedGenerator;
+
         #endregion
 
         #region - - - - Constructors - - - -
 
         public NoiseGeneratorTests()
         {
-
+            noiseGameObject = new GameObject();
+            noiseGameObject.AddComponent<NoiseGenerator>();
+            noiseGameObject.AddComponent<SeedGenerator>();
         }
 
         #endregion Constructors
 
-        #region - - - - Test - - - -
+        #region - - - - Tests - - - -
 
-        [Test]
+        [UnityTest]
         public void CreateStepOffsets_InvokeMethod_GeneratedOffsetValues()
         {
             // Arrange
-            NoiseGenerator noiseGnerator = new NoiseGenerator();
+            noiseGameObject.AddComponent<NoiseGenerator>();
+            noiseGameObject.AddComponent<SeedGenerator>();
+
+            noiseGenerator.Awake();
+            seedGenerator.Awake();
+            seedGenerator.GenerateSeed();
+
+            INoiseAttributes attributes = noiseGameObject.GetComponent<INoiseAttributes>();
+            attributes.NoiseOctaveCount = 3;
 
             // Act
+            noiseGenerator.CreateStepOffsets();
 
             // Assert
-
+            Assert.AreNotSame(Vector2.zero, attributes.StepOffsets);
         }
 
-        #endregion
+        #endregion Tests
     }
 
 }

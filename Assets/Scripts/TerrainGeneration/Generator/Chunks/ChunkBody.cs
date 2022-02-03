@@ -69,9 +69,6 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         /// <param name="mesh"></param>
         public void AssignDataToMesh()
         {
-            print("Tris length: " + meshTriangles.Length);
-            print("Vert length: " + vertices.Length);
-
             mesh.vertices = vertices;
             mesh.triangles = meshTriangles;
             mesh.normals = normals;

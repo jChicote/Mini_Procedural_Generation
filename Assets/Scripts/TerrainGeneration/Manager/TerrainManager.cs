@@ -93,6 +93,12 @@ namespace MiniProceduralGeneration.Generator
             terrainAction.IterateThroughChunkArraySelection(ChunkArray);
         }
 
+        public void RegenerateTerrain()
+        {
+            InitialiseTerrainChunks();
+            terrainAction.IterateThroughChunkArraySelection(ChunkArray);
+        }
+
         public void InitialiseTerrainChunks()
         {
             if (ChunkArray.Length == 0) return;

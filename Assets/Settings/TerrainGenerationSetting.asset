@@ -22,7 +22,7 @@ MonoBehaviour:
   noiseAttributes:
     noiseScale: 14
     noiseOctaveCount: 1
-    persistence: 0.784
-    lacunarity: 1.167
+    persistence: 0.27
+    lacunarity: 0.27
   mapGridAttributes:
     chunkDistance: 2

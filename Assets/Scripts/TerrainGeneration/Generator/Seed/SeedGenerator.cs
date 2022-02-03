@@ -21,7 +21,7 @@ namespace MiniProceduralGeneration.Generator.Seed
 
         #region - - - - Methods - - - -
 
-        private void Awake()
+        public void Awake()
         {
             Seed = 0;
         }

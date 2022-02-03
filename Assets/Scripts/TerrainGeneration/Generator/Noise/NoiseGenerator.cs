@@ -62,7 +62,8 @@ namespace MiniProceduralGeneration.Generator
             seedGenerator = this.GetComponent<ISeedGenerator>();
 
             infoController = FindObjectOfType<NoiseInfoController>(); // Can be Better
-            infoController.GetNoiseAttributes(this);
+            if (infoController != null)
+                infoController.GetNoiseAttributes(this);
         }
 
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
@@ -77,9 +78,6 @@ namespace MiniProceduralGeneration.Generator
 
             noiseData = new float[mapSize * mapSize];
             noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition);
-
-            print("A >> " + (22 + -48));
-            print("B >> " + (0 + -24));
 
             return noiseData;
         }

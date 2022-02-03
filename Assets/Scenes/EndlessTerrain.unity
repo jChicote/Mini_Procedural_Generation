@@ -4780,9 +4780,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: BuildTerrain
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
+          Main
+        m_MethodName: RegenerateTerrain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
