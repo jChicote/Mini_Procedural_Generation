@@ -1027,7 +1027,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1898461758}
   m_Direction: 0
   m_MinValue: -50
-  m_MaxValue: -5
+  m_MaxValue: -1
   m_WholeNumbers: 0
   m_Value: -5
   m_OnValueChanged:
@@ -1047,9 +1047,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: BuildTerrain
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
+          Main
+        m_MethodName: RegenerateTerrain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1215,7 +1215,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &253573613
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1421,9 +1421,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: BuildTerrain
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
+          Main
+        m_MethodName: RegenerateTerrain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1602,32 +1602,6 @@ MonoBehaviour:
       - m_Target: {fileID: 252276651}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
           Assembly-CSharp
-        m_MethodName: set_LevelOfDetail
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: CalculateChunkDimensions
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
         m_MethodName: InitialiseTerrainChunks
         m_Mode: 1
         m_Arguments:
@@ -1639,9 +1613,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: BuildTerrain
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
+          Main
+        m_MethodName: RegenerateTerrain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3589,7 +3563,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 385438289}
   m_HandleRect: {fileID: 519307153}
   m_Direction: 0
-  m_MinValue: 10
+  m_MinValue: 1
   m_MaxValue: 70
   m_WholeNumbers: 0
   m_Value: 50
@@ -3610,9 +3584,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: BuildTerrain
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
+          Main
+        m_MethodName: RegenerateTerrain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4060,9 +4034,9 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 252276651}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainGenerator,
-          Assembly-CSharp
-        m_MethodName: BuildTerrain
+        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
+          Main
+        m_MethodName: RegenerateTerrain
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

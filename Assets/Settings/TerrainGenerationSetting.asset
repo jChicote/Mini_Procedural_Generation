@@ -21,8 +21,8 @@ MonoBehaviour:
     chunkWidth: 24
   noiseAttributes:
     noiseScale: 14
-    noiseOctaveCount: 1
+    noiseOctaveCount: 6
     persistence: 0.27
-    lacunarity: 0.27
+    lacunarity: 1
   mapGridAttributes:
     chunkDistance: 2

@@ -1,6 +1,5 @@
 #pragma kernel CSMain
 
-
 // Data Array Buffers
 RWStructuredBuffer<int> triangles;
 RWStructuredBuffer<float> noiseData;
@@ -17,12 +16,11 @@ int meshLineSize;
 int incrementStep;
 
 float CalculateHeight(float noiseVal) {
-    float height = noiseVal * maxHeight;
+    float height = noiseVal * 35;
     return clamp(height, minHeight, maxHeight);
 }
 
 float CalculateScaledDistanceBetweenVert() {
-    //return meshSize / (meshLineSize - 1);
     return meshSize / (meshLineSize);
 }
 
@@ -58,7 +56,6 @@ int CalculateOffset(int row, int col) {
     return arrayOffset;
 }
 
-
 void AddQuad(int index, int offset) {
     int stepIndex = index * 6 - offset;
     triangles[stepIndex] = index;
@@ -80,7 +77,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int row = CalculateRow(index);
     int col = CalculateColumn(index, row);
 
-    //int scaledRow = row * (meshSize / meshLineSize);
     int scaledRow = row * incrementStep;
     int scaledCol = col * incrementStep;
 
@@ -91,9 +87,4 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     if (col < meshLineSize - 1 && row < meshLineSize - 1) {
         AddQuad(index, CalculateOffset(row, col));
     }
-    /*
-
-    if (scaledCol < meshSize - 1 && scaledRow < meshSize - 1) {
-        AddQuad(index);
-    }*/
 }

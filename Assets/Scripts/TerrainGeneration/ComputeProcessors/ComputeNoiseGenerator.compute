@@ -110,8 +110,8 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 
         /*scalex = ((float(col) + startposition.x) / noisescale) * frequency + octaveoffsets[i].x;
         scaley = ((float(row) + startposition.z) / noisescale) * frequency + octaveoffsets[i].y;*/
-        scaleX = ((float(col)  + (startPosition.x)) / noiseScale) * frequency;
-        scaleY = ((float(row) + (startPosition.z)) / noiseScale) * frequency;
+        scaleX = ((float(col)  + (startPosition.x + octaveOffsets[i].x)) / noiseScale) * frequency;
+        scaleY = ((float(row) + (startPosition.z + octaveOffsets[i].y)) / noiseScale) * frequency;
 
         /*scaleX = (float(col) / noiseScale) * frequency + octaveOffsets[i].x + startPosition.x;
         scaleY = (float(row) / noiseScale) * frequency + octaveOffsets[i].y + startPosition.z;*/
