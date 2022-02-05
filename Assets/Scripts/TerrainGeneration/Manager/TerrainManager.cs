@@ -17,12 +17,16 @@ namespace MiniProceduralGeneration.Generator
 
     public interface ITerrainAttributes
     {
+        #region - - - - - - Properties - - - - - -
+
         float MaxHeight { get; set; }
         float MinHeight { get; set; }
         int ChunkWidth { get; set; }
         int LODIncrementStep { get; set; }
         int VertexPerSide { get; }
         int LevelOfDetail { get; set; }
+
+        #endregion Properties
     }
 
     public interface ITerrainChunkCollection

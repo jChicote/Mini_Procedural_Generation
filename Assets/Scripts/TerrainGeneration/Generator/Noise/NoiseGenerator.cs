@@ -20,11 +20,15 @@ namespace MiniProceduralGeneration.Generator
 
     public interface INoiseAttributes
     {
+        #region - - - - Properties - - - -
+
         float NoiseScale { get; set; }
         float Persistence { get; set; }
         float Lacunarity { get; set; }
         int NoiseOctaveCount { get; set; }
         Vector2[] StepOffsets { get; }
+
+        #endregion Properties
     }
 
     /// <summary>
@@ -68,14 +72,6 @@ namespace MiniProceduralGeneration.Generator
 
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
         {
-            float halfWidth = mapSize / 2;
-            Vector3 centeredSamplePosition = new Vector3
-            {
-                x = samplePosition.x + halfWidth,
-                y = samplePosition.y,
-                z = samplePosition.z + halfWidth
-            };
-
             noiseData = new float[mapSize * mapSize];
             noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition);
 
@@ -93,6 +89,7 @@ namespace MiniProceduralGeneration.Generator
             {
                 octavePositionOffsets[i].x = psuedoRandNumbGenerator.Next(-100000, 100000);
                 octavePositionOffsets[i].y = psuedoRandNumbGenerator.Next(-100000, 100000);
+                print(octavePositionOffsets[i].x + ", " + octavePositionOffsets[i].y);
             }
         }
 
