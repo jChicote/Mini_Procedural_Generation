@@ -32,7 +32,7 @@ namespace MiniProceduralGeneration.Generator
         int ChunkWidth { get; set; }
         int LODIncrementStep { get; set; }
         int VertexPerSide { get; }
-        int LevelOfDetail { get; set; }
+        float LevelOfDetail { get; set; }
 
         #endregion Properties
 
@@ -75,7 +75,7 @@ namespace MiniProceduralGeneration.Generator
         public int LODIncrementStep { get; set; }
 
         public int VertexPerSide => chunkDimensions.VertexPerSide;
-        public int LevelOfDetail { get; set; }
+        public float LevelOfDetail { get; set; }
         public ITerrainChunk[] ChunkArray { get; set; }
 
         #endregion Properties
@@ -110,6 +110,9 @@ namespace MiniProceduralGeneration.Generator
             mapCreator.CreateChunkMap(this);
             InitialiseTerrainChunks();
 
+            print(ChunkWidth);
+            print(VertexPerSide);
+
             terrainAction.IterateThroughChunkArraySelection(ChunkArray);
         }
 
@@ -118,8 +121,6 @@ namespace MiniProceduralGeneration.Generator
             InitialiseTerrainChunks();
             terrainAction.IterateThroughChunkArraySelection(ChunkArray);
 
-            print("VertexPerSide: " + VertexPerSide);
-            print("ChunkWidth: " + ChunkWidth);
         }
 
         public void InitialiseTerrainChunks()

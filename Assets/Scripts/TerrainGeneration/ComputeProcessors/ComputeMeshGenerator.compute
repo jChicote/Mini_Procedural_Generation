@@ -21,7 +21,7 @@ float CalculateHeight(float noiseVal) {
 }
 
 float CalculateScaledDistanceBetweenVert() {
-    return meshSize / (meshLineSize);
+    return meshSize / (meshLineSize );
 }
 
 float3 CalculateVertexPosition(int row, int col, int scaledRow, int scaledCol) {
@@ -84,7 +84,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 
-    if (col < meshLineSize - 1 && row < meshLineSize - 1) {
+    if (col < meshLineSize - 1 && row < meshLineSize - 1 ) {
         AddQuad(index, CalculateOffset(row, col));
     }
 }

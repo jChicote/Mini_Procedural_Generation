@@ -6,9 +6,15 @@ namespace MiniProceduralGeneration.Generator.Utility
 
     public interface IChunkDimensionsUtility
     {
+
+        #region - - - - - - Methods - - - - - -
+
         TerrainChunkDimensions CalculateChunkDimensions();
         void CalculateLevelOfDetail();
         int FindMininmumAllowableLevelOfDetail(int currentLevelOfDetail, int chunkWidth);
+
+        #endregion Methods
+
     }
 
     public class ChunkDimensionsUtility : IChunkDimensionsUtility
@@ -40,12 +46,16 @@ namespace MiniProceduralGeneration.Generator.Utility
 
             chunkDimensions.VertexPerSide = Mathf.RoundToInt(attributes.ChunkWidth / attributes.LODIncrementStep);
             chunkDimensions.SquaredVertexSide = chunkDimensions.VertexPerSide * chunkDimensions.VertexPerSide;
+
+            Debug.Log("LODIncrementStep: " + attributes.LODIncrementStep);
+            Debug.Log("VertexPerSide: " + chunkDimensions.VertexPerSide);
+            Debug.Log("ChunkWidth: " + attributes.ChunkWidth);
             return chunkDimensions;
         }
 
         public void CalculateLevelOfDetail()
         {
-            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0, attributes.ChunkWidth);
+            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0, attributes.ChunkWidth - 1);
 
             if (attributes.LevelOfDetail > minimumLevelOfDetail)
                 attributes.LevelOfDetail = minimumLevelOfDetail;

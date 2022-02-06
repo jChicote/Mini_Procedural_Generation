@@ -18,7 +18,7 @@ MonoBehaviour:
     lodIncrementStep: 0
     levelOfDetail: 0
     minimumLevelOfDetail: 0
-    chunkWidth: 24
+    chunkWidth: 25
   noiseAttributes:
     noiseScale: 112
     noiseOctaveCount: 6
