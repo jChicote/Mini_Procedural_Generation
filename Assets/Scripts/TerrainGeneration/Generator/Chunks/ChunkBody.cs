@@ -3,12 +3,24 @@ using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.MeshWork
 {
+
     public interface ITerrainChunk : IChunkMeshAttributes
     {
+
+        #region - - - - - - Properties - - - - - -
+
         Vector3 PositionWorldSpace { get; set; }
+
+        #endregion Properties
+
+        #region - - - - - - Methods - - - - - -
+
         void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
         void BuildMesh();
         void OnDestroyChunk();
+
+        #endregion Methods
+
     }
 
     /// <summary>
@@ -17,10 +29,16 @@ namespace MiniProceduralGeneration.Generator.MeshWork
     /// </summary>
     public interface IChunkMeshAttributes
     {
+
+        #region - - - - - - Properties - - - - - -
+
         Vector3[] Vertices { get; set; }
         Vector3[] Normals { get; set; }
         Vector2[] UVs { get; set; }
         int[] Triangles { get; set; }
+
+        #endregion Properties
+
     }
 
     /// <summary>
@@ -29,7 +47,9 @@ namespace MiniProceduralGeneration.Generator.MeshWork
     /// </summary>
     public class ChunkBody : MonoBehaviour, ITerrainChunk
     {
-        // Fields
+
+        #region - - - - - - Fields - - - - - -
+
         [Header("Mesh Components")]
         [SerializeField] protected MeshFilter meshFilter;
         [SerializeField] protected MeshCollider meshCollider;
@@ -40,12 +60,22 @@ namespace MiniProceduralGeneration.Generator.MeshWork
         private Vector2[] uv;
         public int[] meshTriangles;
 
-        // Properties
+        #endregion Fields
+
+        #region - - - - - - Properties - - - - - -
+
         public Vector3 PositionWorldSpace { get => transform.position; set => transform.position = value; }
         public Vector3[] Vertices { get => vertices; set => vertices = value; }
         public Vector3[] Normals { get => normals; set => normals = value; }
         public Vector2[] UVs { get => uv; set => uv = value; }
-        public int[] Triangles { get => meshTriangles; set => meshTriangles = value; }
+        public int[] Triangles
+        {
+            get => meshTriangles; set => meshTriangles = value;
+        }
+
+        #endregion Properties
+
+        #region - - - - - - Methods - - - - - -
 
         public void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions)
         {
@@ -100,5 +130,9 @@ namespace MiniProceduralGeneration.Generator.MeshWork
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(Vertices[Vertices.Length - 1], 2);
         }
+
+        #endregion
+
     }
+
 }

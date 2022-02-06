@@ -5,6 +5,7 @@ namespace MiniProceduralGeneration.Generator.Entities
 
     public class ChunkMap
     {
+
         #region ------ Field ------
 
         private int chunkDistance = 2;
@@ -29,4 +30,5 @@ namespace MiniProceduralGeneration.Generator.Entities
 
         #endregion Properties
     }
+
 }

@@ -3,7 +3,8 @@ namespace MiniProceduralGeneration.Generator.Entities
 
     public class TerrainAttributes
     {
-        #region ------ Properties ------
+
+        #region - - - - - - Properties - - - - - -
 
         public float MaxHeight { get; set; }
 
@@ -16,6 +17,7 @@ namespace MiniProceduralGeneration.Generator.Entities
         public float LODIncrementStep { get; set; }
 
         #endregion Properties
+
     }
 
 }

@@ -6,8 +6,14 @@ namespace MiniProceduralGeneration.Generator.Processor
 
     public interface ITerrainRunnerAction
     {
+
+        #region - - - - - - Methods - - - - - -
+
         void IterateThroughChunkArraySelection(ITerrainChunk[] chunks);
         void ProcessChunk(ITerrainChunk chunk);
+
+        #endregion Methods
+
     }
 
     public class TerrainRunnerAction : MonoBehaviour, ITerrainRunnerAction
