@@ -9,17 +9,22 @@ namespace MiniProceduralGeneration.Generator
 
     public interface INoiseOffsetsInvoker
     {
+
         void CreateStepOffsets();
+
     }
 
     public interface INoiseGenerator : INoiseOffsetsInvoker
     {
+
         float[] NoiseData { get; }
         float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
+
     }
 
     public interface INoiseAttributes
     {
+
         #region - - - - Properties - - - -
 
         float NoiseScale { get; set; }
@@ -29,6 +34,7 @@ namespace MiniProceduralGeneration.Generator
         Vector2[] StepOffsets { get; }
 
         #endregion Properties
+
     }
 
     /// <summary>
@@ -36,6 +42,7 @@ namespace MiniProceduralGeneration.Generator
     /// </summary>
     public class NoiseGenerator : GameHandler, INoiseGenerator, INoiseAttributes
     {
+
         #region - - - - Fields - - - -
 
         private INoiseProcessor noiseProcessor;
@@ -58,7 +65,7 @@ namespace MiniProceduralGeneration.Generator
 
         #endregion Properties
 
-        #region - - - - Methods - - - -
+        #region - - - - - - Methods - - - - - -
 
         public void Awake()
         {
@@ -94,5 +101,7 @@ namespace MiniProceduralGeneration.Generator
         }
 
         #endregion Methods
+
     }
+
 }

@@ -9,14 +9,22 @@ using MiniProceduralGeneration.Handler;
 
 namespace MiniProceduralGeneration.Generator
 {
+
     public interface ITerrainManager
     {
+
+        #region - - - - - - Methods - - - - - -
+
         void InitialiseTerrainChunks();
         void BuildTerrain();
+
+        #endregion Methods
+
     }
 
     public interface ITerrainAttributes
     {
+
         #region - - - - - - Properties - - - - - -
 
         float MaxHeight { get; set; }
@@ -27,11 +35,18 @@ namespace MiniProceduralGeneration.Generator
         int LevelOfDetail { get; set; }
 
         #endregion Properties
+
     }
 
     public interface ITerrainChunkCollection
     {
+
+        #region - - - - - - Properties - - - - - -
+
         ITerrainChunk[] ChunkArray { get; set; }
+
+        #endregion Properties
+
     }
 
     /// <summary>
@@ -39,10 +54,11 @@ namespace MiniProceduralGeneration.Generator
     /// </summary>
     public class TerrainManager : GameHandler, ITerrainManager, ITerrainAttributes, ITerrainChunkCollection
     {
-        #region ------ Fields ------
+
+        #region - - - - - - Fields - - - - - -
 
         private IMapGridCreator mapCreator;
-        private IChunkDimensionsUtility dimensionsUtility;
+        public IChunkDimensionsUtility dimensionsUtility;
         private ITerrainInfoController controller;
 
         private TerrainChunkDimensions chunkDimensions;
@@ -101,6 +117,9 @@ namespace MiniProceduralGeneration.Generator
         {
             InitialiseTerrainChunks();
             terrainAction.IterateThroughChunkArraySelection(ChunkArray);
+
+            print("VertexPerSide: " + VertexPerSide);
+            print("ChunkWidth: " + ChunkWidth);
         }
 
         public void InitialiseTerrainChunks()
@@ -117,4 +136,5 @@ namespace MiniProceduralGeneration.Generator
         #endregion Methods
 
     }
+
 }

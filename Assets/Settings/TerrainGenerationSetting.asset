@@ -20,9 +20,9 @@ MonoBehaviour:
     minimumLevelOfDetail: 0
     chunkWidth: 24
   noiseAttributes:
-    noiseScale: 14
+    noiseScale: 112
     noiseOctaveCount: 6
-    persistence: 0.27
-    lacunarity: 1
+    persistence: 0.4
+    lacunarity: 1.7
   mapGridAttributes:
-    chunkDistance: 2
+    chunkDistance: 6
