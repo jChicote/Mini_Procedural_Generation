@@ -45,6 +45,8 @@ namespace MiniProceduralGeneration.Generator.Utility
             CalculateLevelOfDetail();
 
             chunkDimensions.VertexPerSide = Mathf.RoundToInt(attributes.ChunkWidth / attributes.LODIncrementStep);
+            chunkDimensions.VertexPerSide += attributes.LODIncrementStep > 1 ? 1 : 0;
+
             chunkDimensions.SquaredVertexSide = chunkDimensions.VertexPerSide * chunkDimensions.VertexPerSide;
 
             Debug.Log("LODIncrementStep: " + attributes.LODIncrementStep);

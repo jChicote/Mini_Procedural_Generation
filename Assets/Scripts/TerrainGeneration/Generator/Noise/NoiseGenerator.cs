@@ -79,8 +79,8 @@ namespace MiniProceduralGeneration.Generator
 
         public float[] SampleNoiseDataAtLocation(int mapSize, Vector3 samplePosition)
         {
-            noiseData = new float[mapSize * mapSize];
-            noiseProcessor.ProcessNoiseData(noiseData, mapSize, samplePosition);
+            noiseData = new float[25 * 25];
+            noiseProcessor.ProcessNoiseData(noiseData, 25, samplePosition);
 
             return noiseData;
         }
