@@ -100,7 +100,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float scaleY;
 
     // loops through each octave providing added detail to result
-    /*for (int i = 0; i < noiseOctaveCount; i++) {
+    for (int i = 0; i < noiseOctaveCount; i++) {
         //Calculates determined position with added offsets and variations
         scaleX = ((float(col)  + (startPosition.x + octaveOffsets[i].x)) / noiseScale) * frequency;
         scaleY = ((float(row) + (startPosition.z + octaveOffsets[i].y)) / noiseScale) * frequency;
@@ -108,7 +108,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
         noiseValue += PerlinNoise(float2(scaleX, scaleY)) * amplitude;
         frequency *= lacunarity;
         amplitude *= persistence;
-    }*/
+    }
 
     noise[index] = noiseValue;
 }

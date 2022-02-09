@@ -21,7 +21,7 @@ float CalculateHeight(float noiseVal) {
 }
 
 float CalculateScaledDistanceBetweenVert() {
-    return meshSize / (meshLineSize - 1);
+    return (meshSize - 1) / (meshLineSize - 1);
 }
 
 float3 CalculateVertexPosition(int row, int col, int scaledRow, int scaledCol) {
