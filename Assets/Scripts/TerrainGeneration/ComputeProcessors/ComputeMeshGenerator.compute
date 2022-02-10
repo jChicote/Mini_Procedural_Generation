@@ -1,0 +1,93 @@
+#pragma kernel CSMain
+
+// Data Array Buffers
+RWStructuredBuffer<int> triangles;
+RWStructuredBuffer<float> noiseData;
+RWStructuredBuffer<float3> vertices;
+RWStructuredBuffer<float3> normal;
+RWStructuredBuffer<float2> uv;
+
+float resolution;
+float absoluteHeight;
+float maxHeight;
+float minHeight;
+float fullChunkSize;
+float renderChunkSize;
+
+int verticesPerSide;
+int incrementStep;
+
+
+float CalculateHeight(float noiseVal) {
+    float height = noiseVal * absoluteHeight;
+    return clamp(height, minHeight, maxHeight);
+}
+
+float CalculateScaledDistanceBetweenVert() {
+    return renderChunkSize / (verticesPerSide - 1);
+}
+
+float3 CalculateVertexPosition(int row, int col, int scaledRow, int scaledCol) {
+    float3 vertPos = float3(0, 0, 0);
+    vertPos.x = col * CalculateScaledDistanceBetweenVert();
+    vertPos.y = CalculateHeight(noiseData[scaledRow * fullChunkSize + scaledCol]);
+    vertPos.z = row * CalculateScaledDistanceBetweenVert();
+    return vertPos;
+}
+
+int CalculateRow(uint index) {
+    float row = floor(index / verticesPerSide);
+    return int(row);
+}
+
+int CalculateColumn(int index, int row) {
+    return index - (row * verticesPerSide);
+}
+
+// summary:
+//  - Calculates offset to the array accounting for skips in quads
+//    made after each row is processed (6 from each row).
+//
+// returns:
+//  - Quad offset to mesh.
+int CalculateOffset(int row, int col) {
+    if (row == 0) {
+        return 0;
+    }
+
+    int arrayOffset = (row) * 6;
+    return arrayOffset;
+}
+
+void AddQuad(int index, int offset) {
+    int stepIndex = index * 6 - offset;
+    triangles[stepIndex] = index;
+    triangles[stepIndex + 1] = index + verticesPerSide;
+    triangles[stepIndex + 2] = index + 1;
+    triangles[stepIndex + 3] = index + 1;
+    triangles[stepIndex + 4] = index + verticesPerSide;
+    triangles[stepIndex + 5] = (index + verticesPerSide) + 1;
+}
+
+// -------------------------------------------------------
+//                           Main
+// -------------------------------------------------------
+
+[numthreads(64, 1, 1)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    uint index = id.x;
+    int row = CalculateRow(index);
+    int col = CalculateColumn(index, row);
+
+    int scaledRow = row * incrementStep;
+    int scaledCol = col * incrementStep;
+
+    vertices[index] = CalculateVertexPosition(row, col, scaledRow, scaledCol);
+    normal[index] = float3(0, 0, 1);
+    uv[index] = float2(scaledCol, scaledRow);
+
+    if (col < verticesPerSide - 1 && row < verticesPerSide - 1 ) {
+        AddQuad(index, CalculateOffset(row, col));
+    }
+}

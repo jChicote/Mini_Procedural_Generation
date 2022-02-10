@@ -49,6 +49,8 @@ MonoBehaviour:
   meshFilter: {fileID: 1486601122822607978}
   meshCollider: {fileID: 1486601122822607979}
   mesh: {fileID: 0}
+  vertices: []
+  meshTriangles: 
 --- !u!33 &1486601122822607978
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -90,7 +92,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2c0c93411591aa846b3bbe9d0b7c2907, type: 2}
+  - {fileID: 2100000, guid: 82b57e3c564b08d478fd27607d356d35, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

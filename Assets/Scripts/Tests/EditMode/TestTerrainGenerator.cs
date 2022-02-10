@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using MiniProceduralGeneration.Generator;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
-using MiniProceduralGeneration.Generator;
-using MiniProceduralGeneration.Generator.Processor;
 
 namespace MiniProceduralGeneration.Test.EditMode
 {
@@ -13,8 +9,8 @@ namespace MiniProceduralGeneration.Test.EditMode
         [Test]
         public void CheckMapSizeIsDivisibleByEven()
         {
-            TerrainGenerator generatorInstance = GameObject.FindWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
-            bool checkCondition = (generatorInstance.MapSize % 2) == 0;
+            TerrainManager generatorInstance = GameObject.FindWithTag("TerrainGenerator").GetComponent<TerrainManager>();
+            bool checkCondition = (generatorInstance.RenderChunkSize % 2) == 0;
 
             Assert.AreEqual(true, checkCondition);
         }
@@ -22,8 +18,8 @@ namespace MiniProceduralGeneration.Test.EditMode
         [Test]
         public void CheckMapSizeIsDivisibleByThree()
         {
-            TerrainGenerator generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
-            bool checkCondition = (generatorInstance.MapSize % 3) == 0;
+            TerrainManager generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainManager>();
+            bool checkCondition = (generatorInstance.RenderChunkSize % 3) == 0;
 
             Assert.AreEqual(true, checkCondition);
         }
@@ -31,11 +27,11 @@ namespace MiniProceduralGeneration.Test.EditMode
         [Test]
         public void ScaledSizeIsEqualToOriginalMapSize()
         {
-            TerrainGenerator generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainGenerator>();
+            /*TerrainManager generatorInstance = GameObject.FindGameObjectWithTag("TerrainGenerator").GetComponent<TerrainManager>();
             generatorInstance.CalculateChunkDimensions();
             float scaledSize = generatorInstance.VertexPerSide * generatorInstance.LODIncrementStep;
 
-            Assert.AreEqual(generatorInstance.MapSize, scaledSize);
+            Assert.AreEqual(generatorInstance.ChunkWidth, scaledSize);*/
         }
     }
 }
