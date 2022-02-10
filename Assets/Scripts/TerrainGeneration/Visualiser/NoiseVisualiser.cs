@@ -24,7 +24,7 @@ namespace MiniProceduralGeneration.Utility.Visualisation
         public void CreateVisualisation()
         {
             Texture2D texture = GenerateImage();
-            Sprite visualisation = Sprite.Create(texture, new Rect(0, 0, terrainGenerator.ChunkWidth, terrainGenerator.ChunkWidth), new Vector2(0.5f, 0.5f), 100f);
+            Sprite visualisation = Sprite.Create(texture, new Rect(0, 0, terrainGenerator.RenderChunkSize, terrainGenerator.RenderChunkSize), new Vector2(0.5f, 0.5f), 100f);
 
             resultImage.sprite = visualisation;
         }
@@ -40,11 +40,11 @@ namespace MiniProceduralGeneration.Utility.Visualisation
         {
             Texture2D texture = new Texture2D(imageWidth, imageHeight);
             GetImageDimensions();
-            texture.Resize(terrainGenerator.ChunkWidth, terrainGenerator.ChunkWidth);
+            texture.Resize(terrainGenerator.RenderChunkSize, terrainGenerator.RenderChunkSize);
 
-            for (int index = 0, row = 0; row < terrainGenerator.ChunkWidth; row++)
+            for (int index = 0, row = 0; row < terrainGenerator.RenderChunkSize; row++)
             {
-                for (int col = 0; col < terrainGenerator.ChunkWidth; col++, index++)
+                for (int col = 0; col < terrainGenerator.RenderChunkSize; col++, index++)
                 {
                     Color pixel = new Color(noiseGenerator.NoiseData[index], noiseGenerator.NoiseData[index], noiseGenerator.NoiseData[index]);
                     texture.SetPixel(col, row, pixel);

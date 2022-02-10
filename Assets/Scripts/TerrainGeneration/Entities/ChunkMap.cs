@@ -24,7 +24,7 @@ namespace MiniProceduralGeneration.Generator.Entities
             set => chunkDistance = value;
         }
 
-        public int MapSize => Characteristics.ChunkWidth; // Redundant
+        public int MapSize => Characteristics.RenderChunkSize; // Redundant
 
         public int MapEdgeSize => chunkDistance * 2 + 1;
 

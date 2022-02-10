@@ -63,7 +63,7 @@ namespace MiniProceduralGeneration.Generator.MapGrid
         /// </summary>
         private void ScrollMap()
         {
-            float halfDistance = mapGridCreator.ChunkDistance * (terrainAttributes.ChunkWidth - 1);
+            float halfDistance = mapGridCreator.ChunkDistance * (terrainAttributes.RenderChunkSize - 1);
             if (targetObject.position.x < mapBorderFinder.LeftChunk.PositionWorldSpace.x + halfDistance) // Reposition Left
             {
                 RepositionColToLeft();
@@ -125,7 +125,7 @@ namespace MiniProceduralGeneration.Generator.MapGrid
             {
                 index = MapArrayUtility.GetIndexFromRowAndCol(mapGridEdgeSize, i, targetCol);
                 newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
-                newPosition.x += mapGridEdgeSize * (terrainAttributes.ChunkWidth - 1) * movementDirection;
+                newPosition.x += mapGridEdgeSize * (terrainAttributes.RenderChunkSize - 1) * movementDirection;
                 terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
                 terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index]);
             }
@@ -173,7 +173,7 @@ namespace MiniProceduralGeneration.Generator.MapGrid
             {
                 index = MapArrayUtility.GetIndexFromRowAndCol(mapGridEdgeSize, targetRow, i);
                 newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
-                newPosition.z += (terrainAttributes.ChunkWidth - 1) * mapGridEdgeSize * movementDirection;
+                newPosition.z += (terrainAttributes.RenderChunkSize - 1) * mapGridEdgeSize * movementDirection;
                 terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
                 terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index]);
             }

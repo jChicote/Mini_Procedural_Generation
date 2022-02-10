@@ -27,7 +27,7 @@ namespace MiniProceduralGeneration.Controllers.ActionControls
             attributes.MinHeight = settings.terrainAttributes.minHeight;
             attributes.LODIncrementStep = settings.terrainAttributes.lodIncrementStep;
             attributes.LevelOfDetail = settings.terrainAttributes.levelOfDetail;
-            attributes.ChunkWidth = settings.terrainAttributes.chunkWidth;
+            attributes.ActualChunkSize = settings.terrainAttributes.chunkWidth;
         }
 
         #endregion Methods

@@ -29,7 +29,8 @@ namespace MiniProceduralGeneration.Generator
 
         float MaxHeight { get; set; }
         float MinHeight { get; set; }
-        int ChunkWidth { get; set; }
+        int ActualChunkSize { get; set; }
+        int RenderChunkSize { get; }
         int LODIncrementStep { get; set; }
         int VertexPerSide { get; }
         float LevelOfDetail { get; set; }
@@ -70,8 +71,8 @@ namespace MiniProceduralGeneration.Generator
 
         public float MaxHeight { get; set; }
         public float MinHeight { get; set; }
-        public int ChunkWidth { get; set; }
-
+        public int ActualChunkSize { get; set; }
+        public int RenderChunkSize { get => ActualChunkSize; }
         public int LODIncrementStep { get; set; }
 
         public int VertexPerSide => chunkDimensions.VertexPerSide;
@@ -110,7 +111,7 @@ namespace MiniProceduralGeneration.Generator
             mapCreator.CreateChunkMap(this);
             InitialiseTerrainChunks();
 
-            print(ChunkWidth);
+            print(ActualChunkSize);
             print(VertexPerSide);
 
             terrainAction.IterateThroughChunkArraySelection(ChunkArray);
