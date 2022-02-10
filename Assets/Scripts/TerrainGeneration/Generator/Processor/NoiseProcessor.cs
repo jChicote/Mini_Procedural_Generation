@@ -4,15 +4,25 @@ namespace MiniProceduralGeneration.Generator.Processor
 {
     public interface INoiseProcessor
     {
+        #region - - - - - - Methods - - - - - -
+
         void ProcessNoiseData(float[] noiseDataArray, int mapSize, Vector3 samplePosition);
+
+        #endregion Methods
     }
 
     public class NoiseProcessor : MonoBehaviour, INoiseProcessor
     {
-        // Fields
+
+        #region - - - - - - Fields - - - - - -
+
         [SerializeField] private ComputeShader noiseShader;
         private INoiseAttributes noiseCharacteristics;
         private NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
+
+        #endregion Fields
+
+        #region - - - - - - Methods - - - - - -
 
         public void Awake()
         {
@@ -58,7 +68,7 @@ namespace MiniProceduralGeneration.Generator.Processor
             noiseShader.SetFloat("noiseScale", noiseCharacteristics.NoiseScale);
             noiseShader.SetFloat("persistence", noiseCharacteristics.Persistence);
             noiseShader.SetFloat("lacunarity", noiseCharacteristics.Lacunarity);
-            noiseShader.SetInt("mapDimension", mapSize);
+            noiseShader.SetInt("chunkSize", mapSize);
             noiseShader.SetInt("noiseOctaveCount", (int)noiseCharacteristics.NoiseOctaveCount);
         }
 
@@ -67,6 +77,8 @@ namespace MiniProceduralGeneration.Generator.Processor
             computeBuffers.noiseBuffer.Dispose();
             computeBuffers.offsetBuffer.Dispose();
         }
+
+        #endregion Methods
     }
 
     public struct NoiseComputeBuffers

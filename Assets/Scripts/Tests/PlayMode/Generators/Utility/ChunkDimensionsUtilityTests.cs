@@ -39,7 +39,7 @@ namespace Assets.Scripts.Tests.PlayMode.Generators.Utility
             var expected = lodTestValues.y;
             var dimensionsUtility = new ChunkDimensionsUtility(mockTerrainAttributes.Object);
 
-            mockTerrainAttributes.Setup(mock => mock.ChunkWidth).Returns(24);
+            mockTerrainAttributes.Setup(mock => mock.RenderChunkSize).Returns(24);
 
             // Act
             var actual = dimensionsUtility.FindMininmumAllowableLevelOfDetail(0, (int)lodTestValues.x);

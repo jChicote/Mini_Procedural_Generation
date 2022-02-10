@@ -44,18 +44,20 @@ namespace MiniProceduralGeneration.Generator.Utility
         {
             CalculateLevelOfDetail();
 
-            chunkDimensions.VertexPerSide = Mathf.RoundToInt(attributes.ChunkWidth / attributes.LODIncrementStep);
+            chunkDimensions.VertexPerSide = Mathf.RoundToInt(attributes.ActualChunkSize / attributes.LODIncrementStep);
+            chunkDimensions.VertexPerSide += attributes.LODIncrementStep > 1 ? 1 : 0;
+
             chunkDimensions.SquaredVertexSide = chunkDimensions.VertexPerSide * chunkDimensions.VertexPerSide;
 
             Debug.Log("LODIncrementStep: " + attributes.LODIncrementStep);
             Debug.Log("VertexPerSide: " + chunkDimensions.VertexPerSide);
-            Debug.Log("ChunkWidth: " + attributes.ChunkWidth);
+            Debug.Log("ChunkWidth: " + attributes.ActualChunkSize);
             return chunkDimensions;
         }
 
         public void CalculateLevelOfDetail()
         {
-            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0, attributes.ChunkWidth - 1);
+            minimumLevelOfDetail = FindMininmumAllowableLevelOfDetail(0, attributes.RenderChunkSize);
 
             if (attributes.LevelOfDetail > minimumLevelOfDetail)
                 attributes.LevelOfDetail = minimumLevelOfDetail;

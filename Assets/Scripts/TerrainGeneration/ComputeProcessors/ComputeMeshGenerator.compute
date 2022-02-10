@@ -8,37 +8,40 @@ RWStructuredBuffer<float3> normal;
 RWStructuredBuffer<float2> uv;
 
 float resolution;
+float absoluteHeight;
 float maxHeight;
 float minHeight;
-float meshSize; // Constant
+float fullChunkSize;
+float renderChunkSize;
 
-int meshLineSize;
+int verticesPerSide;
 int incrementStep;
 
+
 float CalculateHeight(float noiseVal) {
-    float height = noiseVal * 35;
+    float height = noiseVal * absoluteHeight;
     return clamp(height, minHeight, maxHeight);
 }
 
 float CalculateScaledDistanceBetweenVert() {
-    return meshSize / (meshLineSize );
+    return renderChunkSize / (verticesPerSide - 1);
 }
 
 float3 CalculateVertexPosition(int row, int col, int scaledRow, int scaledCol) {
     float3 vertPos = float3(0, 0, 0);
     vertPos.x = col * CalculateScaledDistanceBetweenVert();
-    vertPos.y = CalculateHeight(noiseData[scaledRow * meshSize + scaledCol]);
+    vertPos.y = CalculateHeight(noiseData[scaledRow * fullChunkSize + scaledCol]);
     vertPos.z = row * CalculateScaledDistanceBetweenVert();
     return vertPos;
 }
 
 int CalculateRow(uint index) {
-    float row = floor(index / meshLineSize);
+    float row = floor(index / verticesPerSide);
     return int(row);
 }
 
 int CalculateColumn(int index, int row) {
-    return index - (row * meshLineSize);
+    return index - (row * verticesPerSide);
 }
 
 // summary:
@@ -59,11 +62,11 @@ int CalculateOffset(int row, int col) {
 void AddQuad(int index, int offset) {
     int stepIndex = index * 6 - offset;
     triangles[stepIndex] = index;
-    triangles[stepIndex + 1] = index + meshLineSize;
+    triangles[stepIndex + 1] = index + verticesPerSide;
     triangles[stepIndex + 2] = index + 1;
     triangles[stepIndex + 3] = index + 1;
-    triangles[stepIndex + 4] = index + meshLineSize;
-    triangles[stepIndex + 5] = (index + meshLineSize) + 1;
+    triangles[stepIndex + 4] = index + verticesPerSide;
+    triangles[stepIndex + 5] = (index + verticesPerSide) + 1;
 }
 
 // -------------------------------------------------------
@@ -84,7 +87,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     normal[index] = float3(0, 0, 1);
     uv[index] = float2(scaledCol, scaledRow);
 
-    if (col < meshLineSize - 1 && row < meshLineSize - 1 ) {
+    if (col < verticesPerSide - 1 && row < verticesPerSide - 1 ) {
         AddQuad(index, CalculateOffset(row, col));
     }
 }

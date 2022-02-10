@@ -5,8 +5,14 @@ namespace MiniProceduralGeneration.Generator.Processor
 {
     public interface ITerrainProcessor
     {
+
+        #region - - - - - - Methods - - - - - -
+
         void ProcessChunkMesh(IChunkMeshAttributes chunkAttributes, float[] noiseData);
         void DisposeBuffersIntoGarbageCollection();
+
+        #endregion Methods
+
     }
 
     /// <summary>
@@ -14,10 +20,16 @@ namespace MiniProceduralGeneration.Generator.Processor
     /// </summary>
     public class TerrainProcessor : MonoBehaviour, ITerrainProcessor
     {
-        // Fields
+
+        #region - - - - - - Fields - - - - - -
+
         public ComputeShader computeTerrainGen;
         private ITerrainAttributes terrainCharacteristics;
         private MeshComputeBuffers meshBuffers;
+
+        #endregion Fields
+
+        #region - - - - - - Methods - - - - - -
 
         private void Awake()
         {
@@ -72,14 +84,13 @@ namespace MiniProceduralGeneration.Generator.Processor
             computeTerrainGen.SetBuffer(0, "uv", meshBuffers.uvBuffer);
 
             computeTerrainGen.SetFloat("resolution", chunkAttributes.Vertices.Length);
+            computeTerrainGen.SetFloat("absoluteHeight", terrainCharacteristics.AbsoluteHeight);
             computeTerrainGen.SetFloat("maxHeight", terrainCharacteristics.MaxHeight);
             computeTerrainGen.SetFloat("minHeight", terrainCharacteristics.MinHeight);
-            computeTerrainGen.SetFloat("meshSize", terrainCharacteristics.ChunkWidth);
+            computeTerrainGen.SetFloat("fullChunkSize", terrainCharacteristics.ActualChunkSize);
+            computeTerrainGen.SetFloat("renderChunkSize", terrainCharacteristics.RenderChunkSize);
 
-            //print(terrainCharacteristics.ChunkWidth);
-            //print(terrainCharacteristics.VertexPerSide);
-
-            computeTerrainGen.SetInt("meshLineSize", terrainCharacteristics.VertexPerSide);
+            computeTerrainGen.SetInt("verticesPerSide", terrainCharacteristics.VertexPerSide);
             computeTerrainGen.SetInt("incrementStep", terrainCharacteristics.LODIncrementStep);
         }
 
@@ -103,6 +114,8 @@ namespace MiniProceduralGeneration.Generator.Processor
             meshBuffers.noiseBuffer.Dispose();
             meshBuffers.triangleBuffer.Dispose();
         }
+
+        #endregion Methods
     }
 
     public struct MeshComputeBuffers

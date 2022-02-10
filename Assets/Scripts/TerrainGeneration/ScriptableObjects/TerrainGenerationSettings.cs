@@ -25,7 +25,7 @@ namespace MiniProceduralGeneration.ScriptableObjects
     [Serializable]
     public struct TerrainAttributes
     {
-
+        public float absoluteHeight;
         public float maxHeight;
         public float minHeight;
         [Range(0, 6)]

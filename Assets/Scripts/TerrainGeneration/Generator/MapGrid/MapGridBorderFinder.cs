@@ -39,27 +39,19 @@ namespace MiniProceduralGeneration.Generator.MapGrid
     public class MapGridBorderFinder : IMapGridBorderFinder
     {
 
-        #region ------ Properties ------
-
+        #region - - - - - - Properties - - - - - -
         public ITerrainChunk LeftChunk { get; set; }
-
         public ITerrainChunk RightChunk { get; set; }
-
         public ITerrainChunk TopChunk { get; set; }
-
         public ITerrainChunk BottomChunk { get; set; }
-
         public int RightmostEdgeCol { get; set; }
-
         public int LeftMostEdgeCol { get; set; }
-
         public int TopMostEdgeRow { get; set; }
-
         public int BottomMostEdgeRow { get; set; }
 
         #endregion Properties
 
-        #region ------ Methods -------
+        #region - - - - - - Methods - - - - - - -
 
         public void DefineReferenceChunksInCardinalDirections(ITerrainChunk[] chunkArray, int mapEdgeSize)
         {
