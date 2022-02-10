@@ -10,15 +10,28 @@ namespace MiniProceduralGeneration.Generator
     public interface INoiseOffsetsInvoker
     {
 
+        #region - - - - - - Methods - - - - - -
+
         void CreateStepOffsets();
+
+        #endregion Methods
 
     }
 
     public interface INoiseGenerator : INoiseOffsetsInvoker
     {
 
+        #region - - - - - - Properties - - - - - -
+
         float[] NoiseData { get; }
+
+        #endregion Properties
+
+        #region - - - - - - Methods - - - - - -
+
         float[] SampleNoiseDataAtLocation(int mapSize, Vector3 position);
+
+        #endregion Methods
 
     }
 

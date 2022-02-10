@@ -7,7 +7,13 @@ namespace MiniProceduralGeneration.Controllers.ActionControls
 
     public interface ITerrainInfoController
     {
+
+        #region - - - - - - Methods - - - - - -
+
         void GetTerrainAttributes(ITerrainAttributes attributes);
+
+        #endregion Methods
+
     }
 
     public class TerrainInfoController : MonoBehaviour, ITerrainInfoController
@@ -23,6 +29,7 @@ namespace MiniProceduralGeneration.Controllers.ActionControls
 
         public void GetTerrainAttributes(ITerrainAttributes attributes)
         {
+            attributes.AbsoluteHeight = settings.terrainAttributes.absoluteHeight;
             attributes.MaxHeight = settings.terrainAttributes.maxHeight;
             attributes.MinHeight = settings.terrainAttributes.minHeight;
             attributes.LODIncrementStep = settings.terrainAttributes.lodIncrementStep;

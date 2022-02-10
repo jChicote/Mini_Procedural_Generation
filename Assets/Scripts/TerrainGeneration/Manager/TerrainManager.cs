@@ -27,6 +27,7 @@ namespace MiniProceduralGeneration.Generator
 
         #region - - - - - - Properties - - - - - -
 
+        float AbsoluteHeight { get; set; }
         float MaxHeight { get; set; }
         float MinHeight { get; set; }
         int ActualChunkSize { get; set; }
@@ -69,12 +70,12 @@ namespace MiniProceduralGeneration.Generator
 
         #region - - - - - - Properties - - - - - -
 
+        public float AbsoluteHeight { get; set; }
         public float MaxHeight { get; set; }
         public float MinHeight { get; set; }
         public int ActualChunkSize { get; set; }
-        public int RenderChunkSize { get => ActualChunkSize; }
+        public int RenderChunkSize { get => ActualChunkSize - 1; }
         public int LODIncrementStep { get; set; }
-
         public int VertexPerSide => chunkDimensions.VertexPerSide;
         public float LevelOfDetail { get; set; }
         public ITerrainChunk[] ChunkArray { get; set; }

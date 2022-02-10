@@ -7,7 +7,13 @@ namespace MiniProceduralGeneration.Controllers
 
     public interface IMapGridInfoController
     {
+
+        #region - - - - - - Methods - - - - - -
+
         void GetMapGridAttributes(IMapGridAttributes destination);
+
+        #endregion Methods
+
     }
 
     public class MapGridInfoController : MonoBehaviour, IMapGridInfoController

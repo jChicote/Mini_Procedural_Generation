@@ -7,7 +7,13 @@ namespace MiniProceduralGeneration.Controllers.ActionControls
 
     public interface INoiseInfoController
     {
+
+        #region - - - - - - Methods - - - - - -
+
         void GetNoiseAttributes(INoiseAttributes attributes);
+
+        #endregion Methods
+
     }
 
     public class NoiseInfoController : MonoBehaviour, INoiseInfoController

@@ -9,21 +9,21 @@ float3 startPosition;
 float noiseScale;
 float persistence;
 float lacunarity;
-
 float amplitude;
 float frequency;
 float noiseValue;
 
-int mapDimension;
+int chunkSize;
 int noiseOctaveCount;
 
+
 int CalculateRow(uint index) {
-    float row = floor(index / mapDimension);
+    float row = floor(index / chunkSize);
     return int(row);
 }
 
 int CalculateColumn(uint index, uint row) {
-    return index - row * mapDimension;
+    return index - row * chunkSize;
 }
 
 // -------------------------------------------------------

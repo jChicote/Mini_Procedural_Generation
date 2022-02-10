@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using MiniProceduralGeneration.Generator;
 using UnityEngine;
 using UnityEngine.UI;
-using MiniProceduralGeneration.Generator;
 
 namespace MiniProceduralGeneration.Utility.Visualisation
 {
@@ -24,7 +22,7 @@ namespace MiniProceduralGeneration.Utility.Visualisation
         public void CreateVisualisation()
         {
             Texture2D texture = GenerateImage();
-            Sprite visualisation = Sprite.Create(texture, new Rect(0, 0, terrainGenerator.RenderChunkSize, terrainGenerator.RenderChunkSize), new Vector2(0.5f, 0.5f), 100f);
+            Sprite visualisation = Sprite.Create(texture, new Rect(0, 0, terrainGenerator.ActualChunkSize, terrainGenerator.ActualChunkSize), new Vector2(0.5f, 0.5f), 100f);
 
             resultImage.sprite = visualisation;
         }
@@ -40,11 +38,11 @@ namespace MiniProceduralGeneration.Utility.Visualisation
         {
             Texture2D texture = new Texture2D(imageWidth, imageHeight);
             GetImageDimensions();
-            texture.Resize(terrainGenerator.RenderChunkSize, terrainGenerator.RenderChunkSize);
+            texture.Resize(terrainGenerator.ActualChunkSize, terrainGenerator.ActualChunkSize);
 
-            for (int index = 0, row = 0; row < terrainGenerator.RenderChunkSize; row++)
+            for (int index = 0, row = 0; row < terrainGenerator.ActualChunkSize; row++)
             {
-                for (int col = 0; col < terrainGenerator.RenderChunkSize; col++, index++)
+                for (int col = 0; col < terrainGenerator.ActualChunkSize; col++, index++)
                 {
                     Color pixel = new Color(noiseGenerator.NoiseData[index], noiseGenerator.NoiseData[index], noiseGenerator.NoiseData[index]);
                     texture.SetPixel(col, row, pixel);

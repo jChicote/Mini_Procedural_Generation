@@ -54,7 +54,7 @@ namespace MiniProceduralGeneration.Generator.Processor
             if (noiseData is null)
                 _ = new float[0];
 
-            this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.RenderChunkSize, chunk.PositionWorldSpace);
+            this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
             terrainProcessor.ProcessChunkMesh(chunk, noiseData);
             chunk.BuildMesh();
 

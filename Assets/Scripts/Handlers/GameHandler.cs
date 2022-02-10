@@ -5,6 +5,7 @@ namespace MiniProceduralGeneration.Handler
 
     public abstract class GameHandler : MonoBehaviour, IGameJobHandler
     {
+
         #region ------ Fields ------
 
         private IGameJobHandler nextGameJobHandler;
@@ -30,6 +31,7 @@ namespace MiniProceduralGeneration.Handler
         }
 
         #endregion Methods
+
     }
 
 }

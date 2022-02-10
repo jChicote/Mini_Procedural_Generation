@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: TerrainGenerationSetting
   m_EditorClassIdentifier: 
   terrainAttributes:
+    absoluteHeight: 35
     maxHeight: 25
     minHeight: -25
     lodIncrementStep: 0
