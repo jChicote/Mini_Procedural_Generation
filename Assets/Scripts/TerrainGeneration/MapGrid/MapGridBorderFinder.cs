@@ -9,13 +9,13 @@ namespace MiniProceduralGeneration.MapGrid
 
         #region - - - - Properties - - - -
 
-        public ITerrainChunk LeftChunk { get; set; }
+        public IChunkShell LeftChunk { get; set; }
 
-        public ITerrainChunk RightChunk { get; set; }
+        public IChunkShell RightChunk { get; set; }
 
-        public ITerrainChunk TopChunk { get; set; }
+        public IChunkShell TopChunk { get; set; }
 
-        public ITerrainChunk BottomChunk { get; set; }
+        public IChunkShell BottomChunk { get; set; }
 
         public int RightmostEdgeCol { get; set; }
 
@@ -29,7 +29,7 @@ namespace MiniProceduralGeneration.MapGrid
 
         #region - - - - Methods  - - - -
 
-        void DefineReferenceChunksInCardinalDirections(ITerrainChunk[] chunkArray, int mapEdgeSize);
+        void DefineReferenceChunksInCardinalDirections(IChunkShell[] chunkArray, int mapEdgeSize);
         void FindMapBoundaryIndexes(int chunkDistance, int mapEdgeSize);
 
         #endregion Methods
@@ -40,10 +40,10 @@ namespace MiniProceduralGeneration.MapGrid
     {
 
         #region - - - - - - Properties - - - - - -
-        public ITerrainChunk LeftChunk { get; set; }
-        public ITerrainChunk RightChunk { get; set; }
-        public ITerrainChunk TopChunk { get; set; }
-        public ITerrainChunk BottomChunk { get; set; }
+        public IChunkShell LeftChunk { get; set; }
+        public IChunkShell RightChunk { get; set; }
+        public IChunkShell TopChunk { get; set; }
+        public IChunkShell BottomChunk { get; set; }
         public int RightmostEdgeCol { get; set; }
         public int LeftMostEdgeCol { get; set; }
         public int TopMostEdgeRow { get; set; }
@@ -53,7 +53,7 @@ namespace MiniProceduralGeneration.MapGrid
 
         #region - - - - - - Methods - - - - - - -
 
-        public void DefineReferenceChunksInCardinalDirections(ITerrainChunk[] chunkArray, int mapEdgeSize)
+        public void DefineReferenceChunksInCardinalDirections(IChunkShell[] chunkArray, int mapEdgeSize)
         {
             if (chunkArray.Length <= 1) return;
 

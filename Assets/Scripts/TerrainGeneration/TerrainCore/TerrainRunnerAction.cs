@@ -11,8 +11,8 @@ namespace MiniProceduralGeneration.TerrainCore
 
         #region - - - - - - Methods - - - - - -
 
-        void IterateThroughChunkArraySelection(ITerrainChunk[] chunks);
-        void ProcessChunk(ITerrainChunk chunk);
+        void IterateThroughChunkArraySelection(IChunkShell[] chunks);
+        void ProcessChunk(IChunkShell chunk);
 
         #endregion Methods
 
@@ -43,15 +43,15 @@ namespace MiniProceduralGeneration.TerrainCore
 
         #region - - - - Methods - - - -
 
-        public void IterateThroughChunkArraySelection(ITerrainChunk[] chunks)
+        public void IterateThroughChunkArraySelection(IChunkShell[] chunks)
         {
-            foreach (ITerrainChunk chunk in chunks)
+            foreach (IChunkShell chunk in chunks)
             {
                 ProcessChunk(chunk);
             }
         }
 
-        public void ProcessChunk(ITerrainChunk chunk)
+        public void ProcessChunk(IChunkShell chunk)
         {
             if (noiseData is null)
                 _ = new float[0];

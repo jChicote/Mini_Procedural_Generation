@@ -13,7 +13,7 @@ namespace MiniProceduralGeneration.MapGrid
     {
 
         void CreateChunkMap(ITerrainChunkCollection terrainChunks);
-        void ClearMap(ITerrainChunk[] chunkArray);
+        void ClearMap(IChunkShell[] chunkArray);
 
     }
 

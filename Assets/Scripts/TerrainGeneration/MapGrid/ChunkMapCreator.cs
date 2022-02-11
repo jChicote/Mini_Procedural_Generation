@@ -64,9 +64,9 @@ namespace MiniProceduralGeneration.MapGrid
             calculateBorder.DefineMapBorders();
         }
 
-        private ITerrainChunk[] AddToChunkArray(ITerrainChunk[] chunkArray, Vector3 newPosition)
+        private IChunkShell[] AddToChunkArray(IChunkShell[] chunkArray, Vector3 newPosition)
         {
-            ITerrainChunk[] tempArray = new ITerrainChunk[chunkArray.Length + 1];
+            IChunkShell[] tempArray = new IChunkShell[chunkArray.Length + 1];
 
             for (int i = 0; i < chunkArray.Length; i++)
                 tempArray[i] = chunkArray[i];
@@ -75,10 +75,10 @@ namespace MiniProceduralGeneration.MapGrid
             return tempArray;
         }
 
-        public ITerrainChunk CreateChunk(Vector3 newPosition)
-            => Instantiate(chunkPrefab, newPosition, Quaternion.identity).GetComponent<ITerrainChunk>();
+        public IChunkShell CreateChunk(Vector3 newPosition)
+            => Instantiate(chunkPrefab, newPosition, Quaternion.identity).GetComponent<IChunkShell>();
 
-        public void ClearMap(ITerrainChunk[] chunkArray)
+        public void ClearMap(IChunkShell[] chunkArray)
         {
             if (chunkArray.Length == 0) return;
 
@@ -90,7 +90,7 @@ namespace MiniProceduralGeneration.MapGrid
             }
         }
 
-        private void DestroyChunk(ITerrainChunk chunk)
+        private void DestroyChunk(IChunkShell chunk)
             => chunk.OnDestroyChunk();
 
         #endregion Methods

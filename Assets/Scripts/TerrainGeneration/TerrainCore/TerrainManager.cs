@@ -10,47 +10,6 @@ using MiniProceduralGeneration.TerrainCore.Processor;
 namespace MiniProceduralGeneration.TerrainCore
 {
 
-    public interface ITerrainManager
-    {
-
-        #region - - - - - - Methods - - - - - -
-
-        void InitialiseTerrainChunks();
-        void BuildTerrain();
-
-        #endregion Methods
-
-    }
-
-    public interface ITerrainAttributes
-    {
-
-        #region - - - - - - Properties - - - - - -
-
-        float AbsoluteHeight { get; set; }
-        float MaxHeight { get; set; }
-        float MinHeight { get; set; }
-        int ActualChunkSize { get; set; }
-        int RenderChunkSize { get; }
-        int LODIncrementStep { get; set; }
-        int VertexPerSide { get; }
-        float LevelOfDetail { get; set; }
-
-        #endregion Properties
-
-    }
-
-    public interface ITerrainChunkCollection
-    {
-
-        #region - - - - - - Properties - - - - - -
-
-        ITerrainChunk[] ChunkArray { get; set; }
-
-        #endregion Properties
-
-    }
-
     /// <summary>
     /// The primary terrain class that handles and coordinates building the terrain chunks.
     /// </summary>
@@ -78,7 +37,7 @@ namespace MiniProceduralGeneration.TerrainCore
         public int LODIncrementStep { get; set; }
         public int VertexPerSide => chunkDimensions.VertexPerSide;
         public float LevelOfDetail { get; set; }
-        public ITerrainChunk[] ChunkArray { get; set; }
+        public IChunkShell[] ChunkArray { get; set; }
 
         #endregion Properties
 
@@ -94,7 +53,7 @@ namespace MiniProceduralGeneration.TerrainCore
             ITerrainProcessor terrainProcessor = this.GetComponent<ITerrainProcessor>();
             INoiseGenerator noiseGenerator = this.GetComponent<INoiseGenerator>();
 
-            ChunkArray = new ITerrainChunk[0];
+            ChunkArray = new IChunkShell[0];
             dimensionsUtility = new ChunkDimensionsUtility(this);
 
             terrainAction = this.GetComponent<TerrainRunnerAction>();
@@ -130,7 +89,7 @@ namespace MiniProceduralGeneration.TerrainCore
             if (ChunkArray.Length == 0) return;
 
             chunkDimensions = dimensionsUtility.CalculateChunkDimensions();
-            foreach (ITerrainChunk chunk in ChunkArray)
+            foreach (IChunkShell chunk in ChunkArray)
             {
                 chunk.InitialiseMeshArrays(chunkDimensions);
             }

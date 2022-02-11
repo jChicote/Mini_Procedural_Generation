@@ -4,48 +4,11 @@ using UnityEngine;
 namespace MiniProceduralGeneration.Chunk
 {
 
-    public interface ITerrainChunk : IChunkMeshAttributes
-    {
-
-        #region - - - - - - Properties - - - - - -
-
-        Vector3 PositionWorldSpace { get; set; }
-
-        #endregion Properties
-
-        #region - - - - - - Methods - - - - - -
-
-        void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
-        void BuildMesh();
-        void OnDestroyChunk();
-
-        #endregion Methods
-
-    }
-
-    /// <summary>
-    /// Interfaces for accessing terrain chunks properties for modifying
-    /// mesh information.
-    /// </summary>
-    public interface IChunkMeshAttributes
-    {
-
-        #region - - - - - - Properties - - - - - -
-
-        Vector3[] Vertices { get; set; }
-        Vector3[] Normals { get; set; }
-        Vector2[] UVs { get; set; }
-        int[] Triangles { get; set; }
-
-        #endregion Properties
-
-    }
-
     /// <summary>
     /// A terrain chunk attaches to its own gameobject instance rendering
     /// meshes from the given mesh data.
     /// </summary>
-    public class ChunkShell : MonoBehaviour, ITerrainChunk
+    public class ChunkShell : MonoBehaviour, IChunkShell
     {
 
         #region - - - - - - Fields - - - - - -
