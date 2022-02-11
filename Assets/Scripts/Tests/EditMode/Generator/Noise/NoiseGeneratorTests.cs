@@ -1,5 +1,5 @@
-using MiniProceduralGeneration.Generator;
-using MiniProceduralGeneration.Generator.Seed;
+using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.Seed;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;

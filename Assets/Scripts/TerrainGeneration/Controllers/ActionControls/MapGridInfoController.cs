@@ -1,4 +1,4 @@
-using MiniProceduralGeneration.Generator.Creator.Map;
+using MiniProceduralGeneration.MapGrid;
 using MiniProceduralGeneration.ScriptableObjects;
 using UnityEngine;
 

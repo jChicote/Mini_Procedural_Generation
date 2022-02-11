@@ -1,10 +1,9 @@
-using MiniProceduralGeneration.Generator.Creator.Map;
-using MiniProceduralGeneration.Generator.Processor;
 using MiniProceduralGeneration.Generator.Utility;
 using MiniProceduralGeneration.Handler;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.MapGrid
+namespace MiniProceduralGeneration.MapGrid
 {
 
     public interface ICalculateMapBorder

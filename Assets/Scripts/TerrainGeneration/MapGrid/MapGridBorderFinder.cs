@@ -1,7 +1,7 @@
-using MiniProceduralGeneration.Generator.MeshWork;
+using MiniProceduralGeneration.Chunk;
 using MiniProceduralGeneration.Generator.Utility;
 
-namespace MiniProceduralGeneration.Generator.MapGrid
+namespace MiniProceduralGeneration.MapGrid
 {
 
     public interface IMapGridBorderFinder

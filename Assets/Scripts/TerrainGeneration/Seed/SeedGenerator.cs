@@ -1,13 +1,24 @@
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.Seed
+namespace MiniProceduralGeneration.Seed
 {
 
     public interface ISeedGenerator
     {
+
+        #region - - - - - - Properties - - - - - -
+
         bool HasCreatedSeed { get; }
         int Seed { get; set; }
+
+        #endregion Properties
+
+        #region - - - - - - Methods - - - - -
+
         void GenerateSeed();
+
+        #endregion Methods
+
     }
 
     public class SeedGenerator : MonoBehaviour, ISeedGenerator

@@ -1,10 +1,10 @@
 using MiniProceduralGeneration.Controllers.ActionControls;
-using MiniProceduralGeneration.Generator.Processor;
-using MiniProceduralGeneration.Generator.Seed;
 using MiniProceduralGeneration.Handler;
+using MiniProceduralGeneration.Noise.Processor;
+using MiniProceduralGeneration.Seed;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator
+namespace MiniProceduralGeneration.Noise
 {
 
     public interface INoiseOffsetsInvoker

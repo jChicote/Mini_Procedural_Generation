@@ -1,6 +1,8 @@
-using MiniProceduralGeneration.Generator.MeshWork;
 
-namespace MiniProceduralGeneration.Generator.Creator.Map
+using MiniProceduralGeneration.Chunk;
+using MiniProceduralGeneration.TerrainCore;
+
+namespace MiniProceduralGeneration.MapGrid
 {
 
     public interface IMapGridCreator : IMapGridAttributes, IMapGridTileActions

@@ -1,4 +1,5 @@
 using MiniProceduralGeneration.Generator.Entities;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Generator.Utility

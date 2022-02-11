@@ -1,7 +1,7 @@
 using MiniProceduralGeneration.Generator.Entities;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.MeshWork
+namespace MiniProceduralGeneration.Chunk
 {
 
     public interface ITerrainChunk : IChunkMeshAttributes
@@ -45,7 +45,7 @@ namespace MiniProceduralGeneration.Generator.MeshWork
     /// A terrain chunk attaches to its own gameobject instance rendering
     /// meshes from the given mesh data.
     /// </summary>
-    public class ChunkBody : MonoBehaviour, ITerrainChunk
+    public class ChunkShell : MonoBehaviour, ITerrainChunk
     {
 
         #region - - - - - - Fields - - - - - -

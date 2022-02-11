@@ -1,4 +1,5 @@
-using MiniProceduralGeneration.Generator;
+using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 using UnityEngine.UI;
 

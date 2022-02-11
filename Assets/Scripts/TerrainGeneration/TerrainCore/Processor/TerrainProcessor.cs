@@ -1,7 +1,7 @@
-using MiniProceduralGeneration.Generator.MeshWork;
+using MiniProceduralGeneration.Chunk;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.Processor
+namespace MiniProceduralGeneration.TerrainCore.Processor
 {
     public interface ITerrainProcessor
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.Processor
+namespace MiniProceduralGeneration.Noise.Processor
 {
     public interface INoiseProcessor
     {

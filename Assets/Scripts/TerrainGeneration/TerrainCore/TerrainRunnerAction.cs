@@ -1,7 +1,9 @@
-using MiniProceduralGeneration.Generator.MeshWork;
+using MiniProceduralGeneration.Chunk;
+using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.TerrainCore.Processor;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.Processor
+namespace MiniProceduralGeneration.TerrainCore
 {
 
     public interface ITerrainRunnerAction

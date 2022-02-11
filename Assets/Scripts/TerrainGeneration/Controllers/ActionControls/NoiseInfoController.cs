@@ -1,4 +1,4 @@
-using MiniProceduralGeneration.Generator;
+using MiniProceduralGeneration.Noise;
 using MiniProceduralGeneration.ScriptableObjects;
 using UnityEngine;
 

@@ -1,10 +1,10 @@
+using MiniProceduralGeneration.Chunk;
 using MiniProceduralGeneration.Controllers;
-using MiniProceduralGeneration.Generator.MapGrid;
-using MiniProceduralGeneration.Generator.MeshWork;
 using MiniProceduralGeneration.Handler;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.Creator.Map
+namespace MiniProceduralGeneration.MapGrid
 {
 
     /// <summary>

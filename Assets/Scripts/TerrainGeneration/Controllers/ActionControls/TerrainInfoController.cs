@@ -1,5 +1,5 @@
-using MiniProceduralGeneration.Generator;
 using MiniProceduralGeneration.ScriptableObjects;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Controllers.ActionControls

@@ -1,13 +1,13 @@
+using MiniProceduralGeneration.Chunk;
 using MiniProceduralGeneration.Controllers.ActionControls;
-using MiniProceduralGeneration.Generator.Creator.Map;
 using MiniProceduralGeneration.Generator.Entities;
-using MiniProceduralGeneration.Generator.MapGrid;
-using MiniProceduralGeneration.Generator.MeshWork;
-using MiniProceduralGeneration.Generator.Processor;
 using MiniProceduralGeneration.Generator.Utility;
 using MiniProceduralGeneration.Handler;
+using MiniProceduralGeneration.MapGrid;
+using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.TerrainCore.Processor;
 
-namespace MiniProceduralGeneration.Generator
+namespace MiniProceduralGeneration.TerrainCore
 {
 
     public interface ITerrainManager
