@@ -6,18 +6,6 @@ using UnityEngine;
 namespace MiniProceduralGeneration.TerrainCore
 {
 
-    public interface ITerrainRunnerAction
-    {
-
-        #region - - - - - - Methods - - - - - -
-
-        void IterateThroughChunkArraySelection(IChunkShell[] chunks);
-        void ProcessChunk(IChunkShell chunk);
-
-        #endregion Methods
-
-    }
-
     public class TerrainRunnerAction : MonoBehaviour, ITerrainRunnerAction
     {
 
@@ -59,9 +47,6 @@ namespace MiniProceduralGeneration.TerrainCore
             this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
             terrainProcessor.ProcessChunkMesh(chunk, noiseData);
             chunk.BuildMesh();
-
-            // cleans buffers before next use.
-            terrainProcessor.DisposeBuffersIntoGarbageCollection();
         }
 
         #endregion Methods

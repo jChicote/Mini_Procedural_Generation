@@ -1,31 +1,23 @@
 using MiniProceduralGeneration.Chunk;
+using MiniProceduralGeneration.ComputeShaders.Processors;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.TerrainCore.Processor
 {
-    public interface ITerrainProcessor
-    {
-
-        #region - - - - - - Methods - - - - - -
-
-        void ProcessChunkMesh(IChunkMeshAttributes chunkAttributes, float[] noiseData);
-        void DisposeBuffersIntoGarbageCollection();
-
-        #endregion Methods
-
-    }
 
     /// <summary>
     /// Processes terrain data through specified compute shader.
     /// </summary>
-    public class TerrainProcessor : MonoBehaviour, ITerrainProcessor
+    public class TerrainProcessor : BaseProcessor, ITerrainProcessor
     {
 
         #region - - - - - - Fields - - - - - -
 
-        public ComputeShader computeTerrainGen;
         private ITerrainAttributes terrainCharacteristics;
         private MeshComputeBuffers meshBuffers;
+
+        private IChunkMeshAttributes chunkMeshAttributes;
+        private float[] noiseData;
 
         #endregion Fields
 
@@ -39,65 +31,61 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
 
         public void ProcessChunkMesh(IChunkMeshAttributes chunkAttributes, float[] noiseData)
         {
-            CreateNewMeshBuffers(noiseData, chunkAttributes);
+            this.chunkMeshAttributes = chunkAttributes;
+            this.noiseData = noiseData;
 
-            SetComputeShaderVariables(chunkAttributes);
-            computeTerrainGen.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
+            CreateShaderBuffers();
+            SetComputeShaderData();
+            shaderProcessor.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
             RetrieveDataFromComputeShader(chunkAttributes);
+
+            ReleaseBuffersToGarbageCollection();
         }
 
         /// <summary>
         /// Creates mesh buffers to prepare structured buffers to specified array sizes
         /// and strides.
         /// </summary>
-        /// <param name="noiseData">Generated noise</param>
-        /// <param name="chunkAttributes">Interface to terrain attributes of mesh.</param>
-        private void CreateNewMeshBuffers(float[] noiseData, IChunkMeshAttributes chunkAttributes)
+        protected override void CreateShaderBuffers()
         {
-            meshBuffers.vertBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 3);
-            meshBuffers.vertBuffer.SetData(chunkAttributes.Vertices);
+            meshBuffers.vertBuffer = new ComputeBuffer(chunkMeshAttributes.Vertices.Length, sizeof(float) * 3);
+            meshBuffers.vertBuffer.SetData(chunkMeshAttributes.Vertices);
 
-            meshBuffers.normalBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 3);
-            meshBuffers.normalBuffer.SetData(chunkAttributes.Normals);
+            meshBuffers.normalBuffer = new ComputeBuffer(chunkMeshAttributes.Vertices.Length, sizeof(float) * 3);
+            meshBuffers.normalBuffer.SetData(chunkMeshAttributes.Normals);
 
-            meshBuffers.uvBuffer = new ComputeBuffer(chunkAttributes.Vertices.Length, sizeof(float) * 2);
-            meshBuffers.uvBuffer.SetData(chunkAttributes.UVs);
+            meshBuffers.uvBuffer = new ComputeBuffer(chunkMeshAttributes.Vertices.Length, sizeof(float) * 2);
+            meshBuffers.uvBuffer.SetData(chunkMeshAttributes.UVs);
 
             meshBuffers.noiseBuffer = new ComputeBuffer(noiseData.Length, sizeof(float));
             meshBuffers.noiseBuffer.SetData(noiseData);
 
-            meshBuffers.triangleBuffer = new ComputeBuffer(chunkAttributes.Triangles.Length, sizeof(int));
-            meshBuffers.triangleBuffer.SetData(chunkAttributes.Triangles);
+            meshBuffers.triangleBuffer = new ComputeBuffer(chunkMeshAttributes.Triangles.Length, sizeof(int));
+            meshBuffers.triangleBuffer.SetData(chunkMeshAttributes.Triangles);
         }
 
-
-        /// <summary>
-        /// Sets the compute shader to recieve variables of input terrain data.
-        /// </summary>
-        /// <param name="chunkAttributes">Interface to terrain attributes of mesh.</param>
-        private void SetComputeShaderVariables(IChunkMeshAttributes chunkAttributes)
+        protected override void SetComputeShaderData()
         {
-            computeTerrainGen.SetBuffer(0, "vertices", meshBuffers.vertBuffer);
-            computeTerrainGen.SetBuffer(0, "noiseData", meshBuffers.noiseBuffer);
-            computeTerrainGen.SetBuffer(0, "triangles", meshBuffers.triangleBuffer);
-            computeTerrainGen.SetBuffer(0, "normal", meshBuffers.normalBuffer);
-            computeTerrainGen.SetBuffer(0, "uv", meshBuffers.uvBuffer);
+            shaderProcessor.SetBuffer(0, "vertices", meshBuffers.vertBuffer);
+            shaderProcessor.SetBuffer(0, "noiseData", meshBuffers.noiseBuffer);
+            shaderProcessor.SetBuffer(0, "triangles", meshBuffers.triangleBuffer);
+            shaderProcessor.SetBuffer(0, "normal", meshBuffers.normalBuffer);
+            shaderProcessor.SetBuffer(0, "uv", meshBuffers.uvBuffer);
 
-            computeTerrainGen.SetFloat("resolution", chunkAttributes.Vertices.Length);
-            computeTerrainGen.SetFloat("absoluteHeight", terrainCharacteristics.AbsoluteHeight);
-            computeTerrainGen.SetFloat("maxHeight", terrainCharacteristics.MaxHeight);
-            computeTerrainGen.SetFloat("minHeight", terrainCharacteristics.MinHeight);
-            computeTerrainGen.SetFloat("fullChunkSize", terrainCharacteristics.ActualChunkSize);
-            computeTerrainGen.SetFloat("renderChunkSize", terrainCharacteristics.RenderChunkSize);
+            shaderProcessor.SetFloat("resolution", chunkMeshAttributes.Vertices.Length);
+            shaderProcessor.SetFloat("absoluteHeight", terrainCharacteristics.AbsoluteHeight);
+            shaderProcessor.SetFloat("maxHeight", terrainCharacteristics.MaxHeight);
+            shaderProcessor.SetFloat("minHeight", terrainCharacteristics.MinHeight);
+            shaderProcessor.SetFloat("fullChunkSize", terrainCharacteristics.ActualChunkSize);
+            shaderProcessor.SetFloat("renderChunkSize", terrainCharacteristics.RenderChunkSize);
 
-            computeTerrainGen.SetInt("verticesPerSide", terrainCharacteristics.VertexPerSide);
-            computeTerrainGen.SetInt("incrementStep", terrainCharacteristics.LODIncrementStep);
+            shaderProcessor.SetInt("verticesPerSide", terrainCharacteristics.VertexPerSide);
+            shaderProcessor.SetInt("incrementStep", terrainCharacteristics.LODIncrementStep);
         }
 
         /// <summary>
         /// Collects mesh data from compute shader to be outputted to terrain chunk variables.
         /// </summary>
-        /// <param name="chunkAttributes">Interface modifier to targetted terrain chunk instance.</param>
         private void RetrieveDataFromComputeShader(IChunkMeshAttributes chunkModifier)
         {
             meshBuffers.vertBuffer.GetData(chunkModifier.Vertices);
@@ -106,13 +94,13 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
             meshBuffers.triangleBuffer.GetData(chunkModifier.Triangles);
         }
 
-        public void DisposeBuffersIntoGarbageCollection()
+        protected override void ReleaseBuffersToGarbageCollection()
         {
-            meshBuffers.vertBuffer.Dispose();
-            meshBuffers.normalBuffer.Dispose();
-            meshBuffers.uvBuffer.Dispose();
-            meshBuffers.noiseBuffer.Dispose();
-            meshBuffers.triangleBuffer.Dispose();
+            meshBuffers.vertBuffer.Release();
+            meshBuffers.normalBuffer.Release();
+            meshBuffers.uvBuffer.Release();
+            meshBuffers.noiseBuffer.Release();
+            meshBuffers.triangleBuffer.Release();
         }
 
         #endregion Methods

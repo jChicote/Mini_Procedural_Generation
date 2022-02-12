@@ -1,6 +1,6 @@
-using MiniProceduralGeneration.Generator.Utility;
 using MiniProceduralGeneration.Handler;
 using MiniProceduralGeneration.TerrainCore;
+using MiniProceduralGeneration.Utility;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.MapGrid

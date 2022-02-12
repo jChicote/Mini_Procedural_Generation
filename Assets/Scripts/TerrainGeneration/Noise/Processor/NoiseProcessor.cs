@@ -1,24 +1,20 @@
+using MiniProceduralGeneration.ComputeShaders.Processors;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Noise.Processor
 {
-    public interface INoiseProcessor
-    {
-        #region - - - - - - Methods - - - - - -
 
-        void ProcessNoiseData(float[] noiseDataArray, int mapSize, Vector3 samplePosition);
-
-        #endregion Methods
-    }
-
-    public class NoiseProcessor : MonoBehaviour, INoiseProcessor
+    public class NoiseProcessor : BaseProcessor, INoiseProcessor
     {
 
         #region - - - - - - Fields - - - - - -
 
-        [SerializeField] private ComputeShader noiseShader;
         private INoiseAttributes noiseCharacteristics;
         private NoiseComputeBuffers computeBuffers = new NoiseComputeBuffers();
+
+        private float[] noiseData;
+        private int mapSize;
+        private Vector3 samplePosition;
 
         #endregion Fields
 
@@ -31,51 +27,44 @@ namespace MiniProceduralGeneration.Noise.Processor
 
         public void ProcessNoiseData(float[] noiseDataArray, int mapSize, Vector3 samplePosition)
         {
-            CreateNoiseComputeBuffers(noiseDataArray);
+            this.noiseData = noiseDataArray;
+            this.mapSize = mapSize;
+            this.samplePosition = samplePosition;
 
-            // Produce noise data through compute shader
-            SetComputeShaderData(computeBuffers, samplePosition, mapSize);
-            noiseShader.Dispatch(0, noiseDataArray.Length / 10, 1, 1); // Runs compute shader
+            CreateShaderBuffers();
+            SetComputeShaderData();
+            shaderProcessor.Dispatch(0, noiseDataArray.Length / 10, 1, 1); // Runs compute shader
             computeBuffers.noiseBuffer.GetData(noiseDataArray);
 
             // cleans buffers before next use.
-            DisposeBuffersToGarbageCollection(computeBuffers);
+            ReleaseBuffersToGarbageCollection();
         }
 
-        /// <summary>
-        /// Creates noise buffers to prepare structured buffers to specified array sizes
-        /// and strides.
-        /// </summary>
-        private void CreateNoiseComputeBuffers(float[] noiseDataArray)
+        protected override void CreateShaderBuffers()
         {
-            //computeBuffers = new NoiseComputeBuffers();
-
-            computeBuffers.noiseBuffer = new ComputeBuffer(noiseDataArray.Length, sizeof(float));
-            computeBuffers.noiseBuffer.SetData(noiseDataArray);
+            computeBuffers.noiseBuffer = new ComputeBuffer(noiseData.Length, sizeof(float));
+            computeBuffers.noiseBuffer.SetData(noiseData);
 
             computeBuffers.offsetBuffer = new ComputeBuffer(noiseCharacteristics.StepOffsets.Length, sizeof(float) * 2);
             computeBuffers.offsetBuffer.SetData(noiseCharacteristics.StepOffsets);
         }
 
-        /// <summary>
-        /// Sets the compute shader to recieve variables of input noise data.
-        /// </summary>
-        private void SetComputeShaderData(NoiseComputeBuffers computeBuffers, Vector3 samplePosition, int mapSize)
+        protected override void SetComputeShaderData()
         {
-            noiseShader.SetBuffer(0, "noise", computeBuffers.noiseBuffer);
-            noiseShader.SetBuffer(0, "octaveOffsets", computeBuffers.offsetBuffer);
-            noiseShader.SetVector("startPosition", samplePosition);
-            noiseShader.SetFloat("noiseScale", noiseCharacteristics.NoiseScale);
-            noiseShader.SetFloat("persistence", noiseCharacteristics.Persistence);
-            noiseShader.SetFloat("lacunarity", noiseCharacteristics.Lacunarity);
-            noiseShader.SetInt("chunkSize", mapSize);
-            noiseShader.SetInt("noiseOctaveCount", (int)noiseCharacteristics.NoiseOctaveCount);
+            shaderProcessor.SetBuffer(0, "noise", computeBuffers.noiseBuffer);
+            shaderProcessor.SetBuffer(0, "octaveOffsets", computeBuffers.offsetBuffer);
+            shaderProcessor.SetVector("startPosition", samplePosition);
+            shaderProcessor.SetFloat("noiseScale", noiseCharacteristics.NoiseScale);
+            shaderProcessor.SetFloat("persistence", noiseCharacteristics.Persistence);
+            shaderProcessor.SetFloat("lacunarity", noiseCharacteristics.Lacunarity);
+            shaderProcessor.SetInt("chunkSize", mapSize);
+            shaderProcessor.SetInt("noiseOctaveCount", (int)noiseCharacteristics.NoiseOctaveCount);
         }
 
-        private void DisposeBuffersToGarbageCollection(NoiseComputeBuffers computeBuffers)
+        protected override void ReleaseBuffersToGarbageCollection()
         {
-            computeBuffers.noiseBuffer.Dispose();
-            computeBuffers.offsetBuffer.Dispose();
+            computeBuffers.noiseBuffer.Release();
+            computeBuffers.offsetBuffer.Release();
         }
 
         #endregion Methods

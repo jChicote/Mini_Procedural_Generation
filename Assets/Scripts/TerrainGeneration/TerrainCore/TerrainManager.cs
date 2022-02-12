@@ -1,11 +1,11 @@
 using MiniProceduralGeneration.Chunk;
 using MiniProceduralGeneration.Controllers.ActionControls;
 using MiniProceduralGeneration.Generator.Entities;
-using MiniProceduralGeneration.Generator.Utility;
 using MiniProceduralGeneration.Handler;
 using MiniProceduralGeneration.MapGrid;
 using MiniProceduralGeneration.Noise;
 using MiniProceduralGeneration.TerrainCore.Processor;
+using MiniProceduralGeneration.Utility;
 
 namespace MiniProceduralGeneration.TerrainCore
 {

@@ -5,13 +5,21 @@ using UnityEngine.UI;
 
 namespace MiniProceduralGeneration.Utility.Visualisation
 {
+
     public class NoiseVisualiser : MonoBehaviour
     {
+
+        #region - - - - - - Fields - - - - - -
+
         public NoiseGenerator noiseGenerator;
         public TerrainManager terrainGenerator;
         private Image resultImage;
         private int imageWidth;
         private int imageHeight;
+
+        #endregion Fields
+
+        #region - - - - - - Methods - - - - - - -
 
         private void Awake()
         {
@@ -54,5 +62,8 @@ namespace MiniProceduralGeneration.Utility.Visualisation
             return texture;
         }
 
+        #endregion Methods
+
     }
+
 }
