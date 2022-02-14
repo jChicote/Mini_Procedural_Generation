@@ -13,7 +13,6 @@ namespace MiniProceduralGeneration.Chunk
 
         #region - - - - - - Fields - - - - - -
 
-        [Header("Mesh Components")]
         [SerializeField] protected MeshFilter meshFilter;
         [SerializeField] protected MeshCollider meshCollider;
         [SerializeField] protected Mesh mesh;

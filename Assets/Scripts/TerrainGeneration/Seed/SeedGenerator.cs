@@ -23,6 +23,7 @@ namespace MiniProceduralGeneration.Seed
 
     public class SeedGenerator : MonoBehaviour, ISeedGenerator
     {
+
         #region - - - - Properties - - - -
 
         public bool HasCreatedSeed => Seed != 0;

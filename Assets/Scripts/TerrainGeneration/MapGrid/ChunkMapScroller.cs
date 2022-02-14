@@ -181,5 +181,7 @@ namespace MiniProceduralGeneration.MapGrid
         public void CalculateMapGridSize() => mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
 
         #endregion Methods
+
     }
+
 }

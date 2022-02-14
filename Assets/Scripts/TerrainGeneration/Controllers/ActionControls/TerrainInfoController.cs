@@ -18,6 +18,7 @@ namespace MiniProceduralGeneration.Controllers.ActionControls
 
     public class TerrainInfoController : MonoBehaviour, ITerrainInfoController
     {
+
         #region - - - - Fields - - - -
 
         [SerializeField]
