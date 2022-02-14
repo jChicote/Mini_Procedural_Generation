@@ -19,6 +19,9 @@ namespace MiniProceduralGeneration.MapGrid
         public Transform targetObject;
         public GameObject chunkPrefab;
         private int mapGridEdgeSize = 0;
+        private int index;
+        private float halfDistance;
+        private Vector3 newPosition;
 
         private ITerrainChunkCollection terrainChunks;
         private ITerrainRunnerAction terrainRunner;
@@ -62,12 +65,12 @@ namespace MiniProceduralGeneration.MapGrid
         /// </summary>
         private void ScrollMap()
         {
-            float halfDistance = mapGridCreator.ChunkDistance * (terrainAttributes.RenderChunkSize);
+            halfDistance = mapGridCreator.ChunkDistance * (terrainAttributes.RenderChunkSize);
             if (targetObject.position.x < mapBorderFinder.LeftChunk.PositionWorldSpace.x + halfDistance) // Reposition Left
             {
                 RepositionColToLeft();
             }
-            else if (targetObject.position.x > mapBorderFinder.RightChunk.PositionWorldSpace.x - halfDistance / 2)// - (chunkDistance / 2) * characteristics.MapSize)) // Reposition Right
+            else if (targetObject.position.x > mapBorderFinder.RightChunk.PositionWorldSpace.x - halfDistance / 2) // Reposition Right
             {
                 RepositionColToRight();
             }
@@ -117,8 +120,6 @@ namespace MiniProceduralGeneration.MapGrid
         /// </summary>
         private void ShiftAndEnumerateHorizontalCol(int targetCol, int movementDirection)
         {
-            int index;
-            Vector3 newPosition;
 
             for (int i = 0; i < mapGridCreator.ChunkDistance * 2 + 1; i++)
             {
@@ -165,8 +166,6 @@ namespace MiniProceduralGeneration.MapGrid
         /// </summary>
         private void ShiftAndEnumerateVerticalRow(int targetRow, int movementDirection)
         {
-            int index;
-            Vector3 newPosition;
 
             for (int i = 0; i < mapGridEdgeSize; i++)
             {
