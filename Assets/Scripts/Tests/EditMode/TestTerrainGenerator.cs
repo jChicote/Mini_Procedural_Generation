@@ -1,4 +1,4 @@
-using MiniProceduralGeneration.Generator;
+using MiniProceduralGeneration.TerrainCore;
 using NUnit.Framework;
 using UnityEngine;
 

@@ -1,21 +1,9 @@
 using MiniProceduralGeneration.Generator.Entities;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
-namespace MiniProceduralGeneration.Generator.Utility
+namespace MiniProceduralGeneration.Utility
 {
-
-    public interface IChunkDimensionsUtility
-    {
-
-        #region - - - - - - Methods - - - - - -
-
-        TerrainChunkDimensions CalculateChunkDimensions();
-        void CalculateLevelOfDetail();
-        int FindMininmumAllowableLevelOfDetail(int currentLevelOfDetail, int chunkWidth);
-
-        #endregion Methods
-
-    }
 
     public class ChunkDimensionsUtility : IChunkDimensionsUtility
     {

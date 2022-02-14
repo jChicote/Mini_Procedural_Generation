@@ -1,5 +1,5 @@
-﻿using MiniProceduralGeneration.Generator;
-using MiniProceduralGeneration.Generator.Utility;
+﻿using MiniProceduralGeneration.TerrainCore;
+using MiniProceduralGeneration.Utility;
 using Moq;
 using NUnit.Framework;
 using System.Collections;

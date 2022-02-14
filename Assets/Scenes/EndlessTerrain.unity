@@ -1173,7 +1173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d46a9b1215925141b31d35795a2e1e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseShader: {fileID: 7200000, guid: 167d91ce4841a234b869a788ea9c8fc3, type: 3}
+  shaderProcessor: {fileID: 7200000, guid: c62d4f8df943489408c601c52595d038, type: 3}
 --- !u!114 &252276658
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1186,7 +1186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cad0baec79eef44b86ec212e448d3d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  computeTerrainGen: {fileID: 7200000, guid: f9f511750c2ddc143bac2cdd31c1a6bc, type: 3}
+  shaderProcessor: {fileID: 7200000, guid: 032b4684b27968d4abc1b40422e636cd, type: 3}
 --- !u!114 &252276659
 MonoBehaviour:
   m_ObjectHideFlags: 0
