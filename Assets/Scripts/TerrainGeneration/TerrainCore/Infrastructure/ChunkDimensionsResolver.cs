@@ -15,6 +15,7 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure
         private IMapGridAttributes mapGridAttributes;
         private TerrainChunkDimensions chunkDimensions;
         private int minimumLevelOfDetail;
+        private int finalLevelOfDetail;
 
         #endregion Fields
 
@@ -27,8 +28,12 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure
             mapGridAttributes = this.GetComponent<IMapGridAttributes>();
         }
 
-        public TerrainChunkDimensions GetChunkDimensions()
+        public TerrainChunkDimensions GetChunkDimensions(Vector3 chunkPosition)
         {
+            finalLevelOfDetail = (int)attributes.LevelOfDetail;
+            finalLevelOfDetail = CalculateLODFromTileDistance(chunkPosition);
+            CalculateLevelOfDetail();
+
             chunkDimensions.VertexPerSide = Mathf.RoundToInt(attributes.ActualChunkSize / attributes.LODIncrementStep);
             chunkDimensions.VertexPerSide += attributes.LODIncrementStep > 1 ? 1 : 0;
 
@@ -44,10 +49,10 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure
             return distance;
         }
 
-        public int CalculateLODTileIncrementStep(Vector3 chunkPosition)
+        public int CalculateLODFromTileDistance(Vector3 chunkPosition)
         {
-            int incrementStep = (int)CalculateDistanceToTileCenter(chunkPosition) / (mapGridAttributes.ChunkDistance * attributes.ActualChunkSize);
-            return incrementStep;
+            int levelOfDetail = (int)CalculateDistanceToTileCenter(chunkPosition) / (mapGridAttributes.ChunkDistance * attributes.ActualChunkSize);
+            return levelOfDetail;
         }
 
         public void CalculateLevelOfDetail()
@@ -58,7 +63,7 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure
                 attributes.LevelOfDetail = minimumLevelOfDetail;
 
             // provides the step detail value for each side of mesh
-            attributes.LODIncrementStep = (int)(attributes.LevelOfDetail == 0 ? 1 : attributes.LevelOfDetail * 2);
+            attributes.LODIncrementStep = (int)(attributes.LevelOfDetail == 0 ? 1 : finalLevelOfDetail * 2);
         }
 
         public int FindMininmumAllowableLevelOfDetail(int currentLevelOfDetail, int chunkWidth)
