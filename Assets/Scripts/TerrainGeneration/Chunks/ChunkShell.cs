@@ -4,6 +4,11 @@ using UnityEngine;
 namespace MiniProceduralGeneration.Chunk
 {
 
+    public interface IChunkDimensions
+    {
+        TerrainChunkDimensions Dimensions { get; set; }
+    }
+
     /// <summary>
     /// A terrain chunk attaches to its own gameobject instance rendering
     /// meshes from the given mesh data.
@@ -26,6 +31,7 @@ namespace MiniProceduralGeneration.Chunk
 
         #region - - - - - - Properties - - - - - -
 
+        public TerrainChunkDimensions Dimensions { get; set; }
         public Vector3 PositionWorldSpace { get => transform.position; set => transform.position = value; }
         public Vector3[] Vertices { get => vertices; set => vertices = value; }
         public Vector3[] Normals { get => normals; set => normals = value; }
@@ -45,6 +51,8 @@ namespace MiniProceduralGeneration.Chunk
             normals = new Vector3[chunkDimensions.SquaredVertexSide];
             uv = new Vector2[chunkDimensions.SquaredVertexSide];
             meshTriangles = new int[(chunkDimensions.VertexPerSide - 1) * (chunkDimensions.VertexPerSide - 1) * 6];
+
+            this.Dimensions = chunkDimensions;
         }
 
         public void BuildMesh()
@@ -81,7 +89,6 @@ namespace MiniProceduralGeneration.Chunk
 
         public void OnDestroyChunk()
         {
-            //print("Chunk is being destroyed");
             Destroy(gameObject, 1);
         }
 

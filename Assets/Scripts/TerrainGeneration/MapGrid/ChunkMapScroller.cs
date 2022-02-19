@@ -24,7 +24,7 @@ namespace MiniProceduralGeneration.MapGrid
         private Vector3 newPosition;
 
         private ITerrainChunkCollection terrainChunks;
-        private ITerrainRunnerAction terrainRunner;
+        private ITerrainChunkIterator terrainRunner;
         private ITerrainAttributes terrainAttributes;
         private IMapGridCreator mapGridCreator;
         private IMapGridBorderFinder mapBorderFinder;
@@ -37,7 +37,7 @@ namespace MiniProceduralGeneration.MapGrid
         {
             terrainChunks = this.GetComponent<ITerrainChunkCollection>();
             terrainAttributes = this.GetComponent<ITerrainAttributes>();
-            terrainRunner = this.GetComponent<ITerrainRunnerAction>();
+            terrainRunner = this.GetComponent<ITerrainChunkIterator>();
             mapGridCreator = this.GetComponent<IMapGridCreator>();
             mapBorderFinder = new MapGridBorderFinder();
 

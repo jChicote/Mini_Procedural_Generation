@@ -1,12 +1,14 @@
 using MiniProceduralGeneration.Chunk;
+using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsResolver;
 using MiniProceduralGeneration.TerrainCore.Processor;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.TerrainCore
 {
 
-    public class TerrainRunnerAction : MonoBehaviour, ITerrainRunnerAction
+    public class TerrainChunkIterator : MonoBehaviour, ITerrainChunkIterator
     {
 
         #region - - - - Fields - - - -
@@ -14,13 +16,13 @@ namespace MiniProceduralGeneration.TerrainCore
         private float[] noiseData;
         private INoiseGenerator noiseGenerator;
         private ITerrainAttributes attributes;
-        private ITerrainProcessor terrainProcessor;
+        private IMeshTerrainProcessor terrainProcessor;
 
         #endregion Fields
 
         #region - - - - Constructors - - - -
 
-        public void StartTerrainRunnerAction(ITerrainAttributes attributes, ITerrainProcessor terrainProcessor, INoiseGenerator noiseGenerator)
+        public void StartTerrainRunnerAction(ITerrainAttributes attributes, IMeshTerrainProcessor terrainProcessor, INoiseGenerator noiseGenerator)
         {
             this.attributes = attributes;
             this.terrainProcessor = terrainProcessor;
@@ -43,6 +45,10 @@ namespace MiniProceduralGeneration.TerrainCore
         {
             if (noiseData is null)
                 _ = new float[0];
+
+            ChunkDimensionsResolver resolver = this.GetComponent<ChunkDimensionsResolver>();
+            TerrainChunkDimensions dimensions = resolver.GetChunkDimensions(chunk.PositionWorldSpace);
+            chunk.InitialiseMeshArrays(dimensions);
 
             this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
             terrainProcessor.ProcessChunkMesh(chunk, noiseData);

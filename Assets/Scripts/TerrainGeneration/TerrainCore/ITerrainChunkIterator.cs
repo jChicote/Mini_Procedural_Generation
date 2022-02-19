@@ -2,7 +2,7 @@
 
 namespace MiniProceduralGeneration.TerrainCore
 {
-    public interface ITerrainRunnerAction
+    public interface ITerrainChunkIterator
     {
 
         #region - - - - - - Methods - - - - - -

@@ -2,12 +2,12 @@
 
 namespace MiniProceduralGeneration.TerrainCore.Processor
 {
-    public interface ITerrainProcessor
+    public interface IMeshTerrainProcessor
     {
 
         #region - - - - - - Methods - - - - - -
 
-        void ProcessChunkMesh(IChunkMeshAttributes chunkAttributes, float[] noiseData);
+        void ProcessChunkMesh(IChunkShell chunk, float[] noiseData);
 
         #endregion Methods
 
