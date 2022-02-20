@@ -35,14 +35,19 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
 
         public float CalculateDistanceToTileCenter(Vector3 chunkPosition)
         {
-            Vector3 tileCenteredPosition = new Vector3
+            Vector2 tileCenteredPosition = new Vector2
             (
                 chunkPosition.x + (TerrainAttributes.RenderChunkSize / 2),
-                chunkPosition.y,
                 chunkPosition.z + (TerrainAttributes.RenderChunkSize / 2)
             );
 
-            float distance = Vector3.Magnitude(TargetTracker.TargetPositionInWorldSpace - tileCenteredPosition);
+            Vector2 targetPlanePosition = new Vector2
+            (
+                TargetTracker.TargetPositionInWorldSpace.x,
+                TargetTracker.TargetPositionInWorldSpace.z
+            );
+
+            float distance = Vector2.Distance(targetPlanePosition, tileCenteredPosition);
 
             return distance;
         }
@@ -51,7 +56,7 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
         {
             int levelOfDetail = (int)CalculateDistanceToTileCenter(chunkPosition) / TerrainAttributes.RenderChunkSize; // (MapGridAttributes.ChunkDistance * TerrainAttributes.ActualChunkSize) + 1;
             //Debug.Log((int)CalculateDistanceToTileCenter(chunkPosition));
-            //Debug.Log((MapGridAttributes.ChunkDistance * TerrainAttributes.ActualChunkSize) + 1);
+            //Debug.Log(levelOfDetail);
             levelOfDetail = Mathf.Clamp(levelOfDetail, 0, 1000);
             return levelOfDetail;
         }

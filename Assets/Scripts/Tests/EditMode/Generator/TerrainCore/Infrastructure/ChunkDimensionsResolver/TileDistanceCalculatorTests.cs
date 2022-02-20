@@ -76,8 +76,11 @@ namespace MiniProceduralGeneration.Tests.EditMode.TerrainCore.Infrastructure.Chu
         private static TestIntValues<Vector3>[] lodDistanceTestValues = new TestIntValues<Vector3>[]
         {
             new TestIntValues<Vector3>() { expected = 1, inputValue = new Vector3(24, 0, 0) },
+            new TestIntValues<Vector3>() { expected = 1, inputValue = new Vector3(-24, 0, 0) },
             new TestIntValues<Vector3>() { expected = 3, inputValue = new Vector3(72, 0, 0) },
-            new TestIntValues<Vector3>() { expected = 5, inputValue = new Vector3(120, 0, 0) }
+            new TestIntValues<Vector3>() { expected = 3, inputValue = new Vector3(-72, 0, 0) },
+            new TestIntValues<Vector3>() { expected = 5, inputValue = new Vector3(120, 0, 0) },
+            new TestIntValues<Vector3>() { expected = 5, inputValue = new Vector3(-120, 0, 0) }
         };
 
         [UnityTest]

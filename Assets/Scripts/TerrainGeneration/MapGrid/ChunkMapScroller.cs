@@ -127,8 +127,10 @@ namespace MiniProceduralGeneration.MapGrid
                 newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
                 newPosition.x += mapGridEdgeSize * (terrainAttributes.RenderChunkSize) * movementDirection;
                 terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
-                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index]);
+                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index], true);
             }
+
+            terrainRunner.IterateThroughChunkArraySelection(terrainChunks.ChunkArray);
         }
 
         private void RepositionRowToTop()
@@ -173,8 +175,10 @@ namespace MiniProceduralGeneration.MapGrid
                 newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
                 newPosition.z += terrainAttributes.RenderChunkSize * mapGridEdgeSize * movementDirection;
                 terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
-                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index]);
+                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index], true);
             }
+
+            terrainRunner.IterateThroughChunkArraySelection(terrainChunks.ChunkArray);
         }
 
         public void CalculateMapGridSize() => mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;

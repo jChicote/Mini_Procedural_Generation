@@ -11,7 +11,7 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
         private ITerrainAttributes TerrainAttributes { get; set; }
 
         private int MinimumLevelOfDetail { get; set; }
-        private int LevelOfDetail { get; set; }
+        public int LevelOfDetail { get; set; }
 
         #endregion Properties
 
@@ -57,5 +57,4 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
         #endregion Methods
 
     }
-
 }

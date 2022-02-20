@@ -17,9 +17,15 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
         private MinimumLevelOfDetailIncrementFinder minimumLevelFinder;
         private TileDistanceCalculator tileDistanceCalculator;
         private TerrainChunkDimensions chunkDimensions;
-        private int finalLevelOfDetail;
+        private int calculatedLevelOfDetail;
 
         #endregion Fields
+
+        #region - - - - - - Properties - - - - - -
+
+        public int MinimumLevelOfDetail { get; set; }
+
+        #endregion Properties
 
         #region - - - - - - Methods - - - - - -
 
@@ -37,13 +43,15 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
         {
             chunkDimensions = new TerrainChunkDimensions();
 
-            finalLevelOfDetail = (int)attributes.LevelOfDetail;
-            finalLevelOfDetail = tileDistanceCalculator.CalculateLevelOfDetailDFromTileDistance(chunkPosition);
-            attributes.LODIncrementStep = minimumLevelFinder.CalculateLevelOfDetailIncrement(finalLevelOfDetail);
+            calculatedLevelOfDetail = (int)attributes.LevelOfDetail;
+            calculatedLevelOfDetail = tileDistanceCalculator.CalculateLevelOfDetailDFromTileDistance(chunkPosition);
+            MinimumLevelOfDetail = minimumLevelFinder.FindMininmumAllowableLevelOfDetail(0, attributes.RenderChunkSize);
+            attributes.LODIncrementStep = minimumLevelFinder.CalculateLevelOfDetailIncrement(calculatedLevelOfDetail);
 
             chunkDimensions.VertexPerSide = Mathf.RoundToInt(attributes.ActualChunkSize / attributes.LODIncrementStep);
             chunkDimensions.VertexPerSide += attributes.LODIncrementStep > 1 ? 1 : 0;
             chunkDimensions.SquaredVertexSide = chunkDimensions.VertexPerSide * chunkDimensions.VertexPerSide;
+            chunkDimensions.LevelOfDetail = minimumLevelFinder.LevelOfDetail;
 
             return chunkDimensions;
         }
