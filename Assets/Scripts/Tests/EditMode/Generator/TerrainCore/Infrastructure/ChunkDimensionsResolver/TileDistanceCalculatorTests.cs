@@ -73,14 +73,18 @@ namespace MiniProceduralGeneration.Tests.EditMode.TerrainCore.Infrastructure.Chu
 
         #region - - - - - - CalculateLevelOfDetailDFromTileDistance Tests - - - - - -
 
+        /// <summary>
+        /// Test values for LOD distance inputs (negative values account for offset from the non-centered
+        /// starting position of the tile chunk.
+        /// </summary>
         private static TestIntValues<Vector3>[] lodDistanceTestValues = new TestIntValues<Vector3>[]
         {
             new TestIntValues<Vector3>() { expected = 1, inputValue = new Vector3(24, 0, 0) },
-            new TestIntValues<Vector3>() { expected = 1, inputValue = new Vector3(-24, 0, 0) },
+            new TestIntValues<Vector3>() { expected = 0, inputValue = new Vector3(-24, 0, 0) },
             new TestIntValues<Vector3>() { expected = 3, inputValue = new Vector3(72, 0, 0) },
-            new TestIntValues<Vector3>() { expected = 3, inputValue = new Vector3(-72, 0, 0) },
+            new TestIntValues<Vector3>() { expected = 2, inputValue = new Vector3(-72, 0, 0) },
             new TestIntValues<Vector3>() { expected = 5, inputValue = new Vector3(120, 0, 0) },
-            new TestIntValues<Vector3>() { expected = 5, inputValue = new Vector3(-120, 0, 0) }
+            new TestIntValues<Vector3>() { expected = 4, inputValue = new Vector3(-120, 0, 0) }
         };
 
         [UnityTest]

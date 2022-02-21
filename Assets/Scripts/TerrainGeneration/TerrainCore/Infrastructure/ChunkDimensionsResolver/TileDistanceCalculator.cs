@@ -9,11 +9,12 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
 
         #region - - - - - - Properties - - - - - -
 
-        private IMapGridAttributes MapGridAttributes { get; set; }
+        private IMapGridAttributes mapGridAttributes;
+        private ITargetObjectTracker targetTracker;
+        private ITerrainAttributes terrainAttributes;
 
-        private ITargetObjectTracker TargetTracker { get; set; }
-
-        private ITerrainAttributes TerrainAttributes { get; set; }
+        private Vector2 targetPlanePosition;
+        private Vector2 tileCenteredPosition;
 
         #endregion Properties
 
@@ -24,9 +25,9 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
             ITargetObjectTracker targetTracker,
             ITerrainAttributes terrainAttributes)
         {
-            this.MapGridAttributes = mapGridAttributes;
-            this.TargetTracker = targetTracker;
-            this.TerrainAttributes = terrainAttributes;
+            this.mapGridAttributes = mapGridAttributes;
+            this.targetTracker = targetTracker;
+            this.terrainAttributes = terrainAttributes;
         }
 
         #endregion Constructors
@@ -35,31 +36,23 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
 
         public float CalculateDistanceToTileCenter(Vector3 chunkPosition)
         {
-            Vector2 tileCenteredPosition = new Vector2
+            tileCenteredPosition = new Vector2
             (
-                chunkPosition.x + (TerrainAttributes.RenderChunkSize / 2),
-                chunkPosition.z + (TerrainAttributes.RenderChunkSize / 2)
+                chunkPosition.x + (terrainAttributes.RenderChunkSize / 2),
+                chunkPosition.z + (terrainAttributes.RenderChunkSize / 2)
             );
 
-            Vector2 targetPlanePosition = new Vector2
+            targetPlanePosition = new Vector2
             (
-                TargetTracker.TargetPositionInWorldSpace.x,
-                TargetTracker.TargetPositionInWorldSpace.z
+                targetTracker.TargetPositionInWorldSpace.x,
+                targetTracker.TargetPositionInWorldSpace.z
             );
 
-            float distance = Vector2.Distance(targetPlanePosition, tileCenteredPosition);
-
-            return distance;
+            return Vector2.Distance(targetPlanePosition, tileCenteredPosition);
         }
 
         public int CalculateLevelOfDetailDFromTileDistance(Vector3 chunkPosition)
-        {
-            int levelOfDetail = (int)CalculateDistanceToTileCenter(chunkPosition) / TerrainAttributes.RenderChunkSize; // (MapGridAttributes.ChunkDistance * TerrainAttributes.ActualChunkSize) + 1;
-            //Debug.Log((int)CalculateDistanceToTileCenter(chunkPosition));
-            //Debug.Log(levelOfDetail);
-            levelOfDetail = Mathf.Clamp(levelOfDetail, 0, 1000);
-            return levelOfDetail;
-        }
+            => Mathf.Clamp((int)CalculateDistanceToTileCenter(chunkPosition) / terrainAttributes.RenderChunkSize, 0, 1000);
 
         #endregion Methods
 

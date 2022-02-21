@@ -181,7 +181,8 @@ namespace MiniProceduralGeneration.MapGrid
             terrainRunner.IterateThroughChunkArraySelection(terrainChunks.ChunkArray);
         }
 
-        public void CalculateMapGridSize() => mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
+        public void CalculateMapGridSize()
+            => mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
 
         #endregion Methods
 

@@ -13,6 +13,9 @@ namespace MiniProceduralGeneration.TerrainCore
 
         #region - - - - Fields - - - -
 
+        private ChunkDimensionsResolver chunkResolver;
+        private TerrainChunkDimensions chunkDimensions;
+
         private float[] noiseData;
         private INoiseGenerator noiseGenerator;
         private ITerrainAttributes attributes;
@@ -27,6 +30,8 @@ namespace MiniProceduralGeneration.TerrainCore
             this.attributes = attributes;
             this.terrainProcessor = terrainProcessor;
             this.noiseGenerator = noiseGenerator;
+
+            chunkResolver = this.GetComponent<ChunkDimensionsResolver>();
         }
 
         #endregion Constructors
@@ -46,44 +51,17 @@ namespace MiniProceduralGeneration.TerrainCore
             if (noiseData is null)
                 _ = new float[0];
 
-            ChunkDimensionsResolver resolver = this.GetComponent<ChunkDimensionsResolver>();
-            TerrainChunkDimensions dimensions = resolver.GetChunkDimensions(chunk.PositionWorldSpace);
+            chunkDimensions = chunkResolver.GetChunkDimensions(chunk.PositionWorldSpace);
 
-            //print(chunk.Dimensions != null && forceUpdate);
-            //if (chunk.Dimensions != null)
-            //{
-            //    print("Current LOD: " + dimensions.LevelOfDetail + ", Minimum LOD: " + resolver.MinimumLevelOfDetail);
-            //    if (chunk.Dimensions.LevelOfDetail == resolver.MinimumLevelOfDetail)
-            //    {
-            //        print("Worked a number of times");
-            //    }
-            //}
-
-            // Render If it is forced to update
-
-            if (forceUpdate || chunk.Dimensions == null)
-            {
-                chunk.InitialiseMeshArrays(dimensions);
-
-                this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
-                terrainProcessor.ProcessChunkMesh(chunk, noiseData);
-                chunk.BuildMesh();
-            }
-            else
-            {
-                if (chunk.Dimensions.LevelOfDetail == dimensions.LevelOfDetail)
-                {
-                    //print("Local: " + chunk.Dimensions.LevelOfDetail + "Minimum: " + resolver.MinimumLevelOfDetail);
+            if (!forceUpdate && chunk.Dimensions != null)
+                if (chunk.Dimensions.LevelOfDetail == chunkDimensions.LevelOfDetail)
                     return;
-                }
 
-                chunk.InitialiseMeshArrays(dimensions);
+            chunk.InitialiseMeshArrays(chunkDimensions);
 
-                this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
-                terrainProcessor.ProcessChunkMesh(chunk, noiseData);
-                chunk.BuildMesh();
-            }
-
+            this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
+            terrainProcessor.ProcessChunkMesh(chunk, noiseData);
+            chunk.BuildMesh();
         }
 
         #endregion Methods
