@@ -23,7 +23,7 @@ namespace MiniProceduralGeneration.TerrainCore
         private ITerrainInfoController controller;
 
         private TerrainChunkDimensions chunkDimensions;
-        private TerrainRunnerAction terrainAction;
+        private TerrainChunkIterator terrainChunkIterator;
 
         #endregion Fields
 
@@ -35,7 +35,7 @@ namespace MiniProceduralGeneration.TerrainCore
         public int ActualChunkSize { get; set; }
         public int RenderChunkSize { get => ActualChunkSize - 1; }
         public int LODIncrementStep { get; set; }
-        public int VertexPerSide => chunkDimensions.VertexPerSide;
+        public int VertexPerSide => 0;
         public float LevelOfDetail { get; set; }
         public IChunkShell[] ChunkArray { get; set; }
 
@@ -50,14 +50,14 @@ namespace MiniProceduralGeneration.TerrainCore
             controller.GetTerrainAttributes(this);
 
             mapCreator = this.GetComponent<IMapGridCreator>();
-            ITerrainProcessor terrainProcessor = this.GetComponent<ITerrainProcessor>();
+            IMeshTerrainProcessor terrainProcessor = this.GetComponent<IMeshTerrainProcessor>();
             INoiseGenerator noiseGenerator = this.GetComponent<INoiseGenerator>();
 
             ChunkArray = new IChunkShell[0];
             dimensionsUtility = new ChunkDimensionsUtility(this);
 
-            terrainAction = this.GetComponent<TerrainRunnerAction>();
-            terrainAction.StartTerrainRunnerAction(this, terrainProcessor, noiseGenerator);
+            terrainChunkIterator = this.GetComponent<TerrainChunkIterator>();
+            terrainChunkIterator.StartTerrainRunnerAction(this, terrainProcessor, noiseGenerator);
 
             ChunkMapCreator mapChunkCreator = this.GetComponent<ChunkMapCreator>();
             ChunkMapScroller mapScroller = this.GetComponent<ChunkMapScroller>();
@@ -69,18 +69,18 @@ namespace MiniProceduralGeneration.TerrainCore
         public void BuildTerrain()
         {
             mapCreator.CreateChunkMap(this);
-            InitialiseTerrainChunks();
+            //InitialiseTerrainChunks();
 
-            print(ActualChunkSize);
-            print(VertexPerSide);
+            //print(ActualChunkSize);
+            //print(VertexPerSide);
 
-            terrainAction.IterateThroughChunkArraySelection(ChunkArray);
+            terrainChunkIterator.IterateThroughChunkArraySelection(ChunkArray);
         }
 
         public void RegenerateTerrain()
         {
-            InitialiseTerrainChunks();
-            terrainAction.IterateThroughChunkArraySelection(ChunkArray);
+            //InitialiseTerrainChunks();
+            terrainChunkIterator.IterateThroughChunkArraySelection(ChunkArray);
 
         }
 
@@ -88,7 +88,7 @@ namespace MiniProceduralGeneration.TerrainCore
         {
             if (ChunkArray.Length == 0) return;
 
-            chunkDimensions = dimensionsUtility.CalculateChunkDimensions();
+            //chunkDimensions = dimensionsUtility.CalculateChunkDimensions();
             foreach (IChunkShell chunk in ChunkArray)
             {
                 chunk.InitialiseMeshArrays(chunkDimensions);

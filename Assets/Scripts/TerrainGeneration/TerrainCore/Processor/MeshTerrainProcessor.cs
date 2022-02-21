@@ -8,7 +8,7 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
     /// <summary>
     /// Processes terrain data through specified compute shader.
     /// </summary>
-    public class TerrainProcessor : BaseProcessor, ITerrainProcessor
+    public class MeshTerrainProcessor : BaseProcessor, IMeshTerrainProcessor
     {
 
         #region - - - - - - Fields - - - - - -
@@ -17,6 +17,7 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
         private MeshComputeBuffers meshBuffers;
 
         private IChunkMeshAttributes chunkMeshAttributes;
+        private IChunkDimensions chunkDimensions;
         private float[] noiseData;
 
         #endregion Fields
@@ -29,15 +30,16 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
             meshBuffers = new MeshComputeBuffers();
         }
 
-        public void ProcessChunkMesh(IChunkMeshAttributes chunkAttributes, float[] noiseData)
+        public void ProcessChunkMesh(IChunkShell chunk, float[] noiseData)
         {
-            this.chunkMeshAttributes = chunkAttributes;
+            this.chunkDimensions = chunk;
+            this.chunkMeshAttributes = chunk;
             this.noiseData = noiseData;
 
             CreateShaderBuffers();
             SetComputeShaderData();
-            shaderProcessor.Dispatch(0, chunkAttributes.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
-            RetrieveDataFromComputeShader(chunkAttributes);
+            shaderProcessor.Dispatch(0, chunk.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
+            RetrieveDataFromComputeShader(chunk);
 
             ReleaseBuffersToGarbageCollection();
         }
@@ -79,7 +81,7 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
             shaderProcessor.SetFloat("fullChunkSize", terrainCharacteristics.ActualChunkSize);
             shaderProcessor.SetFloat("renderChunkSize", terrainCharacteristics.RenderChunkSize);
 
-            shaderProcessor.SetInt("verticesPerSide", terrainCharacteristics.VertexPerSide);
+            shaderProcessor.SetInt("verticesPerSide", chunkDimensions.Dimensions.VertexPerSide);
             shaderProcessor.SetInt("incrementStep", terrainCharacteristics.LODIncrementStep);
         }
 

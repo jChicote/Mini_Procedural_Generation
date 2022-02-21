@@ -24,7 +24,7 @@ namespace MiniProceduralGeneration.MapGrid
         private Vector3 newPosition;
 
         private ITerrainChunkCollection terrainChunks;
-        private ITerrainRunnerAction terrainRunner;
+        private ITerrainChunkIterator terrainRunner;
         private ITerrainAttributes terrainAttributes;
         private IMapGridCreator mapGridCreator;
         private IMapGridBorderFinder mapBorderFinder;
@@ -37,7 +37,7 @@ namespace MiniProceduralGeneration.MapGrid
         {
             terrainChunks = this.GetComponent<ITerrainChunkCollection>();
             terrainAttributes = this.GetComponent<ITerrainAttributes>();
-            terrainRunner = this.GetComponent<ITerrainRunnerAction>();
+            terrainRunner = this.GetComponent<ITerrainChunkIterator>();
             mapGridCreator = this.GetComponent<IMapGridCreator>();
             mapBorderFinder = new MapGridBorderFinder();
 
@@ -127,8 +127,10 @@ namespace MiniProceduralGeneration.MapGrid
                 newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
                 newPosition.x += mapGridEdgeSize * (terrainAttributes.RenderChunkSize) * movementDirection;
                 terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
-                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index]);
+                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index], true);
             }
+
+            terrainRunner.IterateThroughChunkArraySelection(terrainChunks.ChunkArray);
         }
 
         private void RepositionRowToTop()
@@ -173,11 +175,14 @@ namespace MiniProceduralGeneration.MapGrid
                 newPosition = terrainChunks.ChunkArray[index].PositionWorldSpace;
                 newPosition.z += terrainAttributes.RenderChunkSize * mapGridEdgeSize * movementDirection;
                 terrainChunks.ChunkArray[index].PositionWorldSpace = newPosition;
-                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index]);
+                terrainRunner.ProcessChunk(terrainChunks.ChunkArray[index], true);
             }
+
+            terrainRunner.IterateThroughChunkArraySelection(terrainChunks.ChunkArray);
         }
 
-        public void CalculateMapGridSize() => mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
+        public void CalculateMapGridSize()
+            => mapGridEdgeSize = mapGridCreator.ChunkDistance * 2 + 1;
 
         #endregion Methods
 

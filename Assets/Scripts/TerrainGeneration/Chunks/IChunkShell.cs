@@ -4,7 +4,7 @@ using UnityEngine;
 namespace MiniProceduralGeneration.Chunk
 {
 
-    public interface IChunkShell : IChunkMeshAttributes
+    public interface IChunkShell : IChunkMeshAttributes, IChunkDimensions
     {
 
         #region - - - - - - Properties - - - - - -
