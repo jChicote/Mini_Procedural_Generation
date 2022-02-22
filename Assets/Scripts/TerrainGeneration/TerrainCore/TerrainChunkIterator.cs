@@ -3,6 +3,7 @@ using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Noise;
 using MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsResolver;
 using MiniProceduralGeneration.TerrainCore.Processor;
+using System.Collections;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.TerrainCore
@@ -53,15 +54,22 @@ namespace MiniProceduralGeneration.TerrainCore
 
             chunkDimensions = chunkResolver.GetChunkDimensions(chunk.PositionWorldSpace);
 
-            if (!forceUpdate && chunk.Dimensions != null)
-                if (chunk.Dimensions.LevelOfDetail == chunkDimensions.LevelOfDetail)
-                    return;
+            //if (!forceUpdate && chunk.Dimensions != null)
+            //    if (chunk.Dimensions.LevelOfDetail == chunkDimensions.LevelOfDetail)
+            //        return;
 
             chunk.InitialiseMeshArrays(chunkDimensions);
 
             this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
-            terrainProcessor.ProcessChunkMesh(chunk, noiseData);
-            chunk.BuildMesh();
+            StartCoroutine(AsyncProcessChunk(chunk, this.noiseData));
+            //chunk.BuildMesh();
+        }
+
+        private IEnumerator AsyncProcessChunk(IChunkShell chunk, float[] noiseData)
+        {
+            yield return StartCoroutine(terrainProcessor.ProcessChunkMesh(chunk, noiseData, chunk.BuildMesh));
+
+            //chunk.BuildMesh();
         }
 
         #endregion Methods

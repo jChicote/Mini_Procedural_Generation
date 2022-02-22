@@ -59,6 +59,8 @@ namespace MiniProceduralGeneration.Chunk
         {
             mesh = new Mesh();
 
+            print("Verticies: " + vertices.Length);
+
             AssignDataToMesh();
             RenderTerrain();
         }
