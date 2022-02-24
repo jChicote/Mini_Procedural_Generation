@@ -61,15 +61,17 @@ namespace MiniProceduralGeneration.TerrainCore
             chunk.InitialiseMeshArrays(chunkDimensions);
 
             this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
-            StartCoroutine(AsyncProcessChunk(chunk, this.noiseData));
-            //chunk.BuildMesh();
+            ///StartCoroutine(AsyncProcessChunk(chunk, this.noiseData));
+            terrainProcessor.ProcessChunkMesh(chunk, noiseData);
+            chunk.BuildMesh();
         }
 
         private IEnumerator AsyncProcessChunk(IChunkShell chunk, float[] noiseData)
         {
             yield return StartCoroutine(terrainProcessor.ProcessChunkMesh(chunk, noiseData, chunk.BuildMesh));
 
-            //chunk.BuildMesh();
+            chunk.BuildMesh();
+            print("Called Once");
         }
 
         #endregion Methods

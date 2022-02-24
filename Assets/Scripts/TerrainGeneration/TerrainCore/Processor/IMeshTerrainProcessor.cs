@@ -11,6 +11,8 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
 
         IEnumerator ProcessChunkMesh(IChunkShell chunk, float[] noiseData, Action chunkAction);
 
+        void ProcessChunkMesh(IChunkShell chunk, float[] noiseData);
+
         #endregion Methods
 
     }
