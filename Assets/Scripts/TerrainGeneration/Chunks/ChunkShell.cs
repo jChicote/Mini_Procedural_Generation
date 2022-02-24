@@ -1,4 +1,7 @@
 using MiniProceduralGeneration.Generator.Entities;
+using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.Seed;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Chunk
@@ -45,7 +48,7 @@ namespace MiniProceduralGeneration.Chunk
 
         #region - - - - - - Methods - - - - - -
 
-        public void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions)
+        public virtual void InitChunkShell(TerrainChunkDimensions chunkDimensions, ITerrainAttributes terrainAttributes, ISeedGenerator seedGenerator, INoiseOffsetGenerator offsetGenerator)
         {
             vertices = new Vector3[chunkDimensions.SquaredVertexSide];
             normals = new Vector3[chunkDimensions.SquaredVertexSide];
@@ -55,11 +58,9 @@ namespace MiniProceduralGeneration.Chunk
             this.Dimensions = chunkDimensions;
         }
 
-        public void BuildMesh()
+        public virtual void BuildMesh()
         {
             mesh = new Mesh();
-
-            print("Verticies: " + vertices.Length);
 
             AssignDataToMesh();
             RenderTerrain();
@@ -93,6 +94,7 @@ namespace MiniProceduralGeneration.Chunk
         {
             Destroy(gameObject, 1);
         }
+
 
         private void OnDrawGizmos()
         {

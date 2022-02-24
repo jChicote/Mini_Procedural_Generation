@@ -21,6 +21,7 @@ namespace MiniProceduralGeneration.TerrainCore
         private IMapGridCreator mapCreator;
         public IChunkDimensionsUtility dimensionsUtility;
         private ITerrainInfoController controller;
+        private INoiseOffsetGenerator m_NoiseOffsetGenerator;
 
         private TerrainChunkDimensions chunkDimensions;
         private TerrainChunkIterator terrainChunkIterator;
@@ -52,6 +53,7 @@ namespace MiniProceduralGeneration.TerrainCore
             mapCreator = this.GetComponent<IMapGridCreator>();
             IMeshTerrainProcessor terrainProcessor = this.GetComponent<IMeshTerrainProcessor>();
             INoiseGenerator noiseGenerator = this.GetComponent<INoiseGenerator>();
+            this.m_NoiseOffsetGenerator = this.GetComponent<INoiseOffsetGenerator>();
 
             ChunkArray = new IChunkShell[0];
             dimensionsUtility = new ChunkDimensionsUtility(this);
@@ -68,6 +70,8 @@ namespace MiniProceduralGeneration.TerrainCore
 
         public void BuildTerrain()
         {
+            print(m_NoiseOffsetGenerator);
+            this.m_NoiseOffsetGenerator.CreateStepOffsets(3); // THIS HAS BEEN HARD CODED
             mapCreator.CreateChunkMap(this);
             //InitialiseTerrainChunks();
 
@@ -89,10 +93,10 @@ namespace MiniProceduralGeneration.TerrainCore
             if (ChunkArray.Length == 0) return;
 
             //chunkDimensions = dimensionsUtility.CalculateChunkDimensions();
-            foreach (IChunkShell chunk in ChunkArray)
-            {
-                chunk.InitialiseMeshArrays(chunkDimensions);
-            }
+            //foreach (IChunkShell chunk in ChunkArray)
+            //{
+            //    chunk.InitChunkShell(chunkDimensions);
+            //}
         }
 
         #endregion Methods

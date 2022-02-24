@@ -26,4 +26,4 @@ MonoBehaviour:
     persistence: 0.4
     lacunarity: 1.7
   mapGridAttributes:
-    chunkDistance: 8
+    chunkDistance: 4

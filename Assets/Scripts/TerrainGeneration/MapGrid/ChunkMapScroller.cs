@@ -17,7 +17,6 @@ namespace MiniProceduralGeneration.MapGrid
         #region - - - - - - - - Fields - - - - - - - -
 
         public Transform targetObject;
-        public GameObject chunkPrefab;
         private int mapGridEdgeSize = 0;
         private int index;
         private float halfDistance;

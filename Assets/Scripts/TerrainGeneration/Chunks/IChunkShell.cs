@@ -1,4 +1,7 @@
 ﻿using MiniProceduralGeneration.Generator.Entities;
+using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.Seed;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Chunk
@@ -15,7 +18,7 @@ namespace MiniProceduralGeneration.Chunk
 
         #region - - - - - - Methods - - - - - -
 
-        void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions);
+        void InitChunkShell(TerrainChunkDimensions chunkDimensions, ITerrainAttributes terrainAttributes, ISeedGenerator seedGenerator, INoiseOffsetGenerator offsetGenerator);
         void BuildMesh();
         void OnDestroyChunk();
 
