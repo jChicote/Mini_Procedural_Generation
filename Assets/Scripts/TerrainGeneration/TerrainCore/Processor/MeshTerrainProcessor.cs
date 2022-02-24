@@ -56,7 +56,7 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
         // BLOODY DESTROYING MY CPU, GPU AND MEMORY
         public IEnumerator ProcessChunkMesh(IChunkShell chunk, float[] noiseData, Action chunkAction)
         {
-            yield return null;
+            yield return new WaitForEndOfFrame();
 
             this.chunkDimensions = chunk;
             this.chunkMeshAttributes = chunk;
@@ -85,10 +85,10 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
             yield return new WaitUntil(() => triangleRequest.done);
 
             //yield return Wait;
-           // RetrieveDataFromComputeShader(chunk);
+            // RetrieveDataFromComputeShader(chunk);
 
-                //print("Has approached end");
-                //meshBuffers.noiseBuffer.Dispose();
+            //print("Has approached end");
+            meshBuffers.noiseBuffer.Dispose();
             //ReleaseBuffersToGarbageCollection();
 
             //}
@@ -166,7 +166,7 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
         {
             chunkModifier.UVs = request.GetData<Vector2>().ToArray();
             //print(request.done);
-             meshBuffers.uvBuffer.Release();
+            meshBuffers.uvBuffer.Release();
             // print(chunkModifier.UVs.Length);
         }
 
@@ -181,13 +181,13 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
 
         protected override void ReleaseBuffersToGarbageCollection()
         {
-            //AsyncGPUReadback.WaitAllRequests();
+            AsyncGPUReadback.WaitAllRequests();
 
-            meshBuffers.vertBuffer.Dispose();
-            meshBuffers.normalBuffer.Dispose();
-            meshBuffers.uvBuffer.Dispose();
-            meshBuffers.noiseBuffer.Dispose();
-            meshBuffers.triangleBuffer.Dispose();
+            meshBuffers.vertBuffer.Release();
+            meshBuffers.normalBuffer.Release();
+            meshBuffers.uvBuffer.Release();
+            meshBuffers.noiseBuffer.Release();
+            meshBuffers.triangleBuffer.Release();
         }
 
         #endregion Methods

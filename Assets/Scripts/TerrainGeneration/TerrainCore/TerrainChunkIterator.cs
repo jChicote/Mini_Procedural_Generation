@@ -54,14 +54,14 @@ namespace MiniProceduralGeneration.TerrainCore
 
             chunkDimensions = chunkResolver.GetChunkDimensions(chunk.PositionWorldSpace);
 
-            //if (!forceUpdate && chunk.Dimensions != null)
-            //    if (chunk.Dimensions.LevelOfDetail == chunkDimensions.LevelOfDetail)
-            //        return;
+            if (!forceUpdate && chunk.Dimensions != null)
+                if (chunk.Dimensions.LevelOfDetail == chunkDimensions.LevelOfDetail)
+                    return;
 
             chunk.InitialiseMeshArrays(chunkDimensions);
 
             this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
-            ///StartCoroutine(AsyncProcessChunk(chunk, this.noiseData));
+            //StartCoroutine(AsyncProcessChunk(chunk, this.noiseData));
             terrainProcessor.ProcessChunkMesh(chunk, noiseData);
             chunk.BuildMesh();
         }
