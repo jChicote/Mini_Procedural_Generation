@@ -1,6 +1,7 @@
 using MiniProceduralGeneration.ComputeShaders.Processors;
 using MiniProceduralGeneration.TerrainCore;
 using MiniProceduralGeneration.TerrainCore.Processor;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -13,7 +14,7 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
         #region - - - - - - Methods - - - - - -
 
         void InitChunkMeshProcessor(ITerrainAttributes terrainAttributes);
-        void ProcessChunk(float[] noiseData);
+        IEnumerator ProcessChunk(float[] noiseData);
 
         #endregion Methods
 
@@ -52,7 +53,7 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
         public void InitChunkMeshProcessor(ITerrainAttributes terrainAttributes)
             => this.m_TerrainAttributes = terrainAttributes;
 
-        public void ProcessChunk(float[] noiseData)
+        public IEnumerator ProcessChunk(float[] noiseData)
         {
             this.noiseData = noiseData;
 
@@ -61,15 +62,23 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
 
             shaderProcessor.Dispatch(0, m_ChunkShell.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
 
-            AsyncGPUReadback.Request(meshBuffers.vertBuffer, RetrieveVertexDataFromBuffer);
-            AsyncGPUReadback.Request(meshBuffers.normalBuffer, RetrieveNormalDataFromBuffer);
-            AsyncGPUReadback.Request(meshBuffers.uvBuffer, RetrieveUVsDataFromBuffer);
-            AsyncGPUReadback.Request(meshBuffers.triangleBuffer, RetrieveTriangleDataFromBuffer);
+            var vertRequest = AsyncGPUReadback.Request(meshBuffers.vertBuffer, RetrieveVertexDataFromBuffer);
+            yield return new WaitUntil(() => vertRequest.done);
 
-            meshBuffers.noiseBuffer.Dispose();
-            RetrieveDataFromComputeShader(m_ChunkShell);
+            var normalRequest = AsyncGPUReadback.Request(meshBuffers.normalBuffer, RetrieveNormalDataFromBuffer);
+            yield return new WaitUntil(() => normalRequest.done);
 
-            //ReleaseBuffersToGarbageCollection();
+            var uvRequest = AsyncGPUReadback.Request(meshBuffers.uvBuffer, RetrieveUVsDataFromBuffer);
+            yield return new WaitUntil(() => uvRequest.done);
+
+            var triangleRequest = AsyncGPUReadback.Request(meshBuffers.triangleBuffer, RetrieveTriangleDataFromBuffer);
+            yield return new WaitUntil(() => triangleRequest.done);
+
+            var noiseRequest = AsyncGPUReadback.Request(meshBuffers.noiseBuffer, RetrieveNoiseDataFromBuffer);
+            yield return new WaitUntil(() => noiseRequest.done);
+
+            //RetrieveDataFromComputeShader(m_ChunkShell);
+            //meshBuffers.noiseBuffer.Dispose();
         }
 
         protected override void CreateShaderBuffers()
@@ -97,8 +106,6 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
             shaderProcessor.SetBuffer(0, "triangles", meshBuffers.triangleBuffer);
             shaderProcessor.SetBuffer(0, "normal", meshBuffers.normalBuffer);
             shaderProcessor.SetBuffer(0, "uv", meshBuffers.uvBuffer);
-
-            print(m_TerrainAttributes);
 
             shaderProcessor.SetFloat("resolution", m_ChunkMeshAttributes.Vertices.Length);
             shaderProcessor.SetFloat("absoluteHeight", m_TerrainAttributes.AbsoluteHeight);
@@ -149,6 +156,12 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
         {
             m_ChunkShell.Triangles = request.GetData<int>().ToArray();
             meshBuffers.triangleBuffer.Release();
+        }
+
+        private void RetrieveNoiseDataFromBuffer(AsyncGPUReadbackRequest request)
+        {
+            _ = request.GetData<float>().ToArray();
+            meshBuffers.noiseBuffer.Release();
         }
 
         #endregion Method

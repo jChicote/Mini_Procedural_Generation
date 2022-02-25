@@ -56,6 +56,8 @@ namespace MiniProceduralGeneration.TerrainCore
 
             chunkDimensions = chunkResolver.GetChunkDimensions(chunk.PositionWorldSpace);
 
+            //print("Chunk Ecountered");
+
             if (!forceUpdate && chunk.Dimensions != null)
                 if (chunk.Dimensions.LevelOfDetail == chunkDimensions.LevelOfDetail)
                     return;
@@ -63,6 +65,8 @@ namespace MiniProceduralGeneration.TerrainCore
             var seedGenerator = this.GetComponent<ISeedGenerator>();
 
             chunk.InitChunkShell(chunkDimensions, attributes, seedGenerator, offsetGenerator);
+
+            //print("Chunk Rendered");
             //chunk.
             //this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
             //StartCoroutine(AsyncProcessChunk(chunk, this.noiseData));

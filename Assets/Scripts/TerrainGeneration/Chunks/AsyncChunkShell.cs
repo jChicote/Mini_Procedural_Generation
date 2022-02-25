@@ -3,6 +3,7 @@ using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Noise;
 using MiniProceduralGeneration.Seed;
 using MiniProceduralGeneration.TerrainCore;
+using System.Collections;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Chunk
@@ -46,9 +47,17 @@ namespace MiniProceduralGeneration.Chunk
                 this.transform.position
             );
 
-            m_ChunkMeshProcessor.ProcessChunk(noiseData);
+            //m_ChunkMeshProcessor.ProcessChunk(noiseData);
 
+            StartCoroutine(AsyncProcessChunk(noiseData));
 
+            //AssignDataToMesh();
+            //RenderTerrain();
+        }
+
+        private IEnumerator AsyncProcessChunk(float[] noiseData)
+        {
+            yield return StartCoroutine(m_ChunkMeshProcessor.ProcessChunk(noiseData));
 
             AssignDataToMesh();
             RenderTerrain();
