@@ -47,6 +47,8 @@ namespace MiniProceduralGeneration.Chunk
             );
 
             m_ChunkMeshProcessor.ProcessChunk(noiseData);
+
+
             AssignDataToMesh();
             RenderTerrain();
         }

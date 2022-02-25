@@ -61,14 +61,15 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
 
             shaderProcessor.Dispatch(0, m_ChunkShell.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
 
-            //AsyncGPUReadback.Request(meshBuffers.vertBuffer, RetrieveVertexDataFromBuffer);
-            //AsyncGPUReadback.Request(meshBuffers.normalBuffer, RetrieveNormalDataFromBuffer);
-            //AsyncGPUReadback.Request(meshBuffers.uvBuffer, RetrieveUVsDataFromBuffer);
-            //AsyncGPUReadback.Request(meshBuffers.triangleBuffer, RetrieveTriangleDataFromBuffer);
+            AsyncGPUReadback.Request(meshBuffers.vertBuffer, RetrieveVertexDataFromBuffer);
+            AsyncGPUReadback.Request(meshBuffers.normalBuffer, RetrieveNormalDataFromBuffer);
+            AsyncGPUReadback.Request(meshBuffers.uvBuffer, RetrieveUVsDataFromBuffer);
+            AsyncGPUReadback.Request(meshBuffers.triangleBuffer, RetrieveTriangleDataFromBuffer);
 
-            //meshBuffers.noiseBuffer.Dispose();
+            meshBuffers.noiseBuffer.Dispose();
+            RetrieveDataFromComputeShader(m_ChunkShell);
 
-            ReleaseBuffersToGarbageCollection();
+            //ReleaseBuffersToGarbageCollection();
         }
 
         protected override void CreateShaderBuffers()
@@ -108,6 +109,14 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
 
             shaderProcessor.SetInt("verticesPerSide", m_ChunkDimensions.Dimensions.VertexPerSide);
             shaderProcessor.SetInt("incrementStep", m_TerrainAttributes.LODIncrementStep);
+        }
+
+        private void RetrieveDataFromComputeShader(IChunkMeshAttributes chunkModifier)
+        {
+            meshBuffers.vertBuffer.GetData(chunkModifier.Vertices);
+            meshBuffers.normalBuffer.GetData(chunkModifier.Normals);
+            meshBuffers.uvBuffer.GetData(chunkModifier.UVs);
+            meshBuffers.triangleBuffer.GetData(chunkModifier.Triangles);
         }
 
         protected override void ReleaseBuffersToGarbageCollection()
