@@ -94,18 +94,8 @@ namespace MiniProceduralGeneration.Chunk
 
         public void SetMeshCollider(Mesh mesh)
         {
-            if (Dimensions.LevelOfDetail == Dimensions.MinimumLevelOfDetail)
-            {
-                meshCollider.enabled = false;
-                return;
-            }
-
-            //meshCollider.enabled = Dimensions.LevelOfDetail == Dimensions.MinimumLevelOfDetail ? false : true;
-            //meshCollider.sharedMesh = meshCollider.enabled ? mesh : null;
-
-
-            meshCollider.enabled = true;
-            meshCollider.sharedMesh = mesh;
+            meshCollider.enabled = Dimensions.LevelOfDetail != Dimensions.MinimumLevelOfDetail;
+            meshCollider.sharedMesh = meshCollider.enabled ? mesh : null;
         }
 
         public void OnDestroyChunk()
@@ -116,8 +106,17 @@ namespace MiniProceduralGeneration.Chunk
 
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(PositionWorldSpace, 2);
+            if (meshCollider.enabled)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawSphere(PositionWorldSpace, 2);
+            }
+            else
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(PositionWorldSpace, 2);
+            }
+
         }
 
         #endregion
