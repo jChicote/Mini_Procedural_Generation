@@ -19,7 +19,11 @@ namespace MiniProceduralGeneration.Chunk
         #region - - - - - - Methods - - - - - -
 
         void InitChunkShell(TerrainChunkDimensions chunkDimensions, ITerrainAttributes terrainAttributes, ISeedGenerator seedGenerator, INoiseOffsetGenerator offsetGenerator);
+
         void BuildMesh();
+
+        void DisableMeshRenderer();
+
         void OnDestroyChunk();
 
         #endregion Methods

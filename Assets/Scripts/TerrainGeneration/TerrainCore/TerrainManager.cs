@@ -59,7 +59,7 @@ namespace MiniProceduralGeneration.TerrainCore
             dimensionsUtility = new ChunkDimensionsUtility(this);
 
             terrainChunkIterator = this.GetComponent<TerrainChunkIterator>();
-            terrainChunkIterator.StartTerrainRunnerAction(this, terrainProcessor, noiseGenerator);
+            terrainChunkIterator.StartTerrainRunnerAction(this);
 
             ChunkMapCreator mapChunkCreator = this.GetComponent<ChunkMapCreator>();
             ChunkMapScroller mapScroller = this.GetComponent<ChunkMapScroller>();
@@ -70,33 +70,15 @@ namespace MiniProceduralGeneration.TerrainCore
 
         public void BuildTerrain()
         {
-            print(m_NoiseOffsetGenerator);
             this.m_NoiseOffsetGenerator.CreateStepOffsets(3); // THIS HAS BEEN HARD CODED
             mapCreator.CreateChunkMap(this);
-            //InitialiseTerrainChunks();
-
-            //print(ActualChunkSize);
-            //print(VertexPerSide);
 
             terrainChunkIterator.IterateThroughChunkArraySelection(ChunkArray);
         }
 
         public void RegenerateTerrain()
         {
-            //InitialiseTerrainChunks();
             terrainChunkIterator.IterateThroughChunkArraySelection(ChunkArray);
-
-        }
-
-        public void InitialiseTerrainChunks()
-        {
-            if (ChunkArray.Length == 0) return;
-
-            //chunkDimensions = dimensionsUtility.CalculateChunkDimensions();
-            //foreach (IChunkShell chunk in ChunkArray)
-            //{
-            //    chunk.InitChunkShell(chunkDimensions);
-            //}
         }
 
         #endregion Methods

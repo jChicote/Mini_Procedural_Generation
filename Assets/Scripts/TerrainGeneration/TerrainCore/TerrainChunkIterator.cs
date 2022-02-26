@@ -3,7 +3,6 @@ using MiniProceduralGeneration.Generator.Entities;
 using MiniProceduralGeneration.Noise;
 using MiniProceduralGeneration.Seed;
 using MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsResolver;
-using MiniProceduralGeneration.TerrainCore.Processor;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.TerrainCore
@@ -17,21 +16,16 @@ namespace MiniProceduralGeneration.TerrainCore
         private ChunkDimensionsResolver chunkResolver;
         private TerrainChunkDimensions chunkDimensions;
 
-        private float[] noiseData;
-        private INoiseGenerator noiseGenerator;
         private INoiseOffsetGenerator offsetGenerator;
         private ITerrainAttributes attributes;
-        private IMeshTerrainProcessor terrainProcessor;
 
         #endregion Fields
 
         #region - - - - Constructors - - - -
 
-        public void StartTerrainRunnerAction(ITerrainAttributes attributes, IMeshTerrainProcessor terrainProcessor, INoiseGenerator noiseGenerator)
+        public void StartTerrainRunnerAction(ITerrainAttributes attributes)
         {
             this.attributes = attributes;
-            this.terrainProcessor = terrainProcessor;
-            this.noiseGenerator = noiseGenerator;
 
             chunkResolver = this.GetComponent<ChunkDimensionsResolver>();
             offsetGenerator = this.GetComponent<INoiseOffsetGenerator>();
@@ -51,35 +45,21 @@ namespace MiniProceduralGeneration.TerrainCore
 
         public void ProcessChunk(IChunkShell chunk, bool forceUpdate)
         {
-            if (noiseData is null)
-                _ = new float[0];
-
             chunkDimensions = chunkResolver.GetChunkDimensions(chunk.PositionWorldSpace);
-
-            //print("Chunk Ecountered");
 
             if (!forceUpdate && chunk.Dimensions != null)
                 if (chunk.Dimensions.LevelOfDetail == chunkDimensions.LevelOfDetail)
                     return;
 
+            if (forceUpdate)
+                chunk.DisableMeshRenderer();
+
             var seedGenerator = this.GetComponent<ISeedGenerator>();
 
             chunk.InitChunkShell(chunkDimensions, attributes, seedGenerator, offsetGenerator);
-
-            //print("Chunk Rendered");
-            //chunk.
-            //this.noiseData = noiseGenerator.SampleNoiseDataAtLocation(attributes.ActualChunkSize, chunk.PositionWorldSpace);
-            //StartCoroutine(AsyncProcessChunk(chunk, this.noiseData));
-            //terrainProcessor.ProcessChunkMesh(chunk, noiseData);
             chunk.BuildMesh();
         }
 
-        //private IEnumerator AsyncProcessChunk(IChunkShell chunk, float[] noiseData)
-        //{
-        //    yield return StartCoroutine(terrainProcessor.ProcessChunkMesh(chunk, noiseData, chunk.BuildMesh));
-
-        //chunk.BuildMesh();
-        //    print("Called Once");
     }
 
     #endregion Methods

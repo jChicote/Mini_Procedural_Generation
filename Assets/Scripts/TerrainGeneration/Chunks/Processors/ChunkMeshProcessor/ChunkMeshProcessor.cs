@@ -14,6 +14,7 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
         #region - - - - - - Methods - - - - - -
 
         void InitChunkMeshProcessor(ITerrainAttributes terrainAttributes);
+
         IEnumerator ProcessChunk(float[] noiseData);
 
         #endregion Methods
@@ -76,9 +77,6 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
 
             var noiseRequest = AsyncGPUReadback.Request(meshBuffers.noiseBuffer, RetrieveNoiseDataFromBuffer);
             yield return new WaitUntil(() => noiseRequest.done);
-
-            //RetrieveDataFromComputeShader(m_ChunkShell);
-            //meshBuffers.noiseBuffer.Dispose();
         }
 
         protected override void CreateShaderBuffers()
@@ -118,14 +116,6 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
             shaderProcessor.SetInt("incrementStep", m_TerrainAttributes.LODIncrementStep);
         }
 
-        private void RetrieveDataFromComputeShader(IChunkMeshAttributes chunkModifier)
-        {
-            meshBuffers.vertBuffer.GetData(chunkModifier.Vertices);
-            meshBuffers.normalBuffer.GetData(chunkModifier.Normals);
-            meshBuffers.uvBuffer.GetData(chunkModifier.UVs);
-            meshBuffers.triangleBuffer.GetData(chunkModifier.Triangles);
-        }
-
         protected override void ReleaseBuffersToGarbageCollection()
         {
             meshBuffers.vertBuffer.Release();
@@ -159,10 +149,7 @@ namespace MiniProceduralGeneration.Chunk.Processors.ChunkMeshProcessor
         }
 
         private void RetrieveNoiseDataFromBuffer(AsyncGPUReadbackRequest request)
-        {
-            _ = request.GetData<float>().ToArray();
-            meshBuffers.noiseBuffer.Release();
-        }
+            => meshBuffers.noiseBuffer.Release();
 
         #endregion Method
 

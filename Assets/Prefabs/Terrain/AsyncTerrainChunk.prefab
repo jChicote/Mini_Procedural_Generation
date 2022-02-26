@@ -114,6 +114,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   meshFilter: {fileID: 4458864797380031666}
   meshCollider: {fileID: 4458864797380031667}
+  meshRenderer: {fileID: 4458864797380031822}
   mesh: {fileID: 0}
   vertices: []
   meshTriangles: 

@@ -22,7 +22,11 @@ namespace MiniProceduralGeneration.Chunk
 
         #region - - - - - - Methods - - - - - -
 
-        public override void InitChunkShell(TerrainChunkDimensions chunkDimensions, ITerrainAttributes terrainAttributes, ISeedGenerator seedGenerator, INoiseOffsetGenerator offsetGenerator)
+        public override void InitChunkShell(
+            TerrainChunkDimensions chunkDimensions,
+            ITerrainAttributes terrainAttributes,
+            ISeedGenerator seedGenerator,
+            INoiseOffsetGenerator offsetGenerator)
         {
             base.InitChunkShell(chunkDimensions, terrainAttributes, seedGenerator, offsetGenerator);
 
@@ -47,12 +51,7 @@ namespace MiniProceduralGeneration.Chunk
                 this.transform.position
             );
 
-            //m_ChunkMeshProcessor.ProcessChunk(noiseData);
-
             StartCoroutine(AsyncProcessChunk(noiseData));
-
-            //AssignDataToMesh();
-            //RenderTerrain();
         }
 
         private IEnumerator AsyncProcessChunk(float[] noiseData)
@@ -61,6 +60,7 @@ namespace MiniProceduralGeneration.Chunk
 
             AssignDataToMesh();
             RenderTerrain();
+            meshRenderer.enabled = true;
         }
 
         #endregion Methods

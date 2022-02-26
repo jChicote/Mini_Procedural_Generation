@@ -23,12 +23,13 @@ namespace MiniProceduralGeneration.Chunk
 
         [SerializeField] protected MeshFilter meshFilter;
         [SerializeField] protected MeshCollider meshCollider;
+        [SerializeField] protected MeshRenderer meshRenderer;
         [SerializeField] protected Mesh mesh;
 
         public Vector3[] vertices;
         private Vector3[] normals;
         private Vector2[] uv;
-        public int[] meshTriangles;
+        private int[] meshTriangles;
 
         #endregion Fields
 
@@ -66,6 +67,9 @@ namespace MiniProceduralGeneration.Chunk
             RenderTerrain();
         }
 
+        public void DisableMeshRenderer()
+            => meshRenderer.enabled = false;
+
         /// <summary>
         /// Assigns mesh data items to the mesh object and recalculates mesh for render.
         /// </summary>
@@ -81,12 +85,26 @@ namespace MiniProceduralGeneration.Chunk
             mesh.RecalculateNormals();
         }
 
-        /// <summary>
-        /// Pushes prepared mesh to the screen
-        /// </summary>
         public void RenderTerrain() // Renders mesh
         {
             meshFilter.mesh = mesh;
+            //meshCollider.sharedMesh = mesh;
+            SetMeshCollider(mesh);
+        }
+
+        public void SetMeshCollider(Mesh mesh)
+        {
+            if (Dimensions.LevelOfDetail == Dimensions.MinimumLevelOfDetail)
+            {
+                meshCollider.enabled = false;
+                return;
+            }
+
+            //meshCollider.enabled = Dimensions.LevelOfDetail == Dimensions.MinimumLevelOfDetail ? false : true;
+            //meshCollider.sharedMesh = meshCollider.enabled ? mesh : null;
+
+
+            meshCollider.enabled = true;
             meshCollider.sharedMesh = mesh;
         }
 
@@ -100,8 +118,6 @@ namespace MiniProceduralGeneration.Chunk
         {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(PositionWorldSpace, 2);
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(Vertices[Vertices.Length - 1], 2);
         }
 
         #endregion
