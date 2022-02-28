@@ -1069,13 +1069,13 @@ GameObject:
   m_Component:
   - component: {fileID: 252276652}
   - component: {fileID: 252276651}
-  - component: {fileID: 252276653}
   - component: {fileID: 252276656}
-  - component: {fileID: 252276657}
-  - component: {fileID: 252276658}
   - component: {fileID: 252276654}
   - component: {fileID: 252276655}
+  - component: {fileID: 252276661}
   - component: {fileID: 252276659}
+  - component: {fileID: 252276660}
+  - component: {fileID: 252276662}
   m_Layer: 0
   m_Name: Terrain Generator
   m_TagString: TerrainGenerator
@@ -1109,18 +1109,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &252276653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 252276650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adf0c0c68451b6c4e8784e741d3b53f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &252276654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1134,7 +1122,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetObject: {fileID: 135815824}
-  chunkPrefab: {fileID: 1486601122822607981, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
 --- !u!114 &252276655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1147,7 +1134,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d18566567c31b94da8e1aaf1cb98889, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chunkPrefab: {fileID: 1486601122822607981, guid: b44dcb33417db064c9434593ccebb4e0, type: 3}
+  chunkPrefab: {fileID: 4458864797380031669, guid: 437bd64b0b6bd7244b30d68f97519d00, type: 3}
   targetObject: {fileID: 135815824}
 --- !u!114 &252276656
 MonoBehaviour:
@@ -1161,32 +1148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ddb54be2e0d744459ede049760fce71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &252276657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 252276650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d46a9b1215925141b31d35795a2e1e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  noiseShader: {fileID: 7200000, guid: 167d91ce4841a234b869a788ea9c8fc3, type: 3}
---- !u!114 &252276658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 252276650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cad0baec79eef44b86ec212e448d3d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  computeTerrainGen: {fileID: 7200000, guid: f9f511750c2ddc143bac2cdd31c1a6bc, type: 3}
 --- !u!114 &252276659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1197,6 +1158,43 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: db5f7dd7a7e70004a8f53f53767c900e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &252276660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252276650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae94e40ff772c2448ba8734f9c6f1855, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &252276661
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252276650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7672485f441b731478c796b488311ae3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 135815824}
+--- !u!114 &252276662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 252276650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75e730da49089eb458583ecf13abbf93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &253573612
@@ -1290,7 +1288,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_NoiseOctaveCount
@@ -1407,7 +1405,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_Persistence
@@ -2603,19 +2601,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 252276653}
-        m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
-          Main
-        m_MethodName: CreateStepOffsets
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 252276651}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.TerrainManager,
           Main
@@ -3734,7 +3719,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_Lacunarity
@@ -4227,7 +4212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7202f2e25a16f834cb673356e916341f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseGenerator: {fileID: 252276653}
+  noiseGenerator: {fileID: 0}
   terrainGenerator: {fileID: 252276651}
 --- !u!1 &1359821948
 GameObject:
@@ -4454,7 +4439,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_NoiseScale

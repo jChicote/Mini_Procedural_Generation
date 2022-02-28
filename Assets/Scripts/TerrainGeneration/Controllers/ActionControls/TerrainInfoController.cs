@@ -1,5 +1,5 @@
-using MiniProceduralGeneration.Generator;
 using MiniProceduralGeneration.ScriptableObjects;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Controllers.ActionControls
@@ -18,6 +18,7 @@ namespace MiniProceduralGeneration.Controllers.ActionControls
 
     public class TerrainInfoController : MonoBehaviour, ITerrainInfoController
     {
+
         #region - - - - Fields - - - -
 
         [SerializeField]
