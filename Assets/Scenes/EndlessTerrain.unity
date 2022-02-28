@@ -1069,10 +1069,7 @@ GameObject:
   m_Component:
   - component: {fileID: 252276652}
   - component: {fileID: 252276651}
-  - component: {fileID: 252276653}
   - component: {fileID: 252276656}
-  - component: {fileID: 252276657}
-  - component: {fileID: 252276658}
   - component: {fileID: 252276654}
   - component: {fileID: 252276655}
   - component: {fileID: 252276661}
@@ -1112,18 +1109,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &252276653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 252276650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: adf0c0c68451b6c4e8784e741d3b53f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &252276654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1163,32 +1148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ddb54be2e0d744459ede049760fce71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &252276657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 252276650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d46a9b1215925141b31d35795a2e1e0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shaderProcessor: {fileID: 7200000, guid: c62d4f8df943489408c601c52595d038, type: 3}
---- !u!114 &252276658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 252276650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6cad0baec79eef44b86ec212e448d3d2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  shaderProcessor: {fileID: 7200000, guid: 032b4684b27968d4abc1b40422e636cd, type: 3}
 --- !u!114 &252276659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1329,7 +1288,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_NoiseOctaveCount
@@ -1446,7 +1405,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_Persistence
@@ -3760,7 +3719,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_Lacunarity
@@ -4253,7 +4212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7202f2e25a16f834cb673356e916341f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseGenerator: {fileID: 252276653}
+  noiseGenerator: {fileID: 0}
   terrainGenerator: {fileID: 252276651}
 --- !u!1 &1359821948
 GameObject:
@@ -4480,7 +4439,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 252276653}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: MiniProceduralGeneration.Generator.NoiseGenerator,
           Assembly-CSharp
         m_MethodName: set_NoiseScale
