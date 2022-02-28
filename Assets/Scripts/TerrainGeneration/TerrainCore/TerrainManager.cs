@@ -21,6 +21,7 @@ namespace MiniProceduralGeneration.TerrainCore
         private IMapGridCreator mapCreator;
         public IChunkDimensionsUtility dimensionsUtility;
         private ITerrainInfoController controller;
+        private INoiseOffsetGenerator m_NoiseOffsetGenerator;
 
         private TerrainChunkDimensions chunkDimensions;
         private TerrainChunkIterator terrainChunkIterator;
@@ -52,12 +53,13 @@ namespace MiniProceduralGeneration.TerrainCore
             mapCreator = this.GetComponent<IMapGridCreator>();
             IMeshTerrainProcessor terrainProcessor = this.GetComponent<IMeshTerrainProcessor>();
             INoiseGenerator noiseGenerator = this.GetComponent<INoiseGenerator>();
+            this.m_NoiseOffsetGenerator = this.GetComponent<INoiseOffsetGenerator>();
 
             ChunkArray = new IChunkShell[0];
             dimensionsUtility = new ChunkDimensionsUtility(this);
 
             terrainChunkIterator = this.GetComponent<TerrainChunkIterator>();
-            terrainChunkIterator.StartTerrainRunnerAction(this, terrainProcessor, noiseGenerator);
+            terrainChunkIterator.StartTerrainRunnerAction(this);
 
             ChunkMapCreator mapChunkCreator = this.GetComponent<ChunkMapCreator>();
             ChunkMapScroller mapScroller = this.GetComponent<ChunkMapScroller>();
@@ -68,31 +70,15 @@ namespace MiniProceduralGeneration.TerrainCore
 
         public void BuildTerrain()
         {
+            this.m_NoiseOffsetGenerator.CreateStepOffsets(3); // THIS HAS BEEN HARD CODED
             mapCreator.CreateChunkMap(this);
-            //InitialiseTerrainChunks();
-
-            //print(ActualChunkSize);
-            //print(VertexPerSide);
 
             terrainChunkIterator.IterateThroughChunkArraySelection(ChunkArray);
         }
 
         public void RegenerateTerrain()
         {
-            //InitialiseTerrainChunks();
             terrainChunkIterator.IterateThroughChunkArraySelection(ChunkArray);
-
-        }
-
-        public void InitialiseTerrainChunks()
-        {
-            if (ChunkArray.Length == 0) return;
-
-            //chunkDimensions = dimensionsUtility.CalculateChunkDimensions();
-            foreach (IChunkShell chunk in ChunkArray)
-            {
-                chunk.InitialiseMeshArrays(chunkDimensions);
-            }
         }
 
         #endregion Methods

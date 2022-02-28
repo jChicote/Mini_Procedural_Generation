@@ -52,6 +52,7 @@ namespace MiniProceduralGeneration.TerrainCore.Infrastructure.ChunkDimensionsRes
             chunkDimensions.VertexPerSide += attributes.LODIncrementStep > 1 ? 1 : 0;
             chunkDimensions.SquaredVertexSide = chunkDimensions.VertexPerSide * chunkDimensions.VertexPerSide;
             chunkDimensions.LevelOfDetail = minimumLevelFinder.LevelOfDetail;
+            chunkDimensions.MinimumLevelOfDetail = MinimumLevelOfDetail;
 
             return chunkDimensions;
         }

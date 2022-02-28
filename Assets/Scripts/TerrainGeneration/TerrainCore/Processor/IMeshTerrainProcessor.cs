@@ -1,4 +1,6 @@
 ﻿using MiniProceduralGeneration.Chunk;
+using System;
+using System.Collections;
 
 namespace MiniProceduralGeneration.TerrainCore.Processor
 {
@@ -6,6 +8,8 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
     {
 
         #region - - - - - - Methods - - - - - -
+
+        IEnumerator ProcessChunkMesh(IChunkShell chunk, float[] noiseData, Action chunkAction);
 
         void ProcessChunkMesh(IChunkShell chunk, float[] noiseData);
 

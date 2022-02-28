@@ -1,6 +1,9 @@
 using MiniProceduralGeneration.Chunk;
 using MiniProceduralGeneration.ComputeShaders.Processors;
+using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace MiniProceduralGeneration.TerrainCore.Processor
 {
@@ -18,6 +21,7 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
 
         private IChunkMeshAttributes chunkMeshAttributes;
         private IChunkDimensions chunkDimensions;
+        IChunkMeshAttributes chunkModifier;
         private float[] noiseData;
 
         #endregion Fields
@@ -30,18 +34,64 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
             meshBuffers = new MeshComputeBuffers();
         }
 
+
+        //  This one works for some odd readson
         public void ProcessChunkMesh(IChunkShell chunk, float[] noiseData)
         {
             this.chunkDimensions = chunk;
             this.chunkMeshAttributes = chunk;
+            chunkModifier = chunk;
             this.noiseData = noiseData;
 
             CreateShaderBuffers();
             SetComputeShaderData();
+
             shaderProcessor.Dispatch(0, chunk.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
             RetrieveDataFromComputeShader(chunk);
-
             ReleaseBuffersToGarbageCollection();
+        }
+
+        //  This one proceduces chunk issues with LOD resoltions at full detail
+        // THIS IS A DUMB SOLUTION IT IS CAUSING MULTIPLE INDEPENDANT COROUTINES TO RUN
+        // BLOODY DESTROYING MY CPU, GPU AND MEMORY
+        public IEnumerator ProcessChunkMesh(IChunkShell chunk, float[] noiseData, Action chunkAction)
+        {
+            yield return new WaitForEndOfFrame();
+
+            this.chunkDimensions = chunk;
+            this.chunkMeshAttributes = chunk;
+            chunkModifier = chunk;
+            this.noiseData = noiseData;
+
+            CreateShaderBuffers();
+            SetComputeShaderData();
+
+
+            //while (true)
+            //{
+            shaderProcessor.Dispatch(0, chunk.Vertices.Length / 10, 1, 1);  // Processes terrain input to mesh data
+
+            //print(meshBuffers.vertBuffer.IsValid());
+            var vertRequest = AsyncGPUReadback.Request(meshBuffers.vertBuffer, RetrieveVertexDataFromBuffer);
+            yield return new WaitUntil(() => vertRequest.done);
+
+            var normalRequest = AsyncGPUReadback.Request(meshBuffers.normalBuffer, RetrieveNormalDataFromBuffer);
+            yield return new WaitUntil(() => vertRequest.done);
+
+            var uvRequest = AsyncGPUReadback.Request(meshBuffers.uvBuffer, RetrieveUVsDataFromBuffer);
+            yield return new WaitUntil(() => uvRequest.done);
+
+            var triangleRequest = AsyncGPUReadback.Request(meshBuffers.triangleBuffer, RetrieveTriangleDataFromBuffer);
+            yield return new WaitUntil(() => triangleRequest.done);
+
+            //yield return Wait;
+            // RetrieveDataFromComputeShader(chunk);
+
+            //print("Has approached end");
+            meshBuffers.noiseBuffer.Dispose();
+            //ReleaseBuffersToGarbageCollection();
+
+            //}
         }
 
         /// <summary>
@@ -96,8 +146,43 @@ namespace MiniProceduralGeneration.TerrainCore.Processor
             meshBuffers.triangleBuffer.GetData(chunkModifier.Triangles);
         }
 
+        private void RetrieveVertexDataFromBuffer(AsyncGPUReadbackRequest request)
+        {
+            chunkModifier.Vertices = request.GetData<Vector3>().ToArray();
+            //print(request.done);
+            meshBuffers.vertBuffer.Release();
+            //print(chunkModifier.Vertices.Length);
+        }
+
+        private void RetrieveNormalDataFromBuffer(AsyncGPUReadbackRequest request)
+        {
+            chunkModifier.Normals = request.GetData<Vector3>().ToArray();
+            //print(request.done);
+            meshBuffers.normalBuffer.Release();
+            //print(chunkModifier.Normals.Length);
+        }
+
+        private void RetrieveUVsDataFromBuffer(AsyncGPUReadbackRequest request)
+        {
+            chunkModifier.UVs = request.GetData<Vector2>().ToArray();
+            //print(request.done);
+            meshBuffers.uvBuffer.Release();
+            // print(chunkModifier.UVs.Length);
+        }
+
+        private void RetrieveTriangleDataFromBuffer(AsyncGPUReadbackRequest request)
+        {
+            chunkModifier.Triangles = request.GetData<int>().ToArray();
+            //print(request.done);
+            meshBuffers.triangleBuffer.Release();
+            //print(chunkModifier.Triangles.Length);
+            //ReleaseBuffersToGarbageCollection();
+        }
+
         protected override void ReleaseBuffersToGarbageCollection()
         {
+            AsyncGPUReadback.WaitAllRequests();
+
             meshBuffers.vertBuffer.Release();
             meshBuffers.normalBuffer.Release();
             meshBuffers.uvBuffer.Release();

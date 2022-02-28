@@ -1,4 +1,7 @@
 using MiniProceduralGeneration.Generator.Entities;
+using MiniProceduralGeneration.Noise;
+using MiniProceduralGeneration.Seed;
+using MiniProceduralGeneration.TerrainCore;
 using UnityEngine;
 
 namespace MiniProceduralGeneration.Chunk
@@ -20,12 +23,13 @@ namespace MiniProceduralGeneration.Chunk
 
         [SerializeField] protected MeshFilter meshFilter;
         [SerializeField] protected MeshCollider meshCollider;
+        [SerializeField] protected MeshRenderer meshRenderer;
         [SerializeField] protected Mesh mesh;
 
         public Vector3[] vertices;
         private Vector3[] normals;
         private Vector2[] uv;
-        public int[] meshTriangles;
+        private int[] meshTriangles;
 
         #endregion Fields
 
@@ -45,7 +49,7 @@ namespace MiniProceduralGeneration.Chunk
 
         #region - - - - - - Methods - - - - - -
 
-        public void InitialiseMeshArrays(TerrainChunkDimensions chunkDimensions)
+        public virtual void InitChunkShell(TerrainChunkDimensions chunkDimensions, ITerrainAttributes terrainAttributes, ISeedGenerator seedGenerator, INoiseOffsetGenerator offsetGenerator)
         {
             vertices = new Vector3[chunkDimensions.SquaredVertexSide];
             normals = new Vector3[chunkDimensions.SquaredVertexSide];
@@ -55,13 +59,16 @@ namespace MiniProceduralGeneration.Chunk
             this.Dimensions = chunkDimensions;
         }
 
-        public void BuildMesh()
+        public virtual void BuildMesh()
         {
             mesh = new Mesh();
 
             AssignDataToMesh();
             RenderTerrain();
         }
+
+        public void DisableMeshRenderer()
+            => meshRenderer.enabled = false;
 
         /// <summary>
         /// Assigns mesh data items to the mesh object and recalculates mesh for render.
@@ -78,13 +85,17 @@ namespace MiniProceduralGeneration.Chunk
             mesh.RecalculateNormals();
         }
 
-        /// <summary>
-        /// Pushes prepared mesh to the screen
-        /// </summary>
         public void RenderTerrain() // Renders mesh
         {
             meshFilter.mesh = mesh;
-            meshCollider.sharedMesh = mesh;
+            //meshCollider.sharedMesh = mesh;
+            SetMeshCollider(mesh);
+        }
+
+        public void SetMeshCollider(Mesh mesh)
+        {
+            meshCollider.enabled = Dimensions.LevelOfDetail != Dimensions.MinimumLevelOfDetail;
+            meshCollider.sharedMesh = meshCollider.enabled ? mesh : null;
         }
 
         public void OnDestroyChunk()
@@ -92,12 +103,20 @@ namespace MiniProceduralGeneration.Chunk
             Destroy(gameObject, 1);
         }
 
+
         private void OnDrawGizmos()
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(PositionWorldSpace, 2);
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(Vertices[Vertices.Length - 1], 2);
+            if (meshCollider.enabled)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawSphere(PositionWorldSpace, 2);
+            }
+            else
+            {
+                Gizmos.color = Color.red;
+                Gizmos.DrawSphere(PositionWorldSpace, 2);
+            }
+
         }
 
         #endregion
