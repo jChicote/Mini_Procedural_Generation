@@ -44,6 +44,25 @@ int CalculateColumn(int index, int row) {
     return index - (row * verticesPerSide);
 }
 
+// -------------------------------------------------------
+//                   Noise Claculation
+// -------------------------------------------------------
+
+float3 SurfaceNormalsFromIndices(uint indexA, uint indexB, uint indexC) {
+    float3 pointA = vertices[indexA];
+    float3 pointB = vertices[indexB];
+    float3 pointC = vertices[indexC];
+
+    float3 sideAB = pointB - pointA;
+    float3 sideAC = pointC - pointA;
+    return cross(sideAb, sideAC);
+}
+
+void CalculateQuadNormals(uint index, uint offset) {
+    int stepIndex = index * 6 - offset;
+    //float3 triangle
+}
+
 // summary:
 //  - Calculates offset to the array accounting for skips in quads
 //    made after each row is processed (6 from each row).
@@ -51,9 +70,8 @@ int CalculateColumn(int index, int row) {
 // returns:
 //  - Quad offset to mesh.
 int CalculateOffset(int row, int col) {
-    if (row == 0) {
+    if (row == 0)
         return 0;
-    }
 
     int arrayOffset = (row) * 6;
     return arrayOffset;
@@ -68,6 +86,10 @@ void AddQuad(int index, int offset) {
     triangles[stepIndex + 4] = index + verticesPerSide;
     triangles[stepIndex + 5] = (index + verticesPerSide) + 1;
 }
+
+// -------------------------------------------------------
+//                        Utility
+// -------------------------------------------------------
 
 // -------------------------------------------------------
 //                           Main
