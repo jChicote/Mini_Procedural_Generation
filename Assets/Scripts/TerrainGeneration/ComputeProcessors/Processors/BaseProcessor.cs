@@ -16,7 +16,7 @@ namespace MiniProceduralGeneration.ComputeShaders.Processors
 
         protected abstract void CreateShaderBuffers();
         protected abstract void SetComputeShaderData();
-        protected abstract void ReleaseBuffersToGarbageCollection();
+        protected virtual void ReleaseBuffersToGarbageCollection() { }
 
         #endregion Methods
 

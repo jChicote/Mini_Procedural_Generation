@@ -5,7 +5,6 @@
 
         #region - - - - - - Methods - - - - - -
 
-        void InitialiseTerrainChunks();
         void BuildTerrain();
 
         #endregion Methods
