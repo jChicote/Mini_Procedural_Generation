@@ -44,6 +44,42 @@ int CalculateColumn(int index, int row) {
     return index - (row * verticesPerSide);
 }
 
+// -------------------------------------------------------
+//                   Noise Claculation
+// -------------------------------------------------------
+
+float3 SurfaceNormalsFromTriangle(uint indexA, uint indexB, uint indexC) {
+    float3 pointA = vertices[indexA];
+    float3 pointB = vertices[indexB];
+    float3 pointC = vertices[indexC];
+
+    float3 sideAB = pointB - pointA;
+    float3 sideAC = pointC - pointA;
+    return cross(sideAB, sideAC);
+}
+
+void CalculateQuadNormals(uint index, uint offset) {
+    int stepIndex = index * 6 - offset;
+
+    uint vertIndexA = triangles[stepIndex];
+    uint vertIndexB = triangles[stepIndex + 1];
+    uint vertIndexC = triangles[stepIndex + 2];
+
+    float3 triangleNormalA = SurfaceNormalsFromTriangle(vertIndexA, vertIndexB, vertIndexC);
+    normal[vertIndexA] = normalize(triangleNormalA);
+    normal[vertIndexB] = normalize(triangleNormalA);
+    normal[vertIndexC] = normalize(triangleNormalA);
+
+    uint vertIndexD = triangles[stepIndex + 3];
+    uint vertIndexE = triangles[stepIndex + 4];
+    uint vertIndexF = triangles[stepIndex + 5];
+
+    float3 triangleNormalB = SurfaceNormalsFromTriangle(vertIndexD, vertIndexE, vertIndexF);
+    normal[vertIndexD] = normalize(triangleNormalB);
+    normal[vertIndexE] = normalize(triangleNormalB);
+    normal[vertIndexF] = normalize(triangleNormalB);
+}
+
 // summary:
 //  - Calculates offset to the array accounting for skips in quads
 //    made after each row is processed (6 from each row).
@@ -51,9 +87,8 @@ int CalculateColumn(int index, int row) {
 // returns:
 //  - Quad offset to mesh.
 int CalculateOffset(int row, int col) {
-    if (row == 0) {
+    if (row == 0)
         return 0;
-    }
 
     int arrayOffset = (row) * 6;
     return arrayOffset;
@@ -70,6 +105,10 @@ void AddQuad(int index, int offset) {
 }
 
 // -------------------------------------------------------
+//                        Utility
+// -------------------------------------------------------
+
+// -------------------------------------------------------
 //                           Main
 // -------------------------------------------------------
 
@@ -84,10 +123,12 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     int scaledCol = col * incrementStep;
 
     vertices[index] = CalculateVertexPosition(row, col, scaledRow, scaledCol);
-    normal[index] = float3(0, 0, 1);
+    //normal[index] = float3(0, 1, 0);
     uv[index] = float2(scaledCol, scaledRow);
 
     if (col < verticesPerSide - 1 && row < verticesPerSide - 1 ) {
-        AddQuad(index, CalculateOffset(row, col));
+        int offset = CalculateOffset(row, col);
+        AddQuad(index, offset);
+        CalculateQuadNormals(index, offset);
     }
 }
