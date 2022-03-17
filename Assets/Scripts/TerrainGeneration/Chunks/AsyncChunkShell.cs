@@ -18,9 +18,16 @@ namespace MiniProceduralGeneration.Chunk
         private IChunkMeshProcessor m_ChunkMeshProcessor;
         private INoiseGenerator m_NoiseGenerator;
 
+        private Color GizmosColor;
+
         #endregion Fields
 
         #region - - - - - - Methods - - - - - -
+
+        private void Awake()
+        {
+            GizmosColor = new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+        }
 
         public override void InitChunkShell(
             TerrainChunkDimensions chunkDimensions,
@@ -61,6 +68,18 @@ namespace MiniProceduralGeneration.Chunk
             AssignDataToMesh();
             RenderTerrain();
             meshRenderer.enabled = true;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (Normals != null)
+            {
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    Gizmos.color = GizmosColor; new Color(UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f), UnityEngine.Random.Range(0f, 1f));
+                    Gizmos.DrawLine(transform.position + vertices[i], (transform.position + vertices[i]) + (Normals[i] * 5f));
+                }
+            }
         }
 
         #endregion Methods

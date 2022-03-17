@@ -82,13 +82,12 @@ namespace MiniProceduralGeneration.Chunk
             mesh.uv = uv;
 
             mesh.RecalculateTangents();
-            mesh.RecalculateNormals();
+            //mesh.RecalculateNormals();
         }
 
         public void RenderTerrain() // Renders mesh
         {
             meshFilter.mesh = mesh;
-            //meshCollider.sharedMesh = mesh;
             SetMeshCollider(mesh);
         }
 
